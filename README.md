@@ -16,7 +16,7 @@
 [![Test Coverage](https://img.shields.io/codecov/c/github/zold-io/java-api.svg)](https://codecov.io/github/zold-io/java-api?branch=master)
 [![SonarQube](https://img.shields.io/badge/sonar-ok-green.svg)](https://sonarcloud.io/dashboard?id=io.zold%3java-api)
 
-Java API for Zold.
+Java API for Zold. Ruby API is in [zold-io/zold](https://github.com/zold-io/zold).
 
 All you need is this:
 
@@ -29,6 +29,44 @@ All you need is this:
 ```
 
 Java version required: 1.8+.
+
+First, you find a wallet in a directory of wallets:
+
+```java
+Wallets wallets = new WalletsInDir(new File("/tmp/wallets"));
+Wallet wallet = wallets.find("9999888877776666");
+```
+
+Then, you pull it:
+
+```java
+wallet.pull();
+```
+
+Then, you check its balance:
+
+```java
+Amount balance = wallet.balance();
+assert balance.equals(new Amount(50.0d));
+```
+
+Then, you make a payment:
+
+```java
+String key = "jfUJklaljsios....JKLJLSksjd89os"; // private RSA key
+String invoice = "JhYPOKNj@bbbbccccddddeeee";
+Amount amount = new Amount(19.99d);
+String details = "Thank you for the services!"
+int txn = wallet.pay(key, invoice, amount, details);
+```
+
+Finally, you push it:
+
+```java
+wallet.push();
+```
+
+That's it.
 
 ## How to contribute?
 
