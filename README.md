@@ -8,13 +8,13 @@
 [![We recommend IntelliJ IDEA](http://www.elegantobjects.org/intellij-idea.svg)](https://www.jetbrains.com/idea/)
 
 [![Build Status](https://travis-ci.org/zold-io/java-api.svg?branch=master)](https://travis-ci.org/zold-io/java-api)
-[![Javadoc](http://www.javadoc.io/badge/org.cactoos/cactoos-http.svg)](http://www.javadoc.io/doc/org.cactoos/cactoos-http)
+[![Javadoc](http://www.javadoc.io/badge/io.zold/java-api.svg)](http://www.javadoc.io/doc/io.zold/java-api)
 [![PDD status](http://www.0pdd.com/svg?name=zold-io/java-api)](http://www.0pdd.com/p?name=zold-io/java-api)
-[![Maven Central](https://img.shields.io/maven-central/v/org.cactoos/cactoos-http.svg)](https://maven-badges.herokuapp.com/maven-central/org.cactoos/cactoos-http)
+[![Maven Central](https://img.shields.io/maven-central/v/io.zold/java-api.svg)](https://maven-badges.herokuapp.com/maven-central/io.zold/java-api)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/zold-io/java-api/blob/master/LICENSE.txt)
 
 [![Test Coverage](https://img.shields.io/codecov/c/github/zold-io/java-api.svg)](https://codecov.io/github/zold-io/java-api?branch=master)
-[![SonarQube](https://img.shields.io/badge/sonar-ok-green.svg)](https://sonarcloud.io/dashboard?id=org.cactoos%3Acactoos-http)
+[![SonarQube](https://img.shields.io/badge/sonar-ok-green.svg)](https://sonarcloud.io/dashboard?id=io.zold%3java-api)
 
 Java API for Zold.
 
