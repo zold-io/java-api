@@ -31,7 +31,7 @@ SOFTWARE.
   </parent>
   <groupId>io.zold</groupId>
   <artifactId>java-api</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>0.0.2</version>
   <packaging>jar</packaging>
   <name>java-api</name>
   <description>Zold Java API</description>
