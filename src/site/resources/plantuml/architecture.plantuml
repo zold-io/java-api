@@ -1,0 +1,21 @@
+@startuml
+cloud "zold network" as network
+component "javax.json" as json
+package "java.security" as jsec
+component "apache httpclient" as apache
+package "zold" as zold {
+  component Wallet
+  component Storage
+  component Transaction
+  component Node
+}
+file wallet.zold
+file nodes.json
+network <-down-> apache
+apache -left-> json
+apache <-down-> zold
+json -down-> zold
+zold <-right- jsec
+zold <-down-> wallet.zold
+zold <-down-> nodes.json
+@enduml

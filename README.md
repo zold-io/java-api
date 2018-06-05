@@ -99,3 +99,34 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+## Requirements
+
+These are the requirements for this API.
+
+**Note:** The original whitepaper on *zold* can be found [here](https://www.zold.io/). The whitepaper and the documentation found at www.zold.io serve as the highest authority on the subject of *zold*. The following requirements are condensed versions of the points expressed in the aforementioned docs as they relate to the scope of this project:
+
+* Maintain a wallet in structured textual format, within which is a ledger that contains transactions for that wallet.
+* Make payments:
+  * Taxes according to fixed formula
+  * Payments to other wallets
+  * Sign with RSA key
+  * Push to network
+* Receive payments:
+  * Pull the paying wallet from the network
+  * Merge the copies of the paying wallet with our own copy
+* We need to refresh our local database of network nodes by querying the network.
+* We must implement with Java 8
+* Non-functional requirements were not made, but we expect
+  * Flawless concurrency
+  * "Decent" performance
+  * Designs must respect the principles of [elegant objects](www.elegantobjects.org)
+
+## Decisions and Alternatives
+
+* `javax-json` is a Java API that can parse and also write JSON. As part of the EE7 spec, it is stable, well established, and is the standard. We can use it to write to our local database file. Alternatives are google's [gson](https://github.com/google/gson), [JSON-java](https://github.com/stleary/JSON-java), [jackson-databind](https://github.com/FasterXML/jackson-databind/), and many others.
+* The standard `java.security` package contains everything we need to import keystores and sign/encrypt messages with RSA keys. There are lots of examples on the internet on how to use it. I am not aware of any other popular alternative out there.
+* Apache's [http client](https://hc.apache.org/httpcomponents-client-4.5.x/index.html) is a popular Java library for building HTTP requests and receiving their responses. Its design is not object-oriented, but it carries minimal dependencies and is production-ready. Alternatives are `jcabi-http` (lots of dependencies), `cactoos-http` (not yet ready for production), and many others.
+* Our API will consist of our core classes that will communicate with the network using Apache HttpClient + javax.json, a local storage (`nodes.json`) for persistence of remote node data, will use the `java.security` package when signing the transactions, and will expect wallet files to have the `.zold` extension and conform to the format specified in the whitepaper:
+
+![icon](src/site/resources/plantuml/images/architecture.png)
