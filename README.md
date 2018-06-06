@@ -120,13 +120,16 @@ These are the requirements for this API.
 * Non-functional requirements were not made, but we expect
   * Flawless concurrency
   * "Decent" performance
-  * Designs must respect the principles of [elegant objects](www.elegantobjects.org)
+  * Design must respect the principles of [elegant objects](www.elegantobjects.org)
+  * Design must resemble the design of the original [ruby API](https://github.com/zold-io/zold)
+
 
 ## Decisions and Alternatives
 
 * `javax-json` is a Java API that can parse and also write JSON. As part of the EE7 spec, it is stable, well established, and is the standard. We can use it to write to our local database file. Alternatives are google's [gson](https://github.com/google/gson), [JSON-java](https://github.com/stleary/JSON-java), [jackson-databind](https://github.com/FasterXML/jackson-databind/), and many others.
 * The standard `java.security` package contains everything we need to import keystores and sign/encrypt messages with RSA keys. There are lots of examples on the internet on how to use it. I am not aware of any other popular alternative out there.
 * Apache's [http client](https://hc.apache.org/httpcomponents-client-4.5.x/index.html) is a popular Java library for building HTTP requests and receiving their responses. Its design is not object-oriented, but it carries minimal dependencies and is production-ready. Alternatives are `jcabi-http` (lots of dependencies), `cactoos-http` (not yet ready for production), and many others.
-* Our API will consist of our core classes that will communicate with the network using Apache HttpClient + javax.json, a local storage (`nodes.json`) for persistence of remote node data, will use the `java.security` package when signing the transactions, and will expect wallet files to have the `.zold` extension and conform to the format specified in the whitepaper:
+* Our API will consist of our core classes that will communicate with the network using Apache HttpClient + javax.json, a local storage (`nodes.json`) for persistence of remote node data, will use the `java.security` package when signing the transactions, and will expect wallet files to have the `.z` extension ([discuss](https://github.com/zold-io/zold/issues/164)) and conform to the format specified in the whitepaper:
 
-![icon](src/site/resources/plantuml/images/architecture.png)
+![architecture](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/zold-io/java-api/master/src/site/resources/plantuml/architecture.plantuml)
+
