@@ -133,3 +133,19 @@ These are the requirements for this API.
 
 ![architecture](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/zold-io/java-api/master/src/site/resources/plantuml/architecture.plantuml)
 
+## Concerns
+
+* `cactoos-http` is designed according to the principles of EO, although it still has mayor hurdles to overcome (eg. see [#62](https://github.com/yegor256/cactoos-http/issues/62)).
+* `javax.json` will parse data from the zold network and write our local database file in structured JSON format. Its usage is very simple, although we will probably have to be careful with regards to concurrent access to the file.
+* `java.security` runtimes can handle RSA and MD5 on all platforms.
+
+## Assumptions
+
+* `cactoos-http` will reach the maturity level necessary to support our requirements
+* We can flawlessly manage synchronized access to our local database file
+
+## Risks
+
+* The `cactoos-http` project might not obtain the resources to reach maturity, or may not reach maturity for some other reason.
+* Our bottleneck will be reading/writing our local database file. We might not be able to manage a "heavy" throughput.
+
