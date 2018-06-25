@@ -34,16 +34,7 @@ package io.zold.api;
 public interface Wallets extends Iterable<Wallet> {
     /**
      * Create a wallet.
-     * @return the new wallet
+     * @return The new wallet
      */
     Wallet create();
-
-    /**
-     * Add/merge the wallet with our wallets.
-     * @param walt the wallet
-     * @return {@code walt} if we did not have this wallet, or a new
-     *   instance of the same wallet if {@code walt} was merged with
-     *   one we already had
-     */
-    Wallet merge(Wallet walt);
 }

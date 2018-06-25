@@ -31,32 +31,33 @@ package io.zold.api;
  * @version $Id$
  * @since 0.1
  */
+@SuppressWarnings("PMD.ShortMethodName")
 public interface Wallet {
     /**
-     * 64-bit unsigned integer.
-     * @return 
+     * This wallet's ID: an unsigned 64-bit integer.
+     * @return This wallet's id
+     * @checkstyle MethodName (2 lines)
      */
     long id();
 
     /**
      * Make a payment.
-     * @param amt amount to pay
-     * @param bnf wallet ID of beneficiary
-     * @return the transaction
+     * @param amt Amount to pay in zents
+     * @param bnf Wallet ID of beneficiary
      */
-    Transaction pay(Amount amt, char bnf);
+    void pay(long amt, char bnf);
 
     /**
      * Merge both {@code this} and {@code other}. Fails if they are not the
      * same wallet, as identified by their {@link #id() id}.
-     * @param other other wallet
-     * @return the merged wallet
+     * @param other Other wallet
+     * @return The merged wallet
      */
     Wallet merge(Wallet other);
 
     /**
      * This wallet's ledger.
-     * @return this wallet's ledger
+     * @return This wallet's ledger
      */
     Iterable<Transaction> ledger();
 }

@@ -24,6 +24,8 @@
 
 package io.zold.api;
 
+import org.cactoos.Text;
+
 /**
  * A remote node's score, equal to its number of suffixes.
  *
@@ -33,8 +35,9 @@ package io.zold.api;
  */
 public interface Score extends Comparable<Score> {
     /**
-     * The suffixes associated with this score.
-     * @return suffixes for this score
+     * The suffixes associated with this score. Each suffix is a text of the
+     * form {@code /[a-zA-Z0-9]+/}.
+     * @return Suffixes for this score
      */
-    Iterable<Suffix> suffixes();
+    Iterable<Text> suffixes();
 }

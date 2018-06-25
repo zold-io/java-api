@@ -25,6 +25,7 @@
 package io.zold.api;
 
 /**
+ * A payment transaction.
  *
  * @author George Aristy (george.aristy@gmail.com)
  * @version $Id$
@@ -32,14 +33,8 @@ package io.zold.api;
  */
 public interface Transaction {
     /**
-     * Its ID.
-     * @return id of this transaction
-     */
-    char id();
-
-    /**
      * Amount involved in this transaction.
-     * @return the amount
+     * @return The amount
      */
-    Amount amount();
+    long amount();
 }

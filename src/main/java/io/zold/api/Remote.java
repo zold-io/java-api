@@ -34,7 +34,7 @@ package io.zold.api;
 public interface Remote {
     /**
      * This remote node's score.
-     * @return the score
+     * @return The score
      */
     Score score();
 }

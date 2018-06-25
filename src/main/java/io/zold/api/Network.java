@@ -35,15 +35,14 @@ public interface Network extends Iterable<Remote> {
     /**
      * Push the wallet to the network. The network will select the
      * remote node with the highest score (with a minimum of {@code 16}).
-     * @param wallet the wallet
-     * @return whether {@code wallet} was successfully pushed or not
+     * @param wallet The wallet
      */
-    boolean push(Wallet wallet);
+    void push(Wallet wallet);
 
     /**
      * Pull a wallet from the network.
-     * @param id the wallet's {@link Wallet#id() id}
-     * @return the wallet
+     * @param id The wallet's {@link Wallet#id() id}
+     * @return The wallet
      */
     Wallet pull(Long id);
 }
