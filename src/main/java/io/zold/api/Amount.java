@@ -24,39 +24,15 @@
 
 package io.zold.api;
 
+import org.cactoos.Scalar;
+
 /**
- * Wallet.
+ * Amount involved in a {@link Transaction}.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @author George Aristy (george.aristy@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public interface Wallet {
-    /**
-     * 64-bit unsigned integer.
-     * @return 
-     */
-    long id();
+public interface Amount extends Scalar<Number> {
 
-    /**
-     * Make a payment.
-     * @param amt amount to pay
-     * @param bnf wallet ID of beneficiary
-     * @return the transaction
-     */
-    Transaction pay(Amount amt, char bnf);
-
-    /**
-     * Merge both {@code this} and {@code other}. Fails if they are not the
-     * same wallet, as identified by their {@link #id() id}.
-     * @param other other wallet
-     * @return the merged wallet
-     */
-    Wallet merge(Wallet other);
-
-    /**
-     * This wallet's ledger.
-     * @return this wallet's ledger
-     */
-    Iterable<Transaction> ledger();
 }

@@ -182,4 +182,15 @@ SOFTWARE.
       </build>
     </profile>
   </profiles>
+  <dependencies>
+    <dependency>
+      <groupId>org.cactoos</groupId>
+      <artifactId>cactoos</artifactId>
+      <version>0.35</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.json</groupId>
+      <artifactId>javax.json-api</artifactId>
+    </dependency>
+  </dependencies>
 </project>

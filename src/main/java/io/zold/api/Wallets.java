@@ -25,38 +25,25 @@
 package io.zold.api;
 
 /**
- * Wallet.
+ * Wallets.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @author George Aristy (george.aristy@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public interface Wallet {
+public interface Wallets extends Iterable<Wallet> {
     /**
-     * 64-bit unsigned integer.
-     * @return 
+     * Create a wallet.
+     * @return the new wallet
      */
-    long id();
+    Wallet create();
 
     /**
-     * Make a payment.
-     * @param amt amount to pay
-     * @param bnf wallet ID of beneficiary
-     * @return the transaction
+     * Add/merge the wallet with our wallets.
+     * @param walt the wallet
+     * @return {@code walt} if we did not have this wallet, or a new
+     *   instance of the same wallet if {@code walt} was merged with
+     *   one we already had
      */
-    Transaction pay(Amount amt, char bnf);
-
-    /**
-     * Merge both {@code this} and {@code other}. Fails if they are not the
-     * same wallet, as identified by their {@link #id() id}.
-     * @param other other wallet
-     * @return the merged wallet
-     */
-    Wallet merge(Wallet other);
-
-    /**
-     * This wallet's ledger.
-     * @return this wallet's ledger
-     */
-    Iterable<Transaction> ledger();
+    Wallet merge(Wallet walt);
 }

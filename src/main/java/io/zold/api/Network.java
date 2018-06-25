@@ -25,38 +25,25 @@
 package io.zold.api;
 
 /**
- * Wallet.
+ * Network of remote nodes.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @author George Aristy (george.aristy@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public interface Wallet {
+public interface Network extends Iterable<Remote> {
     /**
-     * 64-bit unsigned integer.
-     * @return 
+     * Push the wallet to the network. The network will select the
+     * remote node with the highest score (with a minimum of {@code 16}).
+     * @param wallet the wallet
+     * @return whether {@code wallet} was successfully pushed or not
      */
-    long id();
+    boolean push(Wallet wallet);
 
     /**
-     * Make a payment.
-     * @param amt amount to pay
-     * @param bnf wallet ID of beneficiary
-     * @return the transaction
+     * Pull a wallet from the network.
+     * @param id the wallet's {@link Wallet#id() id}
+     * @return the wallet
      */
-    Transaction pay(Amount amt, char bnf);
-
-    /**
-     * Merge both {@code this} and {@code other}. Fails if they are not the
-     * same wallet, as identified by their {@link #id() id}.
-     * @param other other wallet
-     * @return the merged wallet
-     */
-    Wallet merge(Wallet other);
-
-    /**
-     * This wallet's ledger.
-     * @return this wallet's ledger
-     */
-    Iterable<Transaction> ledger();
+    Wallet pull(Long id);
 }

@@ -25,38 +25,16 @@
 package io.zold.api;
 
 /**
- * Wallet.
+ * Remote node.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
+ * @author George Aristy (george.aristy@gmail.com)
  * @version $Id$
  * @since 0.1
  */
-public interface Wallet {
+public interface Remote {
     /**
-     * 64-bit unsigned integer.
-     * @return 
+     * This remote node's score.
+     * @return the score
      */
-    long id();
-
-    /**
-     * Make a payment.
-     * @param amt amount to pay
-     * @param bnf wallet ID of beneficiary
-     * @return the transaction
-     */
-    Transaction pay(Amount amt, char bnf);
-
-    /**
-     * Merge both {@code this} and {@code other}. Fails if they are not the
-     * same wallet, as identified by their {@link #id() id}.
-     * @param other other wallet
-     * @return the merged wallet
-     */
-    Wallet merge(Wallet other);
-
-    /**
-     * This wallet's ledger.
-     * @return this wallet's ledger
-     */
-    Iterable<Transaction> ledger();
+    Score score();
 }
