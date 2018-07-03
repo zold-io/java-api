@@ -35,14 +35,19 @@ Java version required: 1.8+.
 First, you find a wallet in a directory of wallets:
 
 ```java
-Wallets wallets = new WalletsInDir(new File("/tmp/wallets"));
-Wallet wallet = wallets.find("9999888877776666");
+final Wallets wallets = new WalletsIn(new File("/tmp/wallets"));
+final Wallet wallet = new Filtered<>(
+    w -> "9999888877776666".equals(w.id()),
+    wallets
+).iterator().next();
 ```
 
-Then, you pull it:
+Then, you pull the network's version of the wallet and merge it into yours:
 
 ```java
-wallet.pull();
+final Wallet merged = wallet.merge(
+    network.pull(wallet.id())
+);
 ```
 
 Then, you check its balance:
@@ -59,13 +64,13 @@ String key = "jfUJklaljsios....JKLJLSksjd89os"; // private RSA key
 String invoice = "JhYPOKNj@bbbbccccddddeeee";
 Amount amount = new Amount(19.99d);
 String details = "Thank you for the services!"
-int txn = wallet.pay(key, invoice, amount, details);
+wallet.pay(key, invoice, amount, details);
 ```
 
 Finally, you push it:
 
 ```java
-wallet.push();
+network.push(wallet);
 ```
 
 That's it.
