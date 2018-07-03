@@ -30,6 +30,8 @@ All you need is this:
 
 Java version required: 1.8+.
 
+**We recommend you read the Zold [whitepaper](https://papers.zold.io/wp.pdf) in order to understand the concepts behind this API.**
+
 First, you find a wallet in a directory of wallets:
 
 ```java
