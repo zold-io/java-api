@@ -50,21 +50,12 @@ final Wallet merged = wallet.merge(
 );
 ```
 
-Then, you check its balance:
-
-```java
-Amount balance = wallet.balance();
-assert balance.equals(new Amount(50.0d));
-```
-
 Then, you make a payment:
 
 ```java
-String key = "jfUJklaljsios....JKLJLSksjd89os"; // private RSA key
-String invoice = "JhYPOKNj@bbbbccccddddeeee";
-Amount amount = new Amount(19.99d);
-String details = "Thank you for the services!"
-wallet.pay(key, invoice, amount, details);
+final long amount = 1999L;  //zents
+final char bnf = (char) 12345; //beneficiary wallet's ID
+wallet.pay(amount, bnf);
 ```
 
 Finally, you push it:
