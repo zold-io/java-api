@@ -23,10 +23,17 @@
  */
 package io.zold.api;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import org.cactoos.io.LengthOf;
+import org.cactoos.io.TeeInput;
+import org.cactoos.text.JoinedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 /**
  * Test case for {@link Wallet}.
@@ -35,16 +42,55 @@ import org.junit.Test;
  * @version $Id$
  * @since 0.1
  * @checkstyle JavadocMethodCheck (500 lines)
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @checkstyle JavadocVariableCheck (500 lines)
+ * @checkstyle MagicNumberCheck (500 lines)
  */
 public final class WalletTest {
 
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
+
     @Test
-    public void takesBodyOutOfHttpResponse() throws IOException {
-        MatcherAssert.assertThat(
-            "Hello, world!",
-            Matchers.startsWith("Hello, ")
+    public void readsWalletId() throws IOException {
+        final long id = 5124095577148911L;
+        final Wallet wallet = new Wallet.File(this.wallet(id));
+        MatcherAssert.assertThat(wallet.id(), Matchers.is(id));
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void payIsNotYetImplemented() throws IOException {
+        new Wallet.File(this.folder.newFile().toPath()).pay(1, 1234);
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void mergeIsNotYetImplemented() throws IOException {
+        new Wallet.File(this.folder.newFile().toPath()).merge(
+            new Wallet.File(this.folder.newFile().toPath())
         );
     }
 
+    @Test(expected = UnsupportedOperationException.class)
+    public void ledgerIsNotYetImplemented() throws IOException {
+        new Wallet.File(this.folder.newFile().toPath()).ledger();
+    }
+
+    private Path wallet(final long id) throws IOException {
+        final String hex = Long.toHexString(id);
+        final File file = this.folder.newFile(hex);
+        file.createNewFile();
+        new LengthOf(
+            new TeeInput(
+                new JoinedText(
+                    "\n",
+                    "zold",
+                    "1",
+                    hex,
+                    // @checkstyle LineLength (1 line)
+                    "MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgGZCr/9hBChqsChd4sRAIpKNRinjhSW+J+S7PU5malVMiRHVoKjeooLDpWpij0A6vkzOvjrMldAZT0Fzgp0cJ15TOVwiQanQ5WuQDgRkLoxrdh/qyBApoDvk4OUEozOQPNwfpZOFfaUALPsPnv9995TlY9WcdSKW5dj041p1tJmlAgMBAAE="
+                ),
+                file
+            )
+        ).intValue();
+        return file.toPath();
+    }
 }
