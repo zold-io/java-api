@@ -21,8 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package io.zold.api;
+
+import java.time.ZonedDateTime;
 
 /**
  * A payment transaction.
@@ -32,9 +33,48 @@ package io.zold.api;
  * @since 0.1
  */
 public interface Transaction {
+
+    /**
+     * Id of this transaction.
+     * @return Id
+     * @checkstyle MethodNameCheck (3 lines)
+     */
+    @SuppressWarnings("PMD.ShortMethodName")
+    long id();
+
+    /**
+     * Timestamp of this transaction.
+     * @return Time
+     */
+    ZonedDateTime time();
+
     /**
      * Amount involved in this transaction.
-     * @return The amount
+     * @return Amount
      */
     long amount();
+
+    /**
+     * Prefix.
+     * @return Prefix
+     */
+    String prefix();
+
+    /**
+     * Beneficiary.
+     * @return Beneficiary
+     */
+    long bnf();
+
+    /**
+     * Details.
+     * @return Details
+     */
+    String details();
+
+    /**
+     * RSA Signature.
+     * @return RSA Signature
+     */
+    String signature();
 }
