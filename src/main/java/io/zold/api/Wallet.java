@@ -26,6 +26,8 @@ package io.zold.api;
 import java.io.IOException;
 import java.nio.file.Path;
 import org.cactoos.Scalar;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.iterable.Skipped;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.StickyScalar;
@@ -46,7 +48,7 @@ public interface Wallet {
     /**
      * This wallet's ID: an unsigned 64-bit integer.
      * @return This wallet's id
-     * @throws IOException If an IO error occurs.
+     * @throws IOException If an IO error occurs
      * @checkstyle MethodName (2 lines)
      */
     long id() throws IOException;
@@ -69,11 +71,13 @@ public interface Wallet {
     /**
      * This wallet's ledger.
      * @return This wallet's ledger
+     * @throws IOException If an IO error occurs
      */
-    Iterable<Transaction> ledger();
+    Iterable<Transaction> ledger() throws IOException;
 
     /**
      * Default File implementation.
+     * @checkstyle ClassDataAbstractionCouplingCheck (2 lines)
      */
     class File implements Wallet {
 
@@ -140,13 +144,20 @@ public interface Wallet {
             );
         }
 
-        // @todo #6:30min Implement ledger method. This should return all
-        //  the transactions in this copy of the wallet. Also add a unit test
-        //  to replace WalletTest.ledgerIsNotYetImplemented().
         @Override
-        public Iterable<Transaction> ledger() {
-            throw new UnsupportedOperationException(
-                "ledger() not yet supported"
+        public Iterable<Transaction> ledger() throws IOException {
+            return new Mapped<>(
+                txt -> new RtTransaction(txt.asString()),
+                new Skipped<>(
+                    new ListOf<>(
+                        new SplitText(
+                            new TextOf(this.path.value()),
+                            "\\n"
+                        )
+                    ),
+                    // @checkstyle MagicNumberCheck (1 line)
+                    5
+                )
             );
         }
     }

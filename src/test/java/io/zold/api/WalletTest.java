@@ -23,12 +23,9 @@
  */
 package io.zold.api;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import org.cactoos.io.LengthOf;
-import org.cactoos.io.TeeInput;
-import org.cactoos.text.JoinedText;
+import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Rule;
@@ -69,28 +66,19 @@ public final class WalletTest {
         );
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void ledgerIsNotYetImplemented() throws IOException {
-        new Wallet.File(this.folder.newFile().toPath()).ledger();
+    @Test
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
+    public void walletShouldBeAbleToReturnLedger() throws Exception {
+        MatcherAssert.assertThat(
+            new Wallet.File(this.wallet(5124095577148911L)).ledger(),
+            Matchers.iterableWithSize(2)
+        );
     }
 
-    private Path wallet(final long id) throws IOException {
+    private Path wallet(final long id) {
         final String hex = Long.toHexString(id);
-        final File file = this.folder.newFile(hex);
-        file.createNewFile();
-        new LengthOf(
-            new TeeInput(
-                new JoinedText(
-                    "\n",
-                    "zold",
-                    "1",
-                    hex,
-                    // @checkstyle LineLength (1 line)
-                    "MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgGZCr/9hBChqsChd4sRAIpKNRinjhSW+J+S7PU5malVMiRHVoKjeooLDpWpij0A6vkzOvjrMldAZT0Fzgp0cJ15TOVwiQanQ5WuQDgRkLoxrdh/qyBApoDvk4OUEozOQPNwfpZOFfaUALPsPnv9995TlY9WcdSKW5dj041p1tJmlAgMBAAE="
-                ),
-                file
-            )
-        ).intValue();
-        return file.toPath();
+        return Paths.get(
+            String.format("src/test/resources/wallets/%s", hex)
+        );
     }
 }
