@@ -45,14 +45,6 @@ import org.mockito.Mockito;
  */
 public final class NetworkTest {
 
-    /**
-     * Network can push wallet to right remote.
-     * Tests if the {@link Network} pulls the {@link Wallet} to the remote
-     * selected according rules defined in {@link Network}: {@link Remote}
-     * with higher score and ({@link Remote#score()} > 16. Throws a
-     * {@link RuntimeException} if {@link Network} tries to push the wallet
-     * to the wrong node.
-     */
     @Test
     public void pushWalletToRightRemote()  {
         final Remote highremote = Mockito.mock(Remote.class);
@@ -67,41 +59,38 @@ public final class NetworkTest {
             new Repeated<>(18, new RandomText())
         );
         Mockito.when(lowremote.score()).thenReturn(lowscore);
-        Mockito.verify(
-            lowremote,
-            Mockito.never()
-        ).add(Mockito.any(Wallet.class));
         final Wallet wallet = Mockito.mock(Wallet.class);
         new Network.Simple(
             new IterableOf<Remote>(
                 highremote, lowremote
             )
         ).push(wallet);
+        Mockito.verify(
+            highremote,
+            Mockito.times(1)
+        ).add(Mockito.any(Wallet.class));
+        Mockito.verify(
+            lowremote,
+            Mockito.never()
+        ).add(Mockito.any(Wallet.class));
     }
 
-    /**
-     * Network cannot push wallet when there is no remote available.
-     * Tests if the {@link Network} don't push the {@link Wallet} to the remote
-     * when it has an ({@link Remote#score()} < 16. Throws a
-     * {@link RuntimeException} if {@link Network} tries to push the wallet
-     * to the remote.
-     */
     @Test
-    public void pushWalletWhenAnyRemoteIsAvailable() {
+    public void filtersUnqualifiedRemotesFromPush() {
         final Remote remote = Mockito.mock(Remote.class);
         final Score score = Mockito.mock(Score.class);
         Mockito.when(score.suffixes()).thenReturn(
             new Repeated<>(15, new RandomText())
         );
         Mockito.when(remote.score()).thenReturn(score);
-        Mockito.verify(
-            remote,
-            Mockito.never()
-        ).add(Mockito.any(Wallet.class));
         final Wallet wallet = Mockito.mock(Wallet.class);
         new Network.Simple(
             new IterableOf<Remote>(remote)
         ).push(wallet);
+        Mockito.verify(
+            remote,
+            Mockito.never()
+        ).add(Mockito.any(Wallet.class));
     }
 
     @Test(expected = UnsupportedOperationException.class)
