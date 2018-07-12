@@ -54,35 +54,27 @@ public final class NetworkTest {
      * to the wrong node.
      */
     @Test
-    public void pullWalletToRightRemote()  {
+    public void pushWalletToRightRemote()  {
         final Remote highremote = Mockito.mock(Remote.class);
         final Score highscore = Mockito.mock(Score.class);
         Mockito.when(highscore.suffixes()).thenReturn(
             new Repeated<>(20, new RandomText())
         );
         Mockito.when(highremote.score()).thenReturn(highscore);
-        final Remote mediumremote = Mockito.mock(Remote.class);
-        final Score mediumscore = Mockito.mock(Score.class);
-        Mockito.when(mediumscore.suffixes()).thenReturn(
-            new Repeated<>(10, new RandomText())
-        );
-        Mockito.when(mediumremote.score()).thenReturn(mediumscore);
-        Mockito.doThrow(new RuntimeException()).when(mediumremote).add(
-            Mockito.any(Wallet.class)
-        );
         final Remote lowremote = Mockito.mock(Remote.class);
         final Score lowscore = Mockito.mock(Score.class);
         Mockito.when(lowscore.suffixes()).thenReturn(
-            new Repeated<>(5, new RandomText())
+            new Repeated<>(18, new RandomText())
         );
         Mockito.when(lowremote.score()).thenReturn(lowscore);
-        Mockito.doThrow(new RuntimeException()).when(lowremote).add(
-            Mockito.any(Wallet.class)
-        );
+        Mockito.verify(
+            lowremote,
+            Mockito.never()
+        ).add(Mockito.any(Wallet.class));
         final Wallet wallet = Mockito.mock(Wallet.class);
         new Network.Simple(
             new IterableOf<Remote>(
-                highremote, mediumremote, lowremote
+                highremote, lowremote
             )
         ).push(wallet);
     }
@@ -102,9 +94,10 @@ public final class NetworkTest {
             new Repeated<>(15, new RandomText())
         );
         Mockito.when(remote.score()).thenReturn(score);
-        Mockito.doThrow(new RuntimeException()).when(remote).add(
-            Mockito.any(Wallet.class)
-        );
+        Mockito.verify(
+            remote,
+            Mockito.never()
+        ).add(Mockito.any(Wallet.class));
         final Wallet wallet = Mockito.mock(Wallet.class);
         new Network.Simple(
             new IterableOf<Remote>(remote)
