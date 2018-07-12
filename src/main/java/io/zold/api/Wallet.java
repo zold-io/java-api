@@ -120,9 +120,10 @@ public interface Wallet {
             );
         }
 
-        // @todo #6:30min Implement pay method. This should add a transaction
-        //  to the wallet containing the correct details. Also add a unit test
-        //  to replace WalletTest.payIsNotYetImplemented().
+        // @todo #15:30min Implement pay method. This should add a transaction
+        //  to the wallet containing the correct details with the help of
+        //  RtTransaction class. Also add a unit test to replace
+        //  WalletTest.payIsNotYetImplemented().
         @Override
         public void pay(final long amt, final long bnf) {
             throw new UnsupportedOperationException("pay() not yet supported");
