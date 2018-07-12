@@ -37,4 +37,10 @@ public interface Remote {
      * @return The score
      */
     Score score();
+
+    /**
+     * Add a {@link Wallet} to this remote.
+     * @param wallet Wallet to be added to this remote
+     */
+    void add(Wallet wallet);
 }
