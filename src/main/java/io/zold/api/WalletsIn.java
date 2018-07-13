@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2018 Yegor Bugayenko
@@ -33,8 +33,6 @@ import org.cactoos.scalar.SyncScalar;
 /**
  * Wallets in path.
  *
- * @author Tolegen Izbassar (t.izbassar@gmail.com)
- * @version $Id$
  * @since 0.1
  */
 @SuppressWarnings({"PMD.SingularField", "PMD.UnusedPrivateField"})

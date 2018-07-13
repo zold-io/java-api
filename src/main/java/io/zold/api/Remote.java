@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2018 Yegor Bugayenko
@@ -27,8 +27,6 @@ package io.zold.api;
 /**
  * Remote node.
  *
- * @author George Aristy (george.aristy@gmail.com)
- * @version $Id$
  * @since 0.1
  */
 public interface Remote {

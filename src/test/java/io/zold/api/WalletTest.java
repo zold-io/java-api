@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2018 Yegor Bugayenko
@@ -37,8 +37,6 @@ import org.junit.rules.TemporaryFolder;
 /**
  * Test case for {@link Wallet}.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
  * @since 0.1
  * @todo #33:30min CheckedScalar from 'cactoos' does not wrap runtime
  *  exceptions for some reason. Once it's fixed (see yegor256/cactoos#933)
