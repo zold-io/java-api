@@ -24,6 +24,10 @@
 package io.zold.api;
 
 import java.time.ZonedDateTime;
+import org.cactoos.list.ListOf;
+import org.cactoos.text.SplitText;
+import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 
 /**
  * RtTransaction.
@@ -75,12 +79,19 @@ final class RtTransaction implements Transaction {
         throw new UnsupportedOperationException("amount() not yet implemented");
     }
 
-    // @todo #15:30min Implement prefix() by parsing the string representation
-    //  of transaction according to the pattern, described in the white
-    //  paper. Replace relevant test case with actual tests.
     @Override
     public String prefix() {
-        throw new UnsupportedOperationException("prefix() not yet implemented");
+        return new UncheckedText(
+            new ListOf<>(
+                new SplitText(
+                    new TextOf(
+                        this.transaction
+                    ),
+                    new TextOf(";")
+                )
+            //@checkstyle MagicNumberCheck (1 line)
+            ).get(3)
+        ).asString();
     }
 
     // @todo #15:30min Implement bnf() by parsing the string representation

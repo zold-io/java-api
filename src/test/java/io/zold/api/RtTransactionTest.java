@@ -24,6 +24,8 @@
 package io.zold.api;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.core.IsEqual;
 import org.junit.Test;
 
 /**
@@ -58,9 +60,14 @@ public final class RtTransactionTest {
         new RtTransaction("amount()").amount();
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void prefixIsNotYetImplemented() {
-        new RtTransaction("prefix()").prefix();
+    @Test
+    public void returnsPrefix() {
+        MatcherAssert.assertThat(
+            "Returned wrong prefix",
+            new RtTransaction("id;time;amount;prefix;bnf;details;signature")
+                .prefix(),
+            new IsEqual<>("prefix")
+        );
     }
 
     @Test(expected = UnsupportedOperationException.class)
