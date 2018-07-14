@@ -34,8 +34,10 @@ import org.junit.Test;
  * @author Izbassar Tolegen (t.izbassar@gmail.com)
  * @version $Id$
  * @since 0.1
+ * @checkstyle LineLengthCheck (500 lines)
  * @checkstyle JavadocMethodCheck (500 lines)
  */
+@SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.TooManyMethods"})
 public final class RtTransactionTest {
 
     @Test
@@ -61,13 +63,42 @@ public final class RtTransactionTest {
     }
 
     @Test
-    public void returnsPrefix() {
+    public void returnsPrefix() throws Exception {
         MatcherAssert.assertThat(
             "Returned wrong prefix",
-            new RtTransaction("id;time;amount;prefix;bnf;details;signature")
-                .prefix(),
-            new IsEqual<>("prefix")
+            new RtTransaction(
+                "003b;2017-07-19T21:25:07Z;ffffffffffa72367;xksQuJa9;98bb82c81735c4ee; For food;QCuLuVr4..."
+            ).prefix(),
+            new IsEqual<>("xksQuJa9")
         );
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void prefixFormatViolated() throws Exception {
+        new RtTransaction(
+            "003b;2017-07-19T21:25:07Z;ffffffffffa72367;|invalidprefix|;98bb82c81735c4ee; For food;QCuLuVr4..."
+        ).prefix();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void prefixSizeViolatedLess() throws Exception {
+        new RtTransaction(
+            "003b;2017-07-19T21:25:07Z;ffffffffffa72367;FF4D;98bb82c81735c4ee; For food;QCuLuVr4..."
+        ).prefix();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void prefixSizeViolatedMore() throws Exception {
+        new RtTransaction(
+            "003b;2017-07-19T21:25:07Z;ffffffffffa72367;FF4DFF4DFF4DFF4DFF4DFF4DFF4DFF4DFF4DFF4D;98bb82c81735c4ee; For food;QCuLuVr4..."
+        ).prefix();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void prefixNotPresent() throws Exception {
+        new RtTransaction(
+            "003b;2017-07-19T21:25:07Z;ffffffffffa72367"
+        ).prefix();
     }
 
     @Test(expected = UnsupportedOperationException.class)

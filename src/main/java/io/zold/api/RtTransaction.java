@@ -24,10 +24,10 @@
 package io.zold.api;
 
 import java.time.ZonedDateTime;
-import org.cactoos.list.ListOf;
+import java.util.regex.Pattern;
+import org.cactoos.scalar.ItemAt;
 import org.cactoos.text.SplitText;
 import org.cactoos.text.TextOf;
-import org.cactoos.text.UncheckedText;
 
 /**
  * RtTransaction.
@@ -35,7 +35,12 @@ import org.cactoos.text.UncheckedText;
  * @author Izbassar Tolegen (t.izbassar@gmail.com)
  * @version $Id$
  * @since 0.1
+ * @todo #25:30min Create TransactionFormatException, which have to be thrwon
+ *  upon formatting problems in RtTransaction parsing. After the
+ *  implementation of TransactionFormatException, replace
+ *  IllegalArgumentException in prefix().
  */
+@SuppressWarnings("PMD.AvoidCatchingGenericException")
 final class RtTransaction implements Transaction {
 
     /**
@@ -80,18 +85,37 @@ final class RtTransaction implements Transaction {
     }
 
     @Override
-    public String prefix() {
-        return new UncheckedText(
-            new ListOf<>(
+    public String prefix() throws Exception {
+        try {
+            final String prefix = new ItemAt<>(
                 new SplitText(
                     new TextOf(
                         this.transaction
                     ),
                     new TextOf(";")
-                )
+                ).iterator(),
+                //@checkstyle MagicNumberCheck (1 line)
+                3
+            ).value().asString();
             //@checkstyle MagicNumberCheck (1 line)
-            ).get(3)
-        ).asString();
+            if (prefix.length() < 8 || prefix.length() > 32) {
+                throw new IllegalArgumentException("Invalid prefix size");
+            }
+            final Pattern pattern = Pattern.compile(
+                //@checkstyle LineLengthCheck (1 line)
+                "^([A-Za-z0-9+\\/]{4})*([A-Za-z0-9+\\/]{4}|[A-Za-z0-9+\\/]{3}=|[A-Za-z0-9+\\/]{2}==)$"
+            );
+            if (!pattern.matcher(prefix).matches()) {
+                throw new IllegalArgumentException("Invalid base64 prefix");
+            }
+            return prefix;
+            //@checkstyle IllegalCatchCheck (1 line)
+        } catch (final Exception exception) {
+            throw new IllegalArgumentException(
+                "Invalid prefix string",
+                exception
+            );
+        }
     }
 
     // @todo #15:30min Implement bnf() by parsing the string representation

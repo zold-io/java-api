@@ -57,8 +57,9 @@ public interface Transaction {
     /**
      * Prefix.
      * @return Prefix
+     * @throws Exception When something goes wrong
      */
-    String prefix();
+    String prefix() throws Exception;
 
     /**
      * Beneficiary.
