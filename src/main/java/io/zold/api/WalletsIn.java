@@ -23,8 +23,13 @@
  */
 package io.zold.api;
 
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.StickyScalar;
@@ -37,7 +42,6 @@ import org.cactoos.scalar.SyncScalar;
  * @version $Id$
  * @since 0.1
  */
-@SuppressWarnings({"PMD.SingularField", "PMD.UnusedPrivateField"})
 public final class WalletsIn implements Wallets {
 
     /**
@@ -76,12 +80,23 @@ public final class WalletsIn implements Wallets {
         throw new UnsupportedOperationException("create() not yet supported");
     }
 
-    // @todo #4:30min Read instance of the Wallet from file and put it
-    //  to the result. Should be taken care of after Wallet interface will have
-    //  necessary implementations. Cover with tests and remove irrelevant test
-    //  case.
     @Override
+    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public Iterator<Wallet> iterator() {
-        throw new UnsupportedOperationException("iterator() not yet supported");
+        // @checkstyle MagicNumber (1 line)
+        final List<Wallet> wallets = new ArrayList<>(10);
+        try (
+            final DirectoryStream<Path> dir =
+                Files.newDirectoryStream(this.path.value())
+        ) {
+            for (final Path wallet : dir) {
+                if (wallet.toFile().isFile()) {
+                    wallets.add(new Wallet.File(wallet));
+                }
+            }
+        } catch (final IOException ex) {
+            throw new IllegalStateException(ex);
+        }
+        return wallets.iterator();
     }
 }
