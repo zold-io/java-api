@@ -24,13 +24,14 @@
 package io.zold.api;
 
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import org.cactoos.Scalar;
+import org.cactoos.func.IoCheckedFunc;
+import org.cactoos.io.Directory;
+import org.cactoos.iterable.Filtered;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.StickyScalar;
 import org.cactoos.scalar.SyncScalar;
@@ -41,6 +42,7 @@ import org.cactoos.scalar.SyncScalar;
  * @author Tolegen Izbassar (t.izbassar@gmail.com)
  * @version $Id$
  * @since 0.1
+ * @checkstyle ClassDataAbstractionCoupling (2 lines)
  */
 public final class WalletsIn implements Wallets {
 
@@ -50,24 +52,37 @@ public final class WalletsIn implements Wallets {
     private final IoCheckedScalar<Path> path;
 
     /**
+     * Filter for matching file extensions.
+     */
+    private final IoCheckedFunc<Path, Boolean> filter;
+
+    /**
      * Ctor.
      * @param pth Path with wallets
      */
     public WalletsIn(final Path pth) {
         this(
-            () -> pth
+            () -> pth,
+            "z"
         );
     }
 
     /**
      * Ctor.
      * @param pth Path with wallets
+     * @param ext File extension to match
      */
-    public WalletsIn(final Scalar<Path> pth) {
+    public WalletsIn(final Scalar<Path> pth, final String ext) {
         this.path = new IoCheckedScalar<>(
             new SyncScalar<>(
                 new StickyScalar<>(pth)
             )
+        );
+        this.filter = new IoCheckedFunc<Path, Boolean>(
+            (file) -> file.toFile().isFile()
+                && FileSystems.getDefault()
+                    .getPathMatcher(String.format("glob:**.%s", ext))
+                    .matches(file)
         );
     }
 
@@ -83,20 +98,13 @@ public final class WalletsIn implements Wallets {
     @Override
     @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public Iterator<Wallet> iterator() {
-        // @checkstyle MagicNumber (1 line)
-        final List<Wallet> wallets = new ArrayList<>(10);
-        try (
-            final DirectoryStream<Path> dir =
-                Files.newDirectoryStream(this.path.value())
-        ) {
-            for (final Path wallet : dir) {
-                if (wallet.toFile().isFile()) {
-                    wallets.add(new Wallet.File(wallet));
-                }
-            }
+        try {
+            return new Mapped<Path, Wallet>(
+                (pth) -> new Wallet.File(pth),
+                new Filtered<>(this.filter, new Directory(this.path.value()))
+            ).iterator();
         } catch (final IOException ex) {
             throw new IllegalStateException(ex);
         }
-        return wallets.iterator();
     }
 }
