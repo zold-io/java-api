@@ -39,7 +39,7 @@ import org.mockito.Mockito;
  * @todo #5:30min Implement Remote interface. Remote Interface must be
  *  implemented because Network depends on Remote behavior. Network.pull
  *  needs to search all remotes for some wallet id and merge all found
- *  wallets; Network.push must add a wallet to a remote based in remote.
+ *  wallets; Network.push must push a wallet to a remote based in remote.
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle MagicNumberCheck (500 lines)
  */
@@ -68,11 +68,11 @@ public final class NetworkTest {
         Mockito.verify(
             highremote,
             Mockito.times(1)
-        ).add(Mockito.any(Wallet.class));
+        ).push(Mockito.any(Wallet.class));
         Mockito.verify(
             lowremote,
             Mockito.never()
-        ).add(Mockito.any(Wallet.class));
+        ).push(Mockito.any(Wallet.class));
     }
 
     @Test
@@ -90,7 +90,7 @@ public final class NetworkTest {
         Mockito.verify(
             remote,
             Mockito.never()
-        ).add(Mockito.any(Wallet.class));
+        ).push(Mockito.any(Wallet.class));
     }
 
     @Test(expected = UnsupportedOperationException.class)

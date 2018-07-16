@@ -80,7 +80,7 @@ public interface Network extends Iterable<Remote> {
                     this.nodes
                 )
             ).forEach(
-                remote -> remote.add(wallet)
+                remote -> remote.push(wallet)
             );
         }
 
