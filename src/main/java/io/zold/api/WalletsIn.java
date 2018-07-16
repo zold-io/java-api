@@ -23,9 +23,15 @@
  */
 package io.zold.api;
 
+import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.Iterator;
 import org.cactoos.Scalar;
+import org.cactoos.func.IoCheckedFunc;
+import org.cactoos.io.Directory;
+import org.cactoos.iterable.Filtered;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.StickyScalar;
 import org.cactoos.scalar.SyncScalar;
@@ -34,8 +40,8 @@ import org.cactoos.scalar.SyncScalar;
  * Wallets in path.
  *
  * @since 0.1
+ * @checkstyle ClassDataAbstractionCoupling (2 lines)
  */
-@SuppressWarnings({"PMD.SingularField", "PMD.UnusedPrivateField"})
 public final class WalletsIn implements Wallets {
 
     /**
@@ -44,24 +50,37 @@ public final class WalletsIn implements Wallets {
     private final IoCheckedScalar<Path> path;
 
     /**
+     * Filter for matching file extensions.
+     */
+    private final IoCheckedFunc<Path, Boolean> filter;
+
+    /**
      * Ctor.
      * @param pth Path with wallets
      */
     public WalletsIn(final Path pth) {
         this(
-            () -> pth
+            () -> pth,
+            "z"
         );
     }
 
     /**
      * Ctor.
      * @param pth Path with wallets
+     * @param ext File extension to match
      */
-    public WalletsIn(final Scalar<Path> pth) {
+    public WalletsIn(final Scalar<Path> pth, final String ext) {
         this.path = new IoCheckedScalar<>(
             new SyncScalar<>(
                 new StickyScalar<>(pth)
             )
+        );
+        this.filter = new IoCheckedFunc<Path, Boolean>(
+            (file) -> file.toFile().isFile()
+                && FileSystems.getDefault()
+                    .getPathMatcher(String.format("glob:**.%s", ext))
+                    .matches(file)
         );
     }
 
@@ -74,12 +93,16 @@ public final class WalletsIn implements Wallets {
         throw new UnsupportedOperationException("create() not yet supported");
     }
 
-    // @todo #4:30min Read instance of the Wallet from file and put it
-    //  to the result. Should be taken care of after Wallet interface will have
-    //  necessary implementations. Cover with tests and remove irrelevant test
-    //  case.
     @Override
+    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public Iterator<Wallet> iterator() {
-        throw new UnsupportedOperationException("iterator() not yet supported");
+        try {
+            return new Mapped<Path, Wallet>(
+                (pth) -> new Wallet.File(pth),
+                new Filtered<>(this.filter, new Directory(this.path.value()))
+            ).iterator();
+        } catch (final IOException ex) {
+            throw new IllegalStateException(ex);
+        }
     }
 }
