@@ -44,6 +44,14 @@ import org.cactoos.text.TextOf;
 final class RtTransaction implements Transaction {
 
     /**
+     * Pattern for transaction String.
+     */
+    private static final Pattern PATTERN = Pattern.compile(
+        //@checkstyle LineLengthCheck (1 line)
+        "^([A-Za-z0-9+\\/]{4})*([A-Za-z0-9+\\/]{4}|[A-Za-z0-9+\\/]{3}=|[A-Za-z0-9+\\/]{2}==)$"
+    );
+
+    /**
      * String representation of transaction.
      */
     private final String transaction;
@@ -101,11 +109,7 @@ final class RtTransaction implements Transaction {
             if (prefix.length() < 8 || prefix.length() > 32) {
                 throw new IllegalArgumentException("Invalid prefix size");
             }
-            final Pattern pattern = Pattern.compile(
-                //@checkstyle LineLengthCheck (1 line)
-                "^([A-Za-z0-9+\\/]{4})*([A-Za-z0-9+\\/]{4}|[A-Za-z0-9+\\/]{3}=|[A-Za-z0-9+\\/]{2}==)$"
-            );
-            if (!pattern.matcher(prefix).matches()) {
+            if (!RtTransaction.PATTERN.matcher(prefix).matches()) {
                 throw new IllegalArgumentException("Invalid base64 prefix");
             }
             return prefix;

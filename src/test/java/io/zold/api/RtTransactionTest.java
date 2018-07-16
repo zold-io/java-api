@@ -101,6 +101,13 @@ public final class RtTransactionTest {
         ).prefix();
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void invalidTransactionString() throws Exception {
+        new RtTransaction(
+            "this is a invalid transaction String"
+        ).prefix();
+    }
+
     @Test(expected = UnsupportedOperationException.class)
     public void bnfIsNotYetImplemented() {
         new RtTransaction("bnf()").bnf();
