@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2018 Yegor Bugayenko
@@ -33,8 +33,6 @@ import org.mockito.Mockito;
 /**
  * Test case for {@link Network}.
  *
- * @author Paulo Lobo (pauloeduardolobo@gmail.com)
- * @version $Id$
  * @since 0.1
  * @todo #5:30min Implement Remote interface. Remote Interface must be
  *  implemented because Network depends on Remote behavior. Network.pull
