@@ -23,6 +23,7 @@
  */
 package io.zold.api;
 
+import java.io.IOException;
 import java.time.ZonedDateTime;
 
 /**
@@ -57,9 +58,9 @@ public interface Transaction {
     /**
      * Prefix.
      * @return Prefix
-     * @throws Exception When something goes wrong
+     * @throws IOException When something goes wrong
      */
-    String prefix() throws Exception;
+    String prefix() throws IOException;
 
     /**
      * Beneficiary.

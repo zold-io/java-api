@@ -23,6 +23,7 @@
  */
 package io.zold.api;
 
+import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.regex.Pattern;
 import org.cactoos.scalar.ItemAt;
@@ -89,7 +90,7 @@ final class RtTransaction implements Transaction {
     }
 
     @Override
-    public String prefix() throws Exception {
+    public String prefix() throws IOException {
         try {
             final String prefix = new ItemAt<>(
                 new SplitText(
@@ -111,7 +112,7 @@ final class RtTransaction implements Transaction {
             return prefix;
             //@checkstyle IllegalCatchCheck (1 line)
         } catch (final Exception exception) {
-            throw new IllegalArgumentException(
+            throw new IOException(
                 "Invalid prefix string",
                 exception
             );

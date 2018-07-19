@@ -23,6 +23,7 @@
  */
 package io.zold.api;
 
+import java.io.IOException;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
@@ -63,7 +64,7 @@ public final class RtTransactionTest {
     }
 
     @Test
-    public void returnsPrefix() throws Exception {
+    public void returnsPrefix() throws IOException {
         MatcherAssert.assertThat(
             "Returned wrong prefix",
             new RtTransaction(
@@ -73,36 +74,36 @@ public final class RtTransactionTest {
         );
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void prefixFormatViolated() throws Exception {
+    @Test(expected = IOException.class)
+    public void prefixFormatViolated() throws IOException {
         new RtTransaction(
             "003b;2017-07-19T21:25:07Z;ffffffffffa72367;|invalidprefix|;98bb82c81735c4ee; For food;QCuLuVr4..."
         ).prefix();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void prefixSizeViolatedLess() throws Exception {
+    @Test(expected = IOException.class)
+    public void prefixSizeViolatedLess() throws IOException {
         new RtTransaction(
             "003b;2017-07-19T21:25:07Z;ffffffffffa72367;FF4D;98bb82c81735c4ee; For food;QCuLuVr4..."
         ).prefix();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void prefixSizeViolatedMore() throws Exception {
+    @Test(expected = IOException.class)
+    public void prefixSizeViolatedMore() throws IOException {
         new RtTransaction(
             "003b;2017-07-19T21:25:07Z;ffffffffffa72367;FF4DFF4DFF4DFF4DFF4DFF4DFF4DFF4DFF4DFF4D;98bb82c81735c4ee; For food;QCuLuVr4..."
         ).prefix();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void prefixNotPresent() throws Exception {
+    @Test(expected = IOException.class)
+    public void prefixNotPresent() throws IOException {
         new RtTransaction(
             "003b;2017-07-19T21:25:07Z;ffffffffffa72367"
         ).prefix();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void invalidTransactionString() throws Exception {
+    @Test(expected = IOException.class)
+    public void invalidTransactionString() throws IOException {
         new RtTransaction(
             "this is a invalid transaction String"
         ).prefix();
