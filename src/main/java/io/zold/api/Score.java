@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2018 Yegor Bugayenko
@@ -29,8 +29,6 @@ import org.cactoos.Text;
 /**
  * A remote node's score, equal to its number of suffixes.
  *
- * @author George Aristy (george.aristy@gmail.com)
- * @version $Id$
  * @since 0.1
  */
 public interface Score extends Comparable<Score> {

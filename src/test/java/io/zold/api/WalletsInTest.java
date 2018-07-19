@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2018 Yegor Bugayenko
@@ -24,6 +24,8 @@
 package io.zold.api;
 
 import java.io.IOException;
+import java.nio.file.Paths;
+import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
@@ -33,8 +35,6 @@ import org.junit.rules.TemporaryFolder;
 /**
  * Test case for {@link WalletsIn}.
  *
- * @author Izbassar Tolegen (t.izbassar@gmail.com)
- * @version $Id$
  * @since 0.1
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle JavadocVariableCheck (500 lines)
@@ -48,16 +48,12 @@ public final class WalletsInTest {
     public final TemporaryFolder folder = new TemporaryFolder();
 
     @Test
-    public void iteratorIsNotYetImplemented() throws IOException {
-        this.thrown.expect(UnsupportedOperationException.class);
-        this.thrown.expectMessage(
-            Matchers.is(
-                "iterator() not yet supported"
-            )
+    public void iteratesWallets() {
+        MatcherAssert.assertThat(
+            new WalletsIn(Paths.get("src/test/resources/walletsIn")),
+            // @checkstyle MagicNumber (1 line)
+            Matchers.iterableWithSize(5)
         );
-        new WalletsIn(
-            this.folder.newFolder().toPath()
-        ).iterator();
     }
 
     @Test

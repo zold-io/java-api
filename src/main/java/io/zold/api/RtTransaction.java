@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2018 Yegor Bugayenko
@@ -28,8 +28,6 @@ import java.time.ZonedDateTime;
 /**
  * RtTransaction.
  *
- * @author Izbassar Tolegen (t.izbassar@gmail.com)
- * @version $Id$
  * @since 0.1
  */
 final class RtTransaction implements Transaction {

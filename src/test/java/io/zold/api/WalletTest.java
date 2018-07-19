@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2018 Yegor Bugayenko
@@ -23,24 +23,25 @@
  */
 package io.zold.api;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import org.cactoos.io.LengthOf;
-import org.cactoos.io.TeeInput;
-import org.cactoos.text.JoinedText;
+import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
 /**
  * Test case for {@link Wallet}.
  *
- * @author Yegor Bugayenko (yegor256@gmail.com)
- * @version $Id$
  * @since 0.1
+ * @todo #33:30min CheckedScalar from 'cactoos' does not wrap runtime
+ *  exceptions for some reason. Once it's fixed (see yegor256/cactoos#933)
+ *  un-ignore WalletTest.throwIoExceptionIfReadingIdFails and make sure
+ *  it works.
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle JavadocVariableCheck (500 lines)
  * @checkstyle MagicNumberCheck (500 lines)
@@ -48,13 +49,23 @@ import org.junit.rules.TemporaryFolder;
 public final class WalletTest {
 
     @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+    public final TemporaryFolder folder = new TemporaryFolder();
+
+    @Rule
+    public final ExpectedException error = ExpectedException.none();
 
     @Test
     public void readsWalletId() throws IOException {
         final long id = 5124095577148911L;
         final Wallet wallet = new Wallet.File(this.wallet(id));
         MatcherAssert.assertThat(wallet.id(), Matchers.is(id));
+    }
+
+    @Ignore
+    @Test
+    public void throwIoExceptionIfReadingIdFails() throws IOException {
+        this.error.expect(IOException.class);
+        new Wallet.File(this.wallet("invalid_id")).id();
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -69,28 +80,22 @@ public final class WalletTest {
         );
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void ledgerIsNotYetImplemented() throws IOException {
-        new Wallet.File(this.folder.newFile().toPath()).ledger();
+    @Test
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
+    public void walletShouldBeAbleToReturnLedger() throws Exception {
+        MatcherAssert.assertThat(
+            new Wallet.File(this.wallet(5124095577148911L)).ledger(),
+            Matchers.iterableWithSize(2)
+        );
     }
 
-    private Path wallet(final long id) throws IOException {
-        final String hex = Long.toHexString(id);
-        final File file = this.folder.newFile(hex);
-        file.createNewFile();
-        new LengthOf(
-            new TeeInput(
-                new JoinedText(
-                    "\n",
-                    "zold",
-                    "1",
-                    hex,
-                    // @checkstyle LineLength (1 line)
-                    "MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgGZCr/9hBChqsChd4sRAIpKNRinjhSW+J+S7PU5malVMiRHVoKjeooLDpWpij0A6vkzOvjrMldAZT0Fzgp0cJ15TOVwiQanQ5WuQDgRkLoxrdh/qyBApoDvk4OUEozOQPNwfpZOFfaUALPsPnv9995TlY9WcdSKW5dj041p1tJmlAgMBAAE="
-                ),
-                file
-            )
-        ).intValue();
-        return file.toPath();
+    private Path wallet(final long id) {
+        return this.wallet(Long.toHexString(id));
+    }
+
+    private Path wallet(final String hex) {
+        return Paths.get(
+            String.format("src/test/resources/wallets/%s", hex)
+        );
     }
 }

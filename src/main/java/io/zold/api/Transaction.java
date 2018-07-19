@@ -1,4 +1,4 @@
-/**
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2018 Yegor Bugayenko
@@ -28,8 +28,6 @@ import java.time.ZonedDateTime;
 /**
  * A payment transaction.
  *
- * @author George Aristy (george.aristy@gmail.com)
- * @version $Id$
  * @since 0.1
  */
 public interface Transaction {
