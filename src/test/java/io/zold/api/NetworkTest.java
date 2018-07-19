@@ -76,6 +76,26 @@ public final class NetworkTest {
     }
 
     @Test
+    public void pushWalletToAllRemotes()  {
+        final Remote highremote = Mockito.mock(Remote.class);
+        final Remote lowremote = Mockito.mock(Remote.class);
+        final Wallet wallet = Mockito.mock(Wallet.class);
+        new RtNetwork(
+            new IterableOf<Remote>(
+                highremote, lowremote
+            )
+        ).push(wallet);
+        Mockito.verify(
+            highremote,
+            Mockito.times(1)
+        ).push(Mockito.any(Wallet.class));
+        Mockito.verify(
+            lowremote,
+            Mockito.times(1)
+        ).push(Mockito.any(Wallet.class));
+    }
+
+    @Test
     @Ignore
     public void filtersUnqualifiedRemotesFromPush() {
         final Remote remote = Mockito.mock(Remote.class);
