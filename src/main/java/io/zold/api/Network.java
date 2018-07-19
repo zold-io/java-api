@@ -23,16 +23,10 @@
  */
 package io.zold.api;
 
-import java.util.Iterator;
-import org.cactoos.iterable.Filtered;
-import org.cactoos.iterable.HeadOf;
-import org.cactoos.iterable.LengthOf;
-
 /**
  * Network of remote nodes.
  *
  * @since 0.1
- * @checkstyle MagicNumberCheck (500 lines)
  */
 public interface Network extends Iterable<Remote> {
     /**
@@ -49,52 +43,4 @@ public interface Network extends Iterable<Remote> {
      */
     Wallet pull(Long id);
 
-    /**
-     * Simple network implementation.
-     */
-    final class Simple implements Network {
-
-        /**
-         * {@link Remote} nodes.
-         */
-        private final Iterable<Remote> nodes;
-
-        /**
-         * Constructor.
-         * @param remotes Remotes of the network
-         */
-        Simple(final Iterable<Remote> remotes) {
-            this.nodes =  remotes;
-        }
-
-        @Override
-        public void push(final Wallet wallet) {
-            new HeadOf<Remote>(
-                1,
-                new Filtered<Remote>(
-                    remote -> new LengthOf(
-                        remote.score().suffixes()
-                    ).intValue() >= 16,
-                    this.nodes
-                )
-            ).forEach(
-                remote -> remote.push(wallet)
-            );
-        }
-
-        // @todo #5:30min Implement pull method. Pulling a wallet from the
-        //  network should return all the wallets with that id in the
-        //  network merged together. After the implementation
-        //  NetworkTest.pullIsNotYetImplemented() have to be uncommented and
-        //  test if pull method is behaving correctle.
-        @Override
-        public Wallet pull(final Long id) {
-            throw new UnsupportedOperationException("pull(id) not supported");
-        }
-
-        @Override
-        public Iterator<Remote> iterator() {
-            return this.nodes.iterator();
-        }
-    }
 }
