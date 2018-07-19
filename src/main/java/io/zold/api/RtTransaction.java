@@ -35,10 +35,6 @@ import org.cactoos.text.TextOf;
  * @author Izbassar Tolegen (t.izbassar@gmail.com)
  * @version $Id$
  * @since 0.1
- * @todo #25:30min Create TransactionFormatException, which have to be thrwon
- *  upon formatting problems in RtTransaction parsing. After the
- *  implementation of TransactionFormatException, replace
- *  IllegalArgumentException in prefix().
  */
 @SuppressWarnings("PMD.AvoidCatchingGenericException")
 final class RtTransaction implements Transaction {
