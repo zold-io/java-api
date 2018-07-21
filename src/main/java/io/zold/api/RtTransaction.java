@@ -23,14 +23,28 @@
  */
 package io.zold.api;
 
+import java.io.IOException;
 import java.time.ZonedDateTime;
+import java.util.regex.Pattern;
+import org.cactoos.scalar.ItemAt;
+import org.cactoos.text.SplitText;
+import org.cactoos.text.TextOf;
 
 /**
  * RtTransaction.
  *
  * @since 0.1
  */
+@SuppressWarnings("PMD.AvoidCatchingGenericException")
 final class RtTransaction implements Transaction {
+
+    /**
+     * Pattern for transaction String.
+     */
+    private static final Pattern PATTERN = Pattern.compile(
+        //@checkstyle LineLengthCheck (1 line)
+        "^([A-Za-z0-9+\\/]{4})*([A-Za-z0-9+\\/]{4}|[A-Za-z0-9+\\/]{3}=|[A-Za-z0-9+\\/]{2}==)$"
+    );
 
     /**
      * String representation of transaction.
@@ -73,12 +87,34 @@ final class RtTransaction implements Transaction {
         throw new UnsupportedOperationException("amount() not yet implemented");
     }
 
-    // @todo #15:30min Implement prefix() by parsing the string representation
-    //  of transaction according to the pattern, described in the white
-    //  paper. Replace relevant test case with actual tests.
     @Override
-    public String prefix() {
-        throw new UnsupportedOperationException("prefix() not yet implemented");
+    public String prefix() throws IOException {
+        try {
+            final String prefix = new ItemAt<>(
+                new SplitText(
+                    new TextOf(
+                        this.transaction
+                    ),
+                    new TextOf(";")
+                ).iterator(),
+                //@checkstyle MagicNumberCheck (1 line)
+                3
+            ).value().asString();
+            //@checkstyle MagicNumberCheck (1 line)
+            if (prefix.length() < 8 || prefix.length() > 32) {
+                throw new IllegalArgumentException("Invalid prefix size");
+            }
+            if (!RtTransaction.PATTERN.matcher(prefix).matches()) {
+                throw new IllegalArgumentException("Invalid base64 prefix");
+            }
+            return prefix;
+            //@checkstyle IllegalCatchCheck (1 line)
+        } catch (final Exception exception) {
+            throw new IOException(
+                "Invalid prefix string",
+                exception
+            );
+        }
     }
 
     // @todo #15:30min Implement bnf() by parsing the string representation
