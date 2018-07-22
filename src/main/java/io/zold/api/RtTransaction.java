@@ -41,10 +41,15 @@ final class RtTransaction implements Transaction {
     /**
      * Pattern for transaction String.
      */
-    private static final Pattern PATTERN = Pattern.compile(
+    private static final Pattern TRANSACTION = Pattern.compile(
         //@checkstyle LineLengthCheck (1 line)
         "^([A-Za-z0-9+\\/]{4})*([A-Za-z0-9+\\/]{4}|[A-Za-z0-9+\\/]{3}=|[A-Za-z0-9+\\/]{2}==)$"
     );
+
+    /**
+     * Pattern for ID String.
+     */
+    private static final Pattern IDENT = Pattern.compile("[A-Fa-f0-9]{4}");
 
     /**
      * String representation of transaction.
@@ -62,13 +67,29 @@ final class RtTransaction implements Transaction {
         this.transaction = trnsct;
     }
 
-    // @todo #15:30min Implement id() by parsing the string representation
-    //  of transaction according to the pattern, described in the white
-    //  paper. Replace relevant test case with actual tests.
     @Override
     @SuppressWarnings("PMD.ShortMethodName")
-    public long id() {
-        throw new UnsupportedOperationException("id() not yet implemented");
+    public long id() throws IOException {
+        try {
+            final String ident = new ItemAt<>(
+                new SplitText(this.transaction, ";").iterator(),
+                //@checkstyle MagicNumber (12 lines)
+                0
+            ).value().asString();
+            if (!RtTransaction.IDENT.matcher(ident).matches()) {
+                throw new IllegalArgumentException(
+                    String.format(
+                        // @checkstyle LineLength (1 line)
+                        "Invalid ID '%s' expecting 64-bit signed hex string with 4 symbols",
+                        ident
+                    )
+                );
+            }
+            return Integer.parseUnsignedInt(ident, 16);
+            //@checkstyle IllegalCatchCheck (1 line)
+        } catch (final Exception exception) {
+            throw new IOException("Couldn't parse ID", exception);
+        }
     }
 
     // @todo #15:30min Implement time() by parsing the string representation
@@ -104,7 +125,7 @@ final class RtTransaction implements Transaction {
             if (prefix.length() < 8 || prefix.length() > 32) {
                 throw new IllegalArgumentException("Invalid prefix size");
             }
-            if (!RtTransaction.PATTERN.matcher(prefix).matches()) {
+            if (!RtTransaction.TRANSACTION.matcher(prefix).matches()) {
                 throw new IllegalArgumentException("Invalid base64 prefix");
             }
             return prefix;

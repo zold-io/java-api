@@ -35,11 +35,12 @@ public interface Transaction {
 
     /**
      * Id of this transaction.
-     * @return Id
+     * @return Id ID
+     * @throws IOException When something goes wrong
      * @checkstyle MethodNameCheck (3 lines)
      */
     @SuppressWarnings("PMD.ShortMethodName")
-    long id();
+    long id() throws IOException;
 
     /**
      * Timestamp of this transaction.

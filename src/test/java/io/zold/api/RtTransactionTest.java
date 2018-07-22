@@ -46,9 +46,41 @@ public final class RtTransactionTest {
             .verify();
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void idIsNotYetImplemented() {
-        new RtTransaction("id()").id();
+    @Test
+    public void returnsId() throws IOException {
+        MatcherAssert.assertThat(
+            new RtTransaction(
+                "abcd;2017-07-19T21:25:07Z;0000000000a72366;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr4..."
+            ).id(),
+            // @checkstyle MagicNumber (1 line)
+            new IsEqual<>(43981L)
+        );
+    }
+
+    @Test(expected = IOException.class)
+    public void idFormatViolated() throws IOException {
+        new RtTransaction(
+            "efgh;2017-07-19T21:25:07Z;0000000000a72366;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr4..."
+        ).id();
+    }
+
+    @Test(expected = IOException.class)
+    public void idStringTooLong() throws IOException {
+        new RtTransaction(
+            "abcde;2017-07-19T21:25:07Z;0000000000a72366;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr4..."
+        ).id();
+    }
+
+    @Test(expected = IOException.class)
+    public void idStringTooShort() throws IOException {
+        new RtTransaction(
+            "001;2017-07-19T21:25:07Z;0000000000a72366;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr4..."
+        ).id();
+    }
+
+    @Test(expected = IOException.class)
+    public void idNotPresent() throws IOException {
+        new RtTransaction("").id();
     }
 
     @Test(expected = UnsupportedOperationException.class)
