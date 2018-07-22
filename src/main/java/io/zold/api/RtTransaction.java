@@ -24,6 +24,7 @@
 package io.zold.api;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.time.ZonedDateTime;
 import java.util.regex.Pattern;
 import org.cactoos.scalar.ItemAt;
@@ -41,10 +42,15 @@ final class RtTransaction implements Transaction {
     /**
      * Pattern for transaction String.
      */
-    private static final Pattern PATTERN = Pattern.compile(
+    private static final Pattern TRANSACTION = Pattern.compile(
         //@checkstyle LineLengthCheck (1 line)
         "^([A-Za-z0-9+\\/]{4})*([A-Za-z0-9+\\/]{4}|[A-Za-z0-9+\\/]{3}=|[A-Za-z0-9+\\/]{2}==)$"
     );
+
+    /**
+     * Pattern for amount String.
+     */
+    private static final Pattern AMT = Pattern.compile("[A-Fa-f0-9]{16}");
 
     /**
      * String representation of transaction.
@@ -79,12 +85,28 @@ final class RtTransaction implements Transaction {
         throw new UnsupportedOperationException("time() not yet implemented");
     }
 
-    // @todo #15:30min Implement amount() by parsing the string representation
-    //  of transaction according to the pattern, described in the white
-    //  paper. Replace relevant test case with actual tests.
     @Override
-    public long amount() {
-        throw new UnsupportedOperationException("amount() not yet implemented");
+    public long amount() throws IOException {
+        try {
+            final String amnt = new ItemAt<>(
+                new SplitText(this.transaction, ";").iterator(),
+                //@checkstyle MagicNumber (12 lines)
+                2
+            ).value().asString();
+            if (!RtTransaction.AMT.matcher(amnt).matches()) {
+                throw new IllegalArgumentException(
+                    String.format(
+                        // @checkstyle LineLength (1 line)
+                        "Invalid amount '%s' expecting 64-bit signed hex string with 16 symbols",
+                        amnt
+                    )
+                );
+            }
+            return new BigInteger(amnt, 16).longValue();
+            //@checkstyle IllegalCatchCheck (1 line)
+        } catch (final Exception exception) {
+            throw new IOException("Couldn't parse amount", exception);
+        }
     }
 
     @Override
@@ -104,7 +126,7 @@ final class RtTransaction implements Transaction {
             if (prefix.length() < 8 || prefix.length() > 32) {
                 throw new IllegalArgumentException("Invalid prefix size");
             }
-            if (!RtTransaction.PATTERN.matcher(prefix).matches()) {
+            if (!RtTransaction.TRANSACTION.matcher(prefix).matches()) {
                 throw new IllegalArgumentException("Invalid base64 prefix");
             }
             return prefix;

@@ -35,6 +35,7 @@ import org.junit.Test;
  * @since 0.1
  * @checkstyle LineLengthCheck (500 lines)
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle MagicNumber (500 lines)
  */
 @SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.TooManyMethods"})
 public final class RtTransactionTest {
@@ -56,9 +57,52 @@ public final class RtTransactionTest {
         new RtTransaction("time()").time();
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void amountIsNotYetImplemented() {
-        new RtTransaction("amount()").amount();
+    @Test
+    public void returnsPositiveAmount() throws IOException {
+        MatcherAssert.assertThat(
+            new RtTransaction(
+                "003b;2017-07-19T21:25:07Z;0000000000a72366;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr4..."
+            ).amount(),
+            new IsEqual<>(10953574L)
+        );
+    }
+
+    @Test
+    public void returnsNegativeAmount() throws IOException {
+        MatcherAssert.assertThat(
+            new RtTransaction(
+                "003b;2017-07-19T21:25:07Z;ffffffffffa72366;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr4..."
+            ).amount(),
+            new IsEqual<>(-5823642L)
+        );
+    }
+
+    @Test(expected = IOException.class)
+    public void amountFormatViolated() throws IOException {
+        new RtTransaction(
+            "003b;2017-07-19T21:25:07Z;ffffffffffZX2367;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr4..."
+        ).amount();
+    }
+
+    @Test(expected = IOException.class)
+    public void amountStringTooLong() throws IOException {
+        new RtTransaction(
+            "003b;2017-07-19T21:25:07Z;00000000000a72366;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr4..."
+        ).amount();
+    }
+
+    @Test(expected = IOException.class)
+    public void amountStringTooShort() throws IOException {
+        new RtTransaction(
+            "003b;2017-07-19T21:25:07Z;72366;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr4..."
+        ).amount();
+    }
+
+    @Test(expected = IOException.class)
+    public void amountNotPresent() throws IOException {
+        new RtTransaction(
+            "003b;2017-07-19T21:25:07Z"
+        ).amount();
     }
 
     @Test
