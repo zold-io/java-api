@@ -41,10 +41,16 @@ final class RtTransaction implements Transaction {
     /**
      * Pattern for transaction String.
      */
-    private static final Pattern PATTERN = Pattern.compile(
+    private static final Pattern TRANSACTION = Pattern.compile(
         //@checkstyle LineLengthCheck (1 line)
         "^([A-Za-z0-9+\\/]{4})*([A-Za-z0-9+\\/]{4}|[A-Za-z0-9+\\/]{3}=|[A-Za-z0-9+\\/]{2}==)$"
     );
+
+    /**
+     * Pattern for Details string.
+     */
+    private static final Pattern DTLS =
+        Pattern.compile("[A-Za-z0-9 -.]{1,512}");
 
     /**
      * String representation of transaction.
@@ -104,7 +110,7 @@ final class RtTransaction implements Transaction {
             if (prefix.length() < 8 || prefix.length() > 32) {
                 throw new IllegalArgumentException("Invalid prefix size");
             }
-            if (!RtTransaction.PATTERN.matcher(prefix).matches()) {
+            if (!RtTransaction.TRANSACTION.matcher(prefix).matches()) {
                 throw new IllegalArgumentException("Invalid base64 prefix");
             }
             return prefix;
@@ -125,14 +131,39 @@ final class RtTransaction implements Transaction {
         throw new UnsupportedOperationException("bnf() not yet implemented");
     }
 
-    // @todo #15:30min Implement details() by parsing the string representation
-    //  of transaction according to the pattern, described in the white
-    //  paper. Replace relevant test case with actual tests.
     @Override
-    public String details() {
-        throw new UnsupportedOperationException(
-            "details() not yet implemented"
-        );
+    public String details() throws IOException {
+        try {
+            final String dtls = new ItemAt<>(
+                new SplitText(
+                    new TextOf(
+                        this.transaction
+                    ),
+                    new TextOf(";")
+                ).iterator(),
+                //@checkstyle MagicNumber (1 line)
+                5
+            ).value().asString();
+            if (!RtTransaction.DTLS.matcher(dtls).matches()) {
+                throw new IllegalArgumentException(
+                    String.format(
+                        // @checkstyle LineLength (1 line)
+                        "Invalid details string '%s', does not match pattern '%s'",
+                        dtls, RtTransaction.DTLS
+                    )
+                );
+            }
+            return dtls;
+            //@checkstyle IllegalCatchCheck (1 line)
+        } catch (final Exception exception) {
+            throw new IOException(
+                String.format(
+                    "Error parsing prefix string, transaction [%s]",
+                    this.transaction
+                ),
+                exception
+            );
+        }
     }
 
     // @todo #15:30min Implement signature by parsing the string representation
