@@ -24,15 +24,20 @@
 package io.zold.api;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.hamcrest.collection.IsIterableWithSize;
+import org.hamcrest.core.IsEqual;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
+import org.llorllale.cactoos.matchers.FuncApplies;
 
 /**
  * Test case for {@link Wallet}.
@@ -68,9 +73,24 @@ public final class WalletTest {
         new Wallet.File(this.wallet("invalid_id")).id();
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void payIsNotYetImplemented() throws IOException {
-        new Wallet.File(this.folder.newFile().toPath()).pay(1, 1234);
+    @Test
+    public void pay() throws IOException {
+        final Path path = this.folder.newFile().toPath();
+        path.toFile().delete();
+        Files.copy(this.wallet(5124095577148911L), path);
+        final Wallet wallet = new Wallet.File(path);
+        MatcherAssert.assertThat(
+            wlt -> {
+                wlt.pay(1, 1234);
+                return wlt.ledger();
+            },
+            new FuncApplies<>(
+                wallet,
+                new IsIterableWithSize<Transaction>(
+                    new IsEqual<>(new ListOf<>(wallet.ledger()).size() + 1)
+                )
+            )
+        );
     }
 
     @Test(expected = UnsupportedOperationException.class)
