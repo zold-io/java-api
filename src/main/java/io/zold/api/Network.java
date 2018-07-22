@@ -41,6 +41,6 @@ public interface Network extends Iterable<Remote> {
      * @param id The wallet's {@link Wallet#id() id}
      * @return The wallet
      */
-    Wallet pull(Long id);
+    Wallet pull(long id);
 
 }

@@ -66,7 +66,7 @@ public final class RtNetwork implements Network {
     //  NetworkTest.pullIsNotYetImplemented() have to be uncommented and
     //  test if pull method is behaving correctly.
     @Override
-    public Wallet pull(final Long id) {
+    public Wallet pull(final long id) {
         throw new UnsupportedOperationException("pull(id) not supported");
     }
 
