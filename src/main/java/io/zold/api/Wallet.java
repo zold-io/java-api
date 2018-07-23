@@ -27,6 +27,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Path;
+import org.cactoos.iterable.IterableOf;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.iterable.Skipped;
 import org.cactoos.list.ListOf;
@@ -39,7 +40,7 @@ import org.cactoos.text.TextOf;
  *
  * @since 0.1
  */
-@SuppressWarnings("PMD.ShortMethodName")
+@SuppressWarnings({"PMD.ShortMethodName", "PMD.TooManyMethods"})
 public interface Wallet {
     /**
      * This wallet's ID: an unsigned 64-bit integer.
@@ -72,10 +73,52 @@ public interface Wallet {
     Iterable<Transaction> ledger();
 
     /**
+     * A Fake {@link Wallet}.
+     *
+     * @since 1.0
+     */
+    final class Fake implements Wallet {
+
+        /**
+         * The wallet id.
+         */
+        private final long id;
+
+        /**
+         * Ctor.
+         *
+         * @param id The wallet id.
+         */
+        public Fake(final long id) {
+            this.id = id;
+        }
+
+        @Override
+        public long id() throws IOException {
+            return this.id;
+        }
+
+        @Override
+        public void pay(final long amt, final long bnf) {
+            // nothing
+        }
+
+        @Override
+        public Wallet merge(final Wallet other) {
+            return other;
+        }
+
+        @Override
+        public Iterable<Transaction> ledger() {
+            return new IterableOf<>();
+        }
+    }
+
+    /**
      * Default File implementation.
      * @checkstyle ClassDataAbstractionCouplingCheck (2 lines)
      */
-    class File implements Wallet {
+    final class File implements Wallet {
 
         /**
          * Path of this wallet.
