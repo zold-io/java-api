@@ -44,8 +44,9 @@ public interface Transaction {
     /**
      * Timestamp of this transaction.
      * @return Time
+     * @throws IOException When something goes wrong
      */
-    ZonedDateTime time();
+    ZonedDateTime time() throws IOException;
 
     /**
      * Amount involved in this transaction.

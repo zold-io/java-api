@@ -26,9 +26,11 @@ package io.zold.api;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.regex.Pattern;
+import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.ItemAt;
 import org.cactoos.text.SplitText;
 import org.cactoos.text.TextOf;
+import org.cactoos.time.ZonedDateTimeOf;
 
 /**
  * RtTransaction.
@@ -71,12 +73,15 @@ final class RtTransaction implements Transaction {
         throw new UnsupportedOperationException("id() not yet implemented");
     }
 
-    // @todo #15:30min Implement time() by parsing the string representation
-    //  of transaction according to the pattern, described in the white
-    //  paper. Replace relevant test case with actual tests.
     @Override
-    public ZonedDateTime time() {
-        throw new UnsupportedOperationException("time() not yet implemented");
+    public ZonedDateTime time() throws IOException {
+        return new ZonedDateTimeOf(
+            new IoCheckedScalar<>(
+                () -> new ItemAt<>(
+                    1, new SplitText(this.transaction, ";")
+                ).value().asString()
+            ).value()
+        ).value();
     }
 
     // @todo #15:30min Implement amount() by parsing the string representation
