@@ -62,7 +62,7 @@ public final class RtTransactionTest {
             new RtTransaction(
                 "abcd;2017-07-19T21:25:07Z;0000000000a72366;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr4..."
             ).id(),
-            new IsEqual<>(43981L)
+            new IsEqual<>(43981)
         );
     }
 

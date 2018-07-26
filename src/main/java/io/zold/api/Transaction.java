@@ -40,7 +40,7 @@ public interface Transaction {
      * @checkstyle MethodNameCheck (3 lines)
      */
     @SuppressWarnings("PMD.ShortMethodName")
-    long id() throws IOException;
+    int id() throws IOException;
 
     /**
      * Timestamp of this transaction.
