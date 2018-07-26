@@ -28,8 +28,10 @@ import java.time.ZonedDateTime;
 import java.util.regex.Pattern;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.ItemAt;
+import org.cactoos.text.FormattedText;
 import org.cactoos.text.SplitText;
 import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 
 /**
  * RtTransaction.
@@ -79,11 +81,13 @@ final class RtTransaction implements Transaction {
         ).value();
         if (!RtTransaction.IDENT.matcher(ident).matches()) {
             throw new IOException(
-                String.format(
-                    // @checkstyle LineLength (1 line)
-                    "Invalid ID '%s' expecting 64-bit signed hex string with 4 symbols",
-                    ident
-                )
+                new UncheckedText(
+                    new FormattedText(
+                        // @checkstyle LineLength (1 line)
+                        "Invalid ID '%s' expecting 64-bit signed hex string with 4 symbols",
+                        ident
+                    )
+                ).asString()
             );
         }
         return Integer.parseUnsignedInt(ident, 16);
