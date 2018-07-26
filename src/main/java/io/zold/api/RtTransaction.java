@@ -26,14 +26,18 @@ package io.zold.api;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.regex.Pattern;
+import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.ItemAt;
+import org.cactoos.text.FormattedText;
 import org.cactoos.text.SplitText;
 import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 
 /**
  * RtTransaction.
  *
  * @since 0.1
+ * @checkstyle MagicNumber (500 lines)
  */
 @SuppressWarnings("PMD.AvoidCatchingGenericException")
 final class RtTransaction implements Transaction {
@@ -103,10 +107,8 @@ final class RtTransaction implements Transaction {
                     ),
                     new TextOf(";")
                 ).iterator(),
-                //@checkstyle MagicNumberCheck (1 line)
                 3
             ).value().asString();
-            //@checkstyle MagicNumberCheck (1 line)
             if (prefix.length() < 8 || prefix.length() > 32) {
                 throw new IllegalArgumentException("Invalid prefix size");
             }
@@ -133,37 +135,23 @@ final class RtTransaction implements Transaction {
 
     @Override
     public String details() throws IOException {
-        try {
-            final String dtls = new ItemAt<>(
-                new SplitText(
-                    new TextOf(
-                        this.transaction
-                    ),
-                    new TextOf(";")
-                ).iterator(),
-                //@checkstyle MagicNumber (1 line)
-                5
-            ).value().asString();
-            if (!RtTransaction.DTLS.matcher(dtls).matches()) {
-                throw new IllegalArgumentException(
-                    String.format(
+        final String dtls = new IoCheckedScalar<String>(
+            () -> new ItemAt<>(
+                5, new SplitText(this.transaction, ";")
+            ).value().asString()
+        ).value();
+        if (!RtTransaction.DTLS.matcher(dtls).matches()) {
+            throw new IOException(
+                new UncheckedText(
+                    new FormattedText(
                         // @checkstyle LineLength (1 line)
                         "Invalid details string '%s', does not match pattern '%s'",
                         dtls, RtTransaction.DTLS
                     )
-                );
-            }
-            return dtls;
-            //@checkstyle IllegalCatchCheck (1 line)
-        } catch (final Exception exception) {
-            throw new IOException(
-                String.format(
-                    "Error parsing prefix string, transaction [%s]",
-                    this.transaction
-                ),
-                exception
+                ).asString()
             );
         }
+        return dtls;
     }
 
     // @todo #15:30min Implement signature by parsing the string representation

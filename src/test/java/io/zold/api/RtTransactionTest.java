@@ -26,8 +26,11 @@ package io.zold.api;
 import java.io.IOException;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.hamcrest.core.IsEqual;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * Test case for {@link RtTransaction}.
@@ -38,6 +41,12 @@ import org.junit.Test;
  */
 @SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.TooManyMethods"})
 public final class RtTransactionTest {
+
+    /**
+     * Rule for checking expected thrown exceptions.
+     */
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void shouldObeyEqualsHashcodeContract() {
@@ -123,29 +132,45 @@ public final class RtTransactionTest {
         );
     }
 
-    @Test(expected = IOException.class)
+    @Test
     public void detailsFormatViolated() throws IOException {
+        this.thrown.expect(IOException.class);
+        this.thrown.expectMessage(
+            Matchers.startsWith("Invalid details string '\\/^&'")
+        );
         new RtTransaction(
             "003b;2017-07-19T21:25:07Z;ffffffffffa72367;xksQuJa9;98bb82c81735c4ee;\\/^&;QCuLuVr4..."
         ).details();
     }
 
-    @Test(expected = IOException.class)
+    @Test
     public void detailsSizeTooShort() throws IOException {
+        this.thrown.expect(IOException.class);
+        this.thrown.expectMessage(
+            Matchers.startsWith("Invalid details string ''")
+        );
         new RtTransaction(
             "003b;2017-07-19T21:25:07Z;ffffffffffa72367;FF4D;98bb82c81735c4ee;;QCuLuVr4..."
         ).details();
     }
 
-    @Test(expected = IOException.class)
+    @Test
     public void detailsSizeTooLong() throws IOException {
+        this.thrown.expect(IOException.class);
+        this.thrown.expectMessage(
+            Matchers.startsWith("Invalid details string 'u87d2hova0OhJdYTk5rWxRZeAn6keCBONkERVbcXeUfpZIadF2ncJ5BRNjDjyaPXHaBAmpckf1UZWMq4OKsaVkN9tAmpMm8Fisq3F7E4LWnNFxWdh1LNKlsn7DDvJmB926839C8MZXCfU26AhmC2pgfTUCEkcQHjXjRp4sCXpRRLfYrd134BVjvcq1jFhNDca8JQHutL5PDLagBD80ZLefEOcqoP0YJQrTLnJMQDIhGKHBkPp0NL5IBbRjzmVS4PiW5WV2qHFhUoe98PkMet1OGPsuLIN61ZdeaQwhwEAolqrPDkxELMNz9oF4Zn2uUdubFqvk8OXcPiChpMRlDiyfVMZLgKZaHyL0NqKlhSajFz4KhPNcApOwS2ODxJEJZ9v6HMEWgvVn0MnxrO9Mw6882mf0K7iEEHFUBpxVaeC6MJqQUfZ6YiSNXrulDrVkzcsJEoSLXiPKFpXecmQupJO4f5tv7t59VUFLgQVFIMVHQsyKu7IMNdvW9Akc05T61HE'")
+        );
         new RtTransaction(
             "003b;2017-07-19T21:25:07Z;ffffffffffa72367;xksQuJa9;98bb82c81735c4ee;u87d2hova0OhJdYTk5rWxRZeAn6keCBONkERVbcXeUfpZIadF2ncJ5BRNjDjyaPXHaBAmpckf1UZWMq4OKsaVkN9tAmpMm8Fisq3F7E4LWnNFxWdh1LNKlsn7DDvJmB926839C8MZXCfU26AhmC2pgfTUCEkcQHjXjRp4sCXpRRLfYrd134BVjvcq1jFhNDca8JQHutL5PDLagBD80ZLefEOcqoP0YJQrTLnJMQDIhGKHBkPp0NL5IBbRjzmVS4PiW5WV2qHFhUoe98PkMet1OGPsuLIN61ZdeaQwhwEAolqrPDkxELMNz9oF4Zn2uUdubFqvk8OXcPiChpMRlDiyfVMZLgKZaHyL0NqKlhSajFz4KhPNcApOwS2ODxJEJZ9v6HMEWgvVn0MnxrO9Mw6882mf0K7iEEHFUBpxVaeC6MJqQUfZ6YiSNXrulDrVkzcsJEoSLXiPKFpXecmQupJO4f5tv7t59VUFLgQVFIMVHQsyKu7IMNdvW9Akc05T61HE;QCuLuVr4..."
         ).details();
     }
 
-    @Test(expected = IOException.class)
+    @Test
     public void detailsAbsentTransactionString() throws IOException {
+        this.thrown.expect(IOException.class);
+        this.thrown.expectMessage(
+            Matchers.startsWith("The iterable doesn't have the position #5")
+        );
         new RtTransaction(
             "003b;2017-07-19T21:25:08Z;ffffffffffa72367"
         ).details();
