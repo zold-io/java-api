@@ -27,14 +27,19 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.time.ZonedDateTime;
 import java.util.regex.Pattern;
+import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.ItemAt;
+import org.cactoos.text.FormattedText;
 import org.cactoos.text.SplitText;
 import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 
 /**
  * RtTransaction.
  *
  * @since 0.1
+ * @checkstyle MagicNumber (500 lines)
+ * @checkstyle ClassDataAbstractionCoupling (3 lines)
  */
 @SuppressWarnings("PMD.AvoidCatchingGenericException")
 final class RtTransaction implements Transaction {
@@ -87,26 +92,25 @@ final class RtTransaction implements Transaction {
 
     @Override
     public long amount() throws IOException {
-        try {
-            final String amnt = new ItemAt<>(
-                new SplitText(this.transaction, ";").iterator(),
-                //@checkstyle MagicNumber (12 lines)
-                2
-            ).value().asString();
-            if (!RtTransaction.AMT.matcher(amnt).matches()) {
-                throw new IllegalArgumentException(
-                    String.format(
-                        // @checkstyle LineLength (1 line)
-                        "Invalid amount '%s' expecting 64-bit signed hex string with 16 symbols",
-                        amnt
+        final String amnt = new IoCheckedScalar<>(
+            () -> new ItemAt<>(
+                2, new SplitText(this.transaction, ";")
+            ).value().asString()
+        ).value();
+        if (!RtTransaction.AMT.matcher(amnt).matches()) {
+            throw new IOException(
+                new UncheckedText(
+                    new FormattedText(
+                        String.format(
+                            // @checkstyle LineLength (1 line)
+                            "Invalid amount '%s' expecting 64-bit signed hex string with 16 symbols",
+                            amnt
+                        )
                     )
-                );
-            }
-            return new BigInteger(amnt, 16).longValue();
-            //@checkstyle IllegalCatchCheck (1 line)
-        } catch (final Exception exception) {
-            throw new IOException("Couldn't parse amount", exception);
+                ).asString()
+            );
         }
+        return new BigInteger(amnt, 16).longValue();
     }
 
     @Override
@@ -119,10 +123,8 @@ final class RtTransaction implements Transaction {
                     ),
                     new TextOf(";")
                 ).iterator(),
-                //@checkstyle MagicNumberCheck (1 line)
                 3
             ).value().asString();
-            //@checkstyle MagicNumberCheck (1 line)
             if (prefix.length() < 8 || prefix.length() > 32) {
                 throw new IllegalArgumentException("Invalid prefix size");
             }

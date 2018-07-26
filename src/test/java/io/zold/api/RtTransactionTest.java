@@ -26,8 +26,11 @@ package io.zold.api;
 import java.io.IOException;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.hamcrest.core.IsEqual;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * Test case for {@link RtTransaction}.
@@ -39,6 +42,12 @@ import org.junit.Test;
  */
 @SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.TooManyMethods"})
 public final class RtTransactionTest {
+
+    /**
+     * Rule for checking expected thrown exceptions.
+     */
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void shouldObeyEqualsHashcodeContract() {
@@ -77,29 +86,45 @@ public final class RtTransactionTest {
         );
     }
 
-    @Test(expected = IOException.class)
+    @Test
     public void amountFormatViolated() throws IOException {
+        this.thrown.expect(IOException.class);
+        this.thrown.expectMessage(
+            Matchers.startsWith("Invalid amount 'ffffffffffZX2367'")
+        );
         new RtTransaction(
             "003b;2017-07-19T21:25:07Z;ffffffffffZX2367;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr4..."
         ).amount();
     }
 
-    @Test(expected = IOException.class)
+    @Test
     public void amountStringTooLong() throws IOException {
+        this.thrown.expect(IOException.class);
+        this.thrown.expectMessage(
+            Matchers.startsWith("Invalid amount '00000000000a72366'")
+        );
         new RtTransaction(
             "003b;2017-07-19T21:25:07Z;00000000000a72366;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr4..."
         ).amount();
     }
 
-    @Test(expected = IOException.class)
+    @Test
     public void amountStringTooShort() throws IOException {
+        this.thrown.expect(IOException.class);
+        this.thrown.expectMessage(
+            Matchers.startsWith("Invalid amount '72366'")
+        );
         new RtTransaction(
             "003b;2017-07-19T21:25:07Z;72366;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr4..."
         ).amount();
     }
 
-    @Test(expected = IOException.class)
+    @Test
     public void amountNotPresent() throws IOException {
+        this.thrown.expect(IOException.class);
+        this.thrown.expectMessage(
+            Matchers.startsWith("The iterable doesn't have the position #2")
+        );
         new RtTransaction(
             "003b;2017-07-19T21:25:07Z"
         ).amount();
