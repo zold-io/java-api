@@ -74,11 +74,13 @@ final class RtTransaction implements Transaction {
     @Override
     @SuppressWarnings("PMD.ShortMethodName")
     public long id() throws IOException {
-        final String ident = new IoCheckedScalar<String>(
-            () -> new ItemAt<>(
-                0, new SplitText(this.transaction, ";")
-            ).value().asString()
-        ).value();
+        final String ident = new UncheckedText(
+            new IoCheckedScalar<>(
+                new ItemAt<>(
+                    0, new SplitText(this.transaction, ";")
+                )
+            ).value()
+        ).asString();
         if (!RtTransaction.IDENT.matcher(ident).matches()) {
             throw new IOException(
                 new UncheckedText(
