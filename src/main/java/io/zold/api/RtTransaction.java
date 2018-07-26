@@ -101,11 +101,9 @@ final class RtTransaction implements Transaction {
             throw new IOException(
                 new UncheckedText(
                     new FormattedText(
-                        String.format(
-                            // @checkstyle LineLength (1 line)
-                            "Invalid amount '%s' expecting 64-bit signed hex string with 16 symbols",
-                            amnt
-                        )
+                        // @checkstyle LineLength (1 line)
+                        "Invalid amount '%s' expecting 64-bit signed hex string with 16 symbols",
+                        amnt
                     )
                 ).asString()
             );
