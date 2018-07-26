@@ -26,6 +26,7 @@ package io.zold.api;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.regex.Pattern;
+import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.ItemAt;
 import org.cactoos.text.SplitText;
 import org.cactoos.text.TextOf;
@@ -34,6 +35,7 @@ import org.cactoos.text.TextOf;
  * RtTransaction.
  *
  * @since 0.1
+ * @checkstyle MagicNumber (500 lines)
  */
 @SuppressWarnings("PMD.AvoidCatchingGenericException")
 final class RtTransaction implements Transaction {
@@ -70,26 +72,21 @@ final class RtTransaction implements Transaction {
     @Override
     @SuppressWarnings("PMD.ShortMethodName")
     public long id() throws IOException {
-        try {
-            final String ident = new ItemAt<>(
-                new SplitText(this.transaction, ";").iterator(),
-                //@checkstyle MagicNumber (12 lines)
-                0
-            ).value().asString();
-            if (!RtTransaction.IDENT.matcher(ident).matches()) {
-                throw new IllegalArgumentException(
-                    String.format(
-                        // @checkstyle LineLength (1 line)
-                        "Invalid ID '%s' expecting 64-bit signed hex string with 4 symbols",
-                        ident
-                    )
-                );
-            }
-            return Integer.parseUnsignedInt(ident, 16);
-            //@checkstyle IllegalCatchCheck (1 line)
-        } catch (final Exception exception) {
-            throw new IOException("Couldn't parse ID", exception);
+        final String ident = new IoCheckedScalar<String>(
+            () -> new ItemAt<>(
+                0, new SplitText(this.transaction, ";")
+            ).value().asString()
+        ).value();
+        if (!RtTransaction.IDENT.matcher(ident).matches()) {
+            throw new IOException(
+                String.format(
+                    // @checkstyle LineLength (1 line)
+                    "Invalid ID '%s' expecting 64-bit signed hex string with 4 symbols",
+                    ident
+                )
+            );
         }
+        return Integer.parseUnsignedInt(ident, 16);
     }
 
     // @todo #15:30min Implement time() by parsing the string representation
@@ -118,10 +115,8 @@ final class RtTransaction implements Transaction {
                     ),
                     new TextOf(";")
                 ).iterator(),
-                //@checkstyle MagicNumberCheck (1 line)
                 3
             ).value().asString();
-            //@checkstyle MagicNumberCheck (1 line)
             if (prefix.length() < 8 || prefix.length() > 32) {
                 throw new IllegalArgumentException("Invalid prefix size");
             }

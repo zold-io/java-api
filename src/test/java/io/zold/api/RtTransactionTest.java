@@ -26,8 +26,11 @@ package io.zold.api;
 import java.io.IOException;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.hamcrest.core.IsEqual;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * Test case for {@link RtTransaction}.
@@ -35,9 +38,16 @@ import org.junit.Test;
  * @since 0.1
  * @checkstyle LineLengthCheck (500 lines)
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle MagicNumber (500 line)
  */
 @SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.TooManyMethods"})
 public final class RtTransactionTest {
+
+    /**
+     * Rule for checking expected thrown exceptions.
+     */
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void shouldObeyEqualsHashcodeContract() {
@@ -52,34 +62,49 @@ public final class RtTransactionTest {
             new RtTransaction(
                 "abcd;2017-07-19T21:25:07Z;0000000000a72366;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr4..."
             ).id(),
-            // @checkstyle MagicNumber (1 line)
             new IsEqual<>(43981L)
         );
     }
 
-    @Test(expected = IOException.class)
+    @Test
     public void idFormatViolated() throws IOException {
+        this.thrown.expect(IOException.class);
+        this.thrown.expectMessage(
+            Matchers.startsWith("Invalid ID 'efgh'")
+        );
         new RtTransaction(
             "efgh;2017-07-19T21:25:07Z;0000000000a72366;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr4..."
         ).id();
     }
 
-    @Test(expected = IOException.class)
+    @Test
     public void idStringTooLong() throws IOException {
+        this.thrown.expect(IOException.class);
+        this.thrown.expectMessage(
+            Matchers.startsWith("Invalid ID 'abcde'")
+        );
         new RtTransaction(
             "abcde;2017-07-19T21:25:07Z;0000000000a72366;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr4..."
         ).id();
     }
 
-    @Test(expected = IOException.class)
+    @Test
     public void idStringTooShort() throws IOException {
+        this.thrown.expect(IOException.class);
+        this.thrown.expectMessage(
+            Matchers.startsWith("Invalid ID '001'")
+        );
         new RtTransaction(
             "001;2017-07-19T21:25:07Z;0000000000a72366;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr4..."
         ).id();
     }
 
-    @Test(expected = IOException.class)
+    @Test
     public void idNotPresent() throws IOException {
+        this.thrown.expect(IOException.class);
+        this.thrown.expectMessage(
+            Matchers.startsWith("Invalid ID ''")
+        );
         new RtTransaction("").id();
     }
 
