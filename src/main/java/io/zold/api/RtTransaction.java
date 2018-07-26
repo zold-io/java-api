@@ -92,11 +92,13 @@ final class RtTransaction implements Transaction {
 
     @Override
     public long amount() throws IOException {
-        final String amnt = new IoCheckedScalar<>(
-            () -> new ItemAt<>(
-                2, new SplitText(this.transaction, ";")
-            ).value().asString()
-        ).value();
+        final String amnt = new UncheckedText(
+            new IoCheckedScalar<>(
+                new ItemAt<>(
+                    2, new SplitText(this.transaction, ";")
+                )
+            ).value()
+        ).asString();
         if (!RtTransaction.AMT.matcher(amnt).matches()) {
             throw new IOException(
                 new UncheckedText(
