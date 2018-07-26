@@ -46,7 +46,7 @@ public final class RtTransactionTest {
      * Rule for checking expected thrown exceptions.
      */
     @Rule
-    public ExpectedException thrown = ExpectedException.none();
+    public final ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void shouldObeyEqualsHashcodeContract() {

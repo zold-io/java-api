@@ -135,11 +135,13 @@ final class RtTransaction implements Transaction {
 
     @Override
     public String details() throws IOException {
-        final String dtls = new IoCheckedScalar<String>(
-            () -> new ItemAt<>(
-                5, new SplitText(this.transaction, ";")
-            ).value().asString()
-        ).value();
+        final String dtls = new UncheckedText(
+            new IoCheckedScalar<>(
+                new ItemAt<>(
+                    5, new SplitText(this.transaction, ";")
+                )
+            ).value()
+        ).asString();
         if (!RtTransaction.DTLS.matcher(dtls).matches()) {
             throw new IOException(
                 new UncheckedText(
