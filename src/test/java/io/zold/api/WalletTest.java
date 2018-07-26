@@ -38,10 +38,6 @@ import org.junit.rules.TemporaryFolder;
  * Test case for {@link Wallet}.
  *
  * @since 0.1
- * @todo #33:30min CheckedScalar from 'cactoos' does not wrap runtime
- *  exceptions for some reason. Once it's fixed (see yegor256/cactoos#933)
- *  un-ignore WalletTest.throwIoExceptionIfReadingIdFails and make sure
- *  it works.
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle JavadocVariableCheck (500 lines)
  * @checkstyle MagicNumberCheck (500 lines)
