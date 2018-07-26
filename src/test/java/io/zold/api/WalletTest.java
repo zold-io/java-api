@@ -61,10 +61,15 @@ public final class WalletTest {
         MatcherAssert.assertThat(wallet.id(), Matchers.is(id));
     }
 
-    @Ignore
     @Test
-    public void throwIoExceptionIfReadingIdFails() throws IOException {
-        this.error.expect(IOException.class);
+    public void throwRuntimeExceptionIfReadingIdFails() throws IOException {
+        this.error.expect(RuntimeException.class);
+        new Wallet.File(this.wallet("")).id();
+    }
+
+    @Test
+    public void throwRuntimeExceptionIfIdIsInvalid() throws IOException {
+        this.error.expect(RuntimeException.class);
         new Wallet.File(this.wallet("invalid_id")).id();
     }
 
