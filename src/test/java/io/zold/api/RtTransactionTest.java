@@ -63,7 +63,7 @@ public final class RtTransactionTest {
     }
 
     @Test
-    public void returnsTime() throws IOException {
+    public void parsesAndReturnsIsoFormattedTime() throws IOException {
         MatcherAssert.assertThat(
             new RtTransaction(
                 "003b;2018-07-19T21:25:07Z;ffffffffffa72367;xksQuJa9;98bb82c81735c4ee; For food;QCuLuVr4..."
