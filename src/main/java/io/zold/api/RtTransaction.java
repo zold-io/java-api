@@ -25,11 +25,13 @@ package io.zold.api;
 
 import java.io.IOException;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.regex.Pattern;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.ItemAt;
 import org.cactoos.text.SplitText;
 import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 import org.cactoos.time.ZonedDateTimeOf;
 
 /**
@@ -76,11 +78,14 @@ final class RtTransaction implements Transaction {
     @Override
     public ZonedDateTime time() throws IOException {
         return new ZonedDateTimeOf(
-            new IoCheckedScalar<>(
-                () -> new ItemAt<>(
-                    1, new SplitText(this.transaction, ";")
-                ).value().asString()
-            ).value()
+            new UncheckedText(
+                new IoCheckedScalar<>(
+                    new ItemAt<>(
+                        1, new SplitText(this.transaction, ";")
+                    )
+                ).value()
+            ).asString(),
+            DateTimeFormatter.ISO_OFFSET_DATE_TIME
         ).value();
     }
 
