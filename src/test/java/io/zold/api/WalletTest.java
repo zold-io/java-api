@@ -63,8 +63,9 @@ public final class WalletTest {
     }
 
     @Test
-    public void throwRuntimeExceptionIfIdIsInvalid() throws IOException {
-        this.error.expect(RuntimeException.class);
+    public void throwNumberFormatExceptionIfIdIsInvalid() throws IOException {
+        this.error.expect(NumberFormatException.class);
+        this.error.expectMessage("For input string:");
         new Wallet.File(this.wallet("invalid_id")).id();
     }
 
