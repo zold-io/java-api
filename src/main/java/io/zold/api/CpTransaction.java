@@ -23,70 +23,23 @@
  */
 package io.zold.api;
 
-import com.github.victornoel.eo.GenerateEnvelope;
-import java.io.IOException;
-import java.time.ZonedDateTime;
-
 /**
- * A payment transaction.
+ * Computed Transaction.
  *
- * @since 0.1
+ * @since 1.0
+ * @todo #29:30min Implement the computation of the transaction string
+ *  based on the white paper. The unit test should also be updated to
+ *  ensure it works as expected.
  */
-@GenerateEnvelope
-public interface Transaction {
+public final class CpTransaction extends TransactionEnvelope {
 
     /**
-     * Id of this transaction.
-     * @return Id
-     * @checkstyle MethodNameCheck (3 lines)
+     * Ctor.
+     *
+     * @param amt Amount to pay in zents
+     * @param bnf Wallet ID of beneficiary
      */
-    @SuppressWarnings("PMD.ShortMethodName")
-    long id();
-
-    /**
-     * Timestamp of this transaction.
-     * @return Time
-     * @throws IOException When something goes wrong
-     */
-    ZonedDateTime time() throws IOException;
-
-    /**
-     * Amount involved in this transaction.
-     * @return Amount
-     */
-    long amount();
-
-    /**
-     * Prefix.
-     * @return Prefix
-     * @throws IOException When something goes wrong
-     */
-    String prefix() throws IOException;
-
-    /**
-     * Beneficiary.
-     * @return Beneficiary
-     */
-    long bnf();
-
-    /**
-     * Details.
-     * @return Details
-     */
-    String details();
-
-    /**
-     * RSA Signature.
-     * @return RSA Signature
-     */
-    String signature();
-
-    @Override
-    boolean equals(Object obj);
-
-    @Override
-    int hashCode();
-
-    @Override
-    String toString();
+    CpTransaction(final long amt, final long bnf) {
+        super(new RtTransaction(Long.toString(amt + bnf)));
+    }
 }

@@ -23,70 +23,19 @@
  */
 package io.zold.api;
 
-import com.github.victornoel.eo.GenerateEnvelope;
-import java.io.IOException;
-import java.time.ZonedDateTime;
+import org.junit.Test;
 
 /**
- * A payment transaction.
+ * Test case for {@link CpTransaction}.
  *
- * @since 0.1
+ * @since 1.0
+ * @checkstyle LineLengthCheck (500 lines)
+ * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle MagicNumberCheck (500 lines)
  */
-@GenerateEnvelope
-public interface Transaction {
-
-    /**
-     * Id of this transaction.
-     * @return Id
-     * @checkstyle MethodNameCheck (3 lines)
-     */
-    @SuppressWarnings("PMD.ShortMethodName")
-    long id();
-
-    /**
-     * Timestamp of this transaction.
-     * @return Time
-     * @throws IOException When something goes wrong
-     */
-    ZonedDateTime time() throws IOException;
-
-    /**
-     * Amount involved in this transaction.
-     * @return Amount
-     */
-    long amount();
-
-    /**
-     * Prefix.
-     * @return Prefix
-     * @throws IOException When something goes wrong
-     */
-    String prefix() throws IOException;
-
-    /**
-     * Beneficiary.
-     * @return Beneficiary
-     */
-    long bnf();
-
-    /**
-     * Details.
-     * @return Details
-     */
-    String details();
-
-    /**
-     * RSA Signature.
-     * @return RSA Signature
-     */
-    String signature();
-
-    @Override
-    boolean equals(Object obj);
-
-    @Override
-    int hashCode();
-
-    @Override
-    String toString();
+public final class CpTransactionTest {
+    @Test(expected = UnsupportedOperationException.class)
+    public void cpTransactionIsNotYetImplemented() {
+        new CpTransaction(1, 1234).amount();
+    }
 }
