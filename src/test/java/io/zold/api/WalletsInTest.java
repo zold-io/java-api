@@ -24,9 +24,14 @@
 package io.zold.api;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.cactoos.text.JoinedText;
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
+import org.hamcrest.collection.IsIterableWithSize;
+import org.hamcrest.core.IsEqual;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -36,6 +41,11 @@ import org.junit.rules.TemporaryFolder;
  * Test case for {@link WalletsIn}.
  *
  * @since 0.1
+ * @todo #12:30min The name of the wallets in the test
+ *  resource directory are not compliant with how
+ *  wallets should be named (see white paper and WalletsIn).
+ *  They should be made adequate and a test should be added to
+ *  ensure WalletsIn.create does overwrite and existing wallet.
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle JavadocVariableCheck (500 lines)
  */
@@ -52,20 +62,45 @@ public final class WalletsInTest {
         MatcherAssert.assertThat(
             new WalletsIn(Paths.get("src/test/resources/walletsIn")),
             // @checkstyle MagicNumber (1 line)
-            Matchers.iterableWithSize(5)
+            new IsIterableWithSize<>(new IsEqual<>(5))
+        );
+    }
+
+    @Ignore("see @todo on WalletsIn.create")
+    @Test
+    public void createsWalletWithId() throws IOException {
+        final long id = 1L;
+        MatcherAssert.assertThat(
+            "Can't create wallet with id",
+            new WalletsIn(this.folder.newFolder().toPath()).create(id).id(),
+            new IsEqual<>(id)
         );
     }
 
     @Test
-    public void createIsNotYetImplemented() throws IOException {
-        this.thrown.expect(UnsupportedOperationException.class);
-        this.thrown.expectMessage(
-            Matchers.is(
-                "create() not yet supported"
-            )
+    public void createsWalletInWallets() throws IOException {
+        final Wallets wallets = new WalletsIn(this.folder.newFolder().toPath());
+        wallets.create(1L);
+        MatcherAssert.assertThat(
+            "Can't create wallet in wallets",
+            wallets,
+            new IsIterableWithSize<>(new IsEqual<>(1))
         );
-        new WalletsIn(
-            this.folder.newFolder().toPath()
-        ).create();
+    }
+
+    @Test
+    public void createsWalletInFolder() throws IOException {
+        final Path path = this.folder.newFolder().toPath();
+        final long id = 1L;
+        new WalletsIn(path).create(id);
+        MatcherAssert.assertThat(
+            "Can't create wallet in folder",
+            Files.exists(
+                path.resolve(
+                    new JoinedText(".", Long.toHexString(id), "z").asString()
+                )
+            ),
+            new IsEqual<>(true)
+        );
     }
 }

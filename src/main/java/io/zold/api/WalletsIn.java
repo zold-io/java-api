@@ -25,6 +25,7 @@ package io.zold.api;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Iterator;
 import org.cactoos.Scalar;
@@ -35,11 +36,17 @@ import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.StickyScalar;
 import org.cactoos.scalar.SyncScalar;
+import org.cactoos.text.JoinedText;
 
 /**
  * Wallets in path.
  *
  * @since 0.1
+ * @todo #12:30min Make uniform the way file extensions are handled
+ *  in this class. Currently there is on one hand a filter that
+ *  matches files ending with "z" and in the other hand a the
+ *  create method that write files with extension "z". Instead
+ *  the same extension should be used in both.
  * @checkstyle ClassDataAbstractionCoupling (2 lines)
  */
 public final class WalletsIn implements Wallets {
@@ -84,17 +91,19 @@ public final class WalletsIn implements Wallets {
         );
     }
 
-    // @todo #4:30min Return the new instance of the Wallet, that will
-    //  be created in the path with all wallets. Should be taken care of
-    //  after Wallet interface will have implementations. Cover with tests and
-    //  remove irrelevant test case.
+    // @todo #12:30min Create the new wallet in the path with all wallets.
+    //  It should contain the correct content according to the
+    //  white paper. Then enable the test createsWalletWithId.
     @Override
-    public Wallet create() {
-        throw new UnsupportedOperationException("create() not yet supported");
+    public Wallet create(final long id) throws IOException {
+        final Path wpth = this.path.value().resolve(
+            new JoinedText(".", Long.toHexString(id), "z").asString()
+        );
+        Files.createFile(wpth);
+        return new Wallet.File(wpth);
     }
 
     @Override
-    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public Iterator<Wallet> iterator() {
         try {
             return new Mapped<Path, Wallet>(
