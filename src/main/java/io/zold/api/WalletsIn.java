@@ -25,16 +25,18 @@ package io.zold.api;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Iterator;
+import java.util.Random;
 import org.cactoos.Scalar;
 import org.cactoos.func.IoCheckedFunc;
 import org.cactoos.io.Directory;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.IoCheckedScalar;
-import org.cactoos.scalar.StickyScalar;
-import org.cactoos.scalar.SyncScalar;
+import org.cactoos.scalar.SolidScalar;
+import org.cactoos.text.JoinedText;
 
 /**
  * Wallets in path.
@@ -55,6 +57,11 @@ public final class WalletsIn implements Wallets {
     private final IoCheckedFunc<Path, Boolean> filter;
 
     /**
+     * Wallets file extension.
+     */
+    private final String ext;
+
+    /**
      * Ctor.
      * @param pth Path with wallets
      */
@@ -68,13 +75,11 @@ public final class WalletsIn implements Wallets {
     /**
      * Ctor.
      * @param pth Path with wallets
-     * @param ext File extension to match
+     * @param ext Wallets file extension
      */
     public WalletsIn(final Scalar<Path> pth, final String ext) {
         this.path = new IoCheckedScalar<>(
-            new SyncScalar<>(
-                new StickyScalar<>(pth)
-            )
+            new SolidScalar<>(pth)
         );
         this.filter = new IoCheckedFunc<Path, Boolean>(
             (file) -> file.toFile().isFile()
@@ -82,19 +87,26 @@ public final class WalletsIn implements Wallets {
                     .getPathMatcher(String.format("glob:**.%s", ext))
                     .matches(file)
         );
+        this.ext = ext;
     }
 
-    // @todo #4:30min Return the new instance of the Wallet, that will
-    //  be created in the path with all wallets. Should be taken care of
-    //  after Wallet interface will have implementations. Cover with tests and
-    //  remove irrelevant test case.
+    // @todo #12:30min Create the new wallet in the path with all wallets.
+    //  It should contain the correct content according to the
+    //  white paper. Also add a the test to validate everything is ok.
     @Override
-    public Wallet create() {
-        throw new UnsupportedOperationException("create() not yet supported");
+    public Wallet create() throws IOException {
+        final Path wpth = this.path.value().resolve(
+            new JoinedText(
+                ".",
+                Long.toHexString(new Random().nextLong()),
+                this.ext
+            ).asString()
+        );
+        Files.createFile(wpth);
+        return new Wallet.File(wpth);
     }
 
     @Override
-    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public Iterator<Wallet> iterator() {
         try {
             return new Mapped<Path, Wallet>(
