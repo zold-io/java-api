@@ -34,12 +34,12 @@ import org.cactoos.text.SplitText;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.cactoos.time.ZonedDateTimeOf;
-import org.cactoos.text.UncheckedText;
 
 /**
  * RtTransaction.
  *
  * @since 0.1
+ * @checkstyle ClassDataAbstractionCoupling (3 lines)
  */
 @SuppressWarnings("PMD.AvoidCatchingGenericException")
 final class RtTransaction implements Transaction {
@@ -148,6 +148,7 @@ final class RtTransaction implements Transaction {
         final String dtls = new UncheckedText(
             new IoCheckedScalar<>(
                 new ItemAt<>(
+                    // @checkstyle MagicNumber (1 line)
                     5, new SplitText(this.transaction, ";")
                 )
             ).value()
