@@ -23,6 +23,8 @@
  */
 package io.zold.api;
 
+import java.io.IOException;
+
 /**
  * Network of remote nodes.
  *
@@ -40,7 +42,8 @@ public interface Network extends Iterable<Remote> {
      * Pull a wallet from the network.
      * @param id The wallet's {@link Wallet#id() id}
      * @return The wallet
+     * @throws IOException If an IO error occurs
      */
-    Wallet pull(Long id);
+    Wallet pull(long id) throws IOException;
 
 }

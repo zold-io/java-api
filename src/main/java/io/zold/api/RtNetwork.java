@@ -23,7 +23,12 @@
  */
 package io.zold.api;
 
+import java.io.IOException;
 import java.util.Iterator;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.iterable.Sorted;
+import org.cactoos.scalar.IoCheckedScalar;
+import org.cactoos.scalar.Reduced;
 
 /**
  * Network implementation.
@@ -60,14 +65,17 @@ public final class RtNetwork implements Network {
         );
     }
 
-    // @todo #5:30min Implement pull method. Pulling a wallet from the
-    //  network should return all the wallets with that id in the
-    //  network merged together. After the implementation
-    //  NetworkTest.pullIsNotYetImplemented() have to be uncommented and
-    //  test if pull method is behaving correctly.
     @Override
-    public Wallet pull(final Long id) {
-        throw new UnsupportedOperationException("pull(id) not supported");
+    public Wallet pull(final long id) throws IOException {
+        return new IoCheckedScalar<>(
+            new Reduced<>(
+                Wallet::merge,
+                new Mapped<>(
+                    c -> c::wallet,
+                    new Sorted<>(new Copies(id, this))
+                )
+            )
+        ).value();
     }
 
     @Override

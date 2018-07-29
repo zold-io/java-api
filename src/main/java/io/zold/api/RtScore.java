@@ -21,31 +21,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package io.zold.api;
 
+import org.cactoos.Text;
+import org.cactoos.iterable.LengthOf;
+
 /**
- * Remote node.
+ * Default implementation for {@link Score}.
  *
- * @since 0.1
+ * @since 1.0
  */
-public interface Remote {
-    /**
-     * This remote node's score.
-     * @return The score
-     */
-    Score score();
+public final class RtScore implements Score {
 
     /**
-     * Pushes a {@link Wallet} to this remote.
-     * @param wallet Wallet to be pushed to this remote
+     * The suffixes.
      */
-    void push(Wallet wallet);
+    private final Iterable<Text> sfxs;
 
     /**
-     * Pull a wallet from this remote.
-     * @param id The wallet's {@link Wallet#id() id}
-     * @return The wallet
+     * Ctor.
+     *
+     * @param sfxs The suffixes.
      */
-    Wallet pull(long id);
+    RtScore(final Iterable<Text> sfxs) {
+        this.sfxs = sfxs;
+    }
+
+    @Override
+    public int compareTo(final Score other) {
+        return new LengthOf(other.suffixes()).intValue()
+            - new LengthOf(this.sfxs).intValue();
+    }
+
+    @Override
+    public Iterable<Text> suffixes() {
+        return this.sfxs;
+    }
 }

@@ -131,6 +131,9 @@ SOFTWARE.
                   <goal>check</goal>
                 </goals>
                 <configuration>
+                  <excludes>
+                    <exclude>**/*Envelope.class</exclude>
+                  </excludes>
                   <rules>
                     <rule>
                       <element>BUNDLE</element>
@@ -192,6 +195,18 @@ SOFTWARE.
     <dependency>
       <groupId>javax.json</groupId>
       <artifactId>javax.json-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.github.victornoel.eo</groupId>
+      <artifactId>eo-envelopes</artifactId>
+      <version>0.0.3</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.llorllale</groupId>
+      <artifactId>cactoos-matchers</artifactId>
+      <version>0.11</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>nl.jqno.equalsverifier</groupId>
