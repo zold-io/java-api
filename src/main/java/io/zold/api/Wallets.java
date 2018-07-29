@@ -24,6 +24,8 @@
 
 package io.zold.api;
 
+import java.io.IOException;
+
 /**
  * Wallets.
  *
@@ -32,7 +34,9 @@ package io.zold.api;
 public interface Wallets extends Iterable<Wallet> {
     /**
      * Create a wallet.
-     * @return The new wallet
+     * @param id The new wallet id.
+     * @return The new wallet.
+     * @throws IOException If an error occurs.
      */
-    Wallet create();
+    Wallet create(final long id) throws IOException;
 }
