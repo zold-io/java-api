@@ -39,6 +39,7 @@ import org.cactoos.time.ZonedDateTimeOf;
  * RtTransaction.
  *
  * @since 0.1
+ * @checkstyle ClassDataAbstractionCoupling (3 lines)
  */
 @SuppressWarnings("PMD.AvoidCatchingGenericException")
 final class RtTransaction implements Transaction {
@@ -87,12 +88,13 @@ final class RtTransaction implements Transaction {
                 new UncheckedText(
                     new FormattedText(
                         // @checkstyle LineLength (1 line)
-                        "Invalid ID '%s' expecting 64-bit signed hex string with 4 symbols",
+                        "Invalid ID '%s' expecting 16-bit unsigned hex string with 4 symbols",
                         ident
                     )
                 ).asString()
             );
         }
+        // @checkstyle MagicNumber (1 line)
         return Integer.parseUnsignedInt(ident, 16);
     }
 
