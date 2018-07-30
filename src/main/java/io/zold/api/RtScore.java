@@ -23,71 +23,38 @@
  */
 package io.zold.api;
 
-import com.github.victornoel.eo.GenerateEnvelope;
-import java.io.IOException;
-import java.time.ZonedDateTime;
+import org.cactoos.Text;
+import org.cactoos.iterable.LengthOf;
 
 /**
- * A payment transaction.
+ * Default implementation for {@link Score}.
  *
- * @since 0.1
+ * @since 1.0
  */
-@GenerateEnvelope
-public interface Transaction {
+public final class RtScore implements Score {
 
     /**
-     * Id of this transaction.
-     * @return Id
-     * @checkstyle MethodNameCheck (3 lines)
+     * The suffixes.
      */
-    @SuppressWarnings("PMD.ShortMethodName")
-    long id();
+    private final Iterable<Text> sfxs;
 
     /**
-     * Timestamp of this transaction.
-     * @return Time
-     * @throws IOException When something goes wrong
+     * Ctor.
+     *
+     * @param sfxs The suffixes.
      */
-    ZonedDateTime time() throws IOException;
-
-    /**
-     * Amount involved in this transaction.
-     * @return Amount
-     * @throws IOException When something goes wrong
-     */
-    long amount() throws IOException;
-
-    /**
-     * Prefix.
-     * @return Prefix
-     * @throws IOException When something goes wrong
-     */
-    String prefix() throws IOException;
-
-    /**
-     * Beneficiary.
-     * @return Beneficiary
-     */
-    long bnf();
-
-    /**
-     * Details.
-     * @return Details
-     */
-    String details();
-
-    /**
-     * RSA Signature.
-     * @return RSA Signature
-     */
-    String signature();
+    RtScore(final Iterable<Text> sfxs) {
+        this.sfxs = sfxs;
+    }
 
     @Override
-    boolean equals(Object obj);
+    public int compareTo(final Score other) {
+        return new LengthOf(other.suffixes()).intValue()
+            - new LengthOf(this.sfxs).intValue();
+    }
 
     @Override
-    int hashCode();
-
-    @Override
-    String toString();
+    public Iterable<Text> suffixes() {
+        return this.sfxs;
+    }
 }

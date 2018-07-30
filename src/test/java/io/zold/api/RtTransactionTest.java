@@ -24,7 +24,9 @@
 package io.zold.api;
 
 import java.io.IOException;
+import java.time.format.DateTimeParseException;
 import nl.jqno.equalsverifier.EqualsVerifier;
+import org.cactoos.time.ZonedDateTimeOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.core.IsEqual;
@@ -61,9 +63,31 @@ public final class RtTransactionTest {
         new RtTransaction("id()").id();
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void timeIsNotYetImplemented() {
-        new RtTransaction("time()").time();
+    @Test
+    public void parsesAndReturnsIsoFormattedTime() throws IOException {
+        MatcherAssert.assertThat(
+            new RtTransaction(
+                "003b;2018-07-19T21:25:07Z;ffffffffffa72367;xksQuJa9;98bb82c81735c4ee; For food;QCuLuVr4..."
+            ).time(),
+            new IsEqual<>(new ZonedDateTimeOf("2018-07-19T21:25:07Z").value())
+        );
+    }
+
+    @Test
+    public void invalidTimeFormat() throws IOException {
+        this.thrown.expect(DateTimeParseException.class);
+        new RtTransaction(
+            "003b;2018-99-19T88:25:07Z;ffffffffffa72367;xksQuJa9;98bb82c81735c4ee; For food;QCuLuVr4..."
+        ).time();
+    }
+
+    @Test
+    public void timeNotPresent() throws IOException {
+        this.thrown.expect(IOException.class);
+        this.thrown.expectMessage(
+            Matchers.startsWith("The iterable doesn't have the position #1")
+        );
+        new RtTransaction("003b;").time();
     }
 
     @Test

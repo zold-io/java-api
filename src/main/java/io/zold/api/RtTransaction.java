@@ -26,6 +26,7 @@ package io.zold.api;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.regex.Pattern;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.ItemAt;
@@ -33,12 +34,12 @@ import org.cactoos.text.FormattedText;
 import org.cactoos.text.SplitText;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
+import org.cactoos.time.ZonedDateTimeOf;
 
 /**
  * RtTransaction.
  *
  * @since 0.1
- * @checkstyle MagicNumber (500 lines)
  * @checkstyle ClassDataAbstractionCoupling (3 lines)
  */
 @SuppressWarnings("PMD.AvoidCatchingGenericException")
@@ -82,12 +83,18 @@ final class RtTransaction implements Transaction {
         throw new UnsupportedOperationException("id() not yet implemented");
     }
 
-    // @todo #15:30min Implement time() by parsing the string representation
-    //  of transaction according to the pattern, described in the white
-    //  paper. Replace relevant test case with actual tests.
     @Override
-    public ZonedDateTime time() {
-        throw new UnsupportedOperationException("time() not yet implemented");
+    public ZonedDateTime time() throws IOException {
+        return new ZonedDateTimeOf(
+            new UncheckedText(
+                new IoCheckedScalar<>(
+                    new ItemAt<>(
+                        1, new SplitText(this.transaction, ";")
+                    )
+                ).value()
+            ).asString(),
+            DateTimeFormatter.ISO_OFFSET_DATE_TIME
+        ).value();
     }
 
     @Override
@@ -123,8 +130,10 @@ final class RtTransaction implements Transaction {
                     ),
                     new TextOf(";")
                 ).iterator(),
+                //@checkstyle MagicNumberCheck (1 line)
                 3
             ).value().asString();
+            //@checkstyle MagicNumberCheck (1 line)
             if (prefix.length() < 8 || prefix.length() > 32) {
                 throw new IllegalArgumentException("Invalid prefix size");
             }
