@@ -23,6 +23,7 @@
  */
 package io.zold.api;
 
+import java.io.IOException;
 import org.junit.Test;
 
 /**
@@ -34,8 +35,8 @@ import org.junit.Test;
  * @checkstyle MagicNumberCheck (500 lines)
  */
 public final class CpTransactionTest {
-    @Test(expected = UnsupportedOperationException.class)
-    public void cpTransactionIsNotYetImplemented() {
+    @Test(expected = IOException.class)
+    public void cpTransactionIsNotYetImplemented() throws IOException {
         new CpTransaction(1, 1234).amount();
     }
 }

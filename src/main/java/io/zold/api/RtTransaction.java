@@ -117,6 +117,7 @@ final class RtTransaction implements Transaction {
                 ).asString()
             );
         }
+        // @checkstyle MagicNumber (1 line)
         return new BigInteger(amnt, 16).longValue();
     }
 
