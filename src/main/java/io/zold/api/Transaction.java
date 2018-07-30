@@ -23,6 +23,7 @@
  */
 package io.zold.api;
 
+import com.github.victornoel.eo.GenerateEnvelope;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 
@@ -31,6 +32,7 @@ import java.time.ZonedDateTime;
  *
  * @since 0.1
  */
+@GenerateEnvelope
 public interface Transaction {
 
     /**
@@ -44,8 +46,9 @@ public interface Transaction {
     /**
      * Timestamp of this transaction.
      * @return Time
+     * @throws IOException When something goes wrong
      */
-    ZonedDateTime time();
+    ZonedDateTime time() throws IOException;
 
     /**
      * Amount involved in this transaction.
@@ -77,4 +80,13 @@ public interface Transaction {
      * @return RSA Signature
      */
     String signature();
+
+    @Override
+    boolean equals(Object obj);
+
+    @Override
+    int hashCode();
+
+    @Override
+    String toString();
 }

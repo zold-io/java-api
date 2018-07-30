@@ -21,31 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package io.zold.api;
 
+import org.junit.Test;
+
 /**
- * Remote node.
+ * Test case for {@link CpTransaction}.
  *
- * @since 0.1
+ * @since 1.0
+ * @checkstyle LineLengthCheck (500 lines)
+ * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle MagicNumberCheck (500 lines)
  */
-public interface Remote {
-    /**
-     * This remote node's score.
-     * @return The score
-     */
-    Score score();
-
-    /**
-     * Pushes a {@link Wallet} to this remote.
-     * @param wallet Wallet to be pushed to this remote
-     */
-    void push(Wallet wallet);
-
-    /**
-     * Pull a wallet from this remote.
-     * @param id The wallet's {@link Wallet#id() id}
-     * @return The wallet
-     */
-    Wallet pull(long id);
+public final class CpTransactionTest {
+    @Test(expected = UnsupportedOperationException.class)
+    public void cpTransactionIsNotYetImplemented() {
+        new CpTransaction(1, 1234).amount();
+    }
 }
