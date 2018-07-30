@@ -23,10 +23,12 @@
  */
 package io.zold.api;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import org.cactoos.iterable.IterableOf;
 import org.cactoos.iterable.Repeated;
 import org.cactoos.text.RandomText;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.core.IsEqual;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -114,9 +116,13 @@ public final class NetworkTest {
         ).push(Mockito.any(Wallet.class));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void pullNotYetSupported() {
-        new RtNetwork(new ArrayList<>(1)).pull(1L);
+    @Test
+    public void pullsWalletWithTheRightId() throws IOException {
+        final long id = 1L;
+        MatcherAssert.assertThat(
+            new RtNetwork(new IterableOf<>()).pull(id).id(),
+            new IsEqual<>(id)
+        );
     }
 
 }

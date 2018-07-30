@@ -21,31 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package io.zold.api;
 
 /**
- * Remote node.
+ * Computed Transaction.
  *
- * @since 0.1
+ * @since 1.0
+ * @todo #29:30min Implement the computation of the transaction string
+ *  based on the white paper. The unit test should also be updated to
+ *  ensure it works as expected.
  */
-public interface Remote {
-    /**
-     * This remote node's score.
-     * @return The score
-     */
-    Score score();
+public final class CpTransaction extends TransactionEnvelope {
 
     /**
-     * Pushes a {@link Wallet} to this remote.
-     * @param wallet Wallet to be pushed to this remote
+     * Ctor.
+     *
+     * @param amt Amount to pay in zents
+     * @param bnf Wallet ID of beneficiary
      */
-    void push(Wallet wallet);
-
-    /**
-     * Pull a wallet from this remote.
-     * @param id The wallet's {@link Wallet#id() id}
-     * @return The wallet
-     */
-    Wallet pull(long id);
+    CpTransaction(final long amt, final long bnf) {
+        super(new RtTransaction(Long.toString(amt + bnf)));
+    }
 }
