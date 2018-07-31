@@ -72,8 +72,9 @@ public interface Transaction {
     /**
      * Details.
      * @return Details
+     * @throws IOException When something goes wrong
      */
-    String details();
+    String details() throws IOException;
 
     /**
      * RSA Signature.
