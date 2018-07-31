@@ -150,8 +150,33 @@ public final class RtTransactionTest {
         new RtTransaction("details()").details();
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void signatureIsNotYetImplemented() {
-        new RtTransaction("signature()").signature();
+    @Test
+    public void returnsSignature() throws IOException {
+        MatcherAssert.assertThat(
+            new RtTransaction(
+                "003b;2018-07-19T21:25:07Z;ffffffffffa72367;xksQuJa9;98bb82c81735c4ee; For food;QCuLuVr4="
+            ).signature(),
+            new IsEqual<>("QCuLuVr4=")
+        );
+    }
+
+    @Test
+    public void invalidSignature() throws IOException {
+        this.thrown.expect(IOException.class);
+        this.thrown.expectMessage(
+            Matchers.startsWith("Invalid signature 'QCuLuVr4!@*#'")
+        );
+        new RtTransaction(
+            "003b;2018-99-19T88:25:07Z;ffffffffffa72367;xksQuJa9;98bb82c81735c4ee; For food;QCuLuVr4!@*#"
+        ).signature();
+    }
+
+    @Test
+    public void signatureNotPresent() throws IOException {
+        this.thrown.expect(IOException.class);
+        this.thrown.expectMessage(
+            Matchers.startsWith("The iterable doesn't have the position #6")
+        );
+        new RtTransaction("003d;").signature();
     }
 }

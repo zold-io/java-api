@@ -29,6 +29,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.regex.Pattern;
 import org.cactoos.scalar.IoCheckedScalar;
 import org.cactoos.scalar.ItemAt;
+import org.cactoos.text.FormattedText;
 import org.cactoos.text.SplitText;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
@@ -38,6 +39,7 @@ import org.cactoos.time.ZonedDateTimeOf;
  * RtTransaction.
  *
  * @since 0.1
+ * @checkstyle ClassDataAbstractionCoupling (3 lines)
  */
 @SuppressWarnings("PMD.AvoidCatchingGenericException")
 final class RtTransaction implements Transaction {
@@ -49,6 +51,11 @@ final class RtTransaction implements Transaction {
         //@checkstyle LineLengthCheck (1 line)
         "^([A-Za-z0-9+\\/]{4})*([A-Za-z0-9+\\/]{4}|[A-Za-z0-9+\\/]{3}=|[A-Za-z0-9+\\/]{2}==)$"
     );
+
+    /**
+     * Pattern for parsing Signature.
+     */
+    private static final Pattern SIGN = Pattern.compile("[A-Za-z0-9+/]+={0,3}");
 
     /**
      * String representation of transaction.
@@ -145,14 +152,27 @@ final class RtTransaction implements Transaction {
         );
     }
 
-    // @todo #15:30min Implement signature by parsing the string representation
-    //  of transaction according to the pattern, described in the white
-    //  paper. Replace relevant test case with actual tests.
     @Override
-    public String signature() {
-        throw new UnsupportedOperationException(
-            "signature() not yet implemented"
-        );
+    public String signature() throws IOException {
+        final String sign = new UncheckedText(
+            new IoCheckedScalar<>(
+                new ItemAt<>(
+                    // @checkstyle MagicNumber (1 line)
+                    6, new SplitText(this.transaction, ";")
+                )
+            ).value()
+        ).asString();
+        if (!RtTransaction.SIGN.matcher(sign).matches()) {
+            throw new IOException(
+                new UncheckedText(
+                    new FormattedText(
+                        "Invalid signature '%s' expecting base64 string",
+                        sign
+                    )
+                ).asString()
+            );
+        }
+        return sign;
     }
 
     @Override
