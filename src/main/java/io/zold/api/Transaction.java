@@ -53,8 +53,9 @@ public interface Transaction {
     /**
      * Amount involved in this transaction.
      * @return Amount
+     * @throws IOException When something goes wrong
      */
-    long amount();
+    long amount() throws IOException;
 
     /**
      * Prefix.
