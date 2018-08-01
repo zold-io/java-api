@@ -182,7 +182,9 @@ final class RtTransaction implements Transaction {
                 )
             ).value()
         ).asString();
-        if (!RtTransaction.SIGN.matcher(sign).matches()) {
+        // @checkstyle MagicNumber (1 line)
+        if (sign.length() % 4 != 0
+            || !RtTransaction.SIGN.matcher(sign).matches()) {
             throw new IOException(
                 new UncheckedText(
                     new FormattedText(

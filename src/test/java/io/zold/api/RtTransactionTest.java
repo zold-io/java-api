@@ -204,20 +204,31 @@ public final class RtTransactionTest {
     public void returnsSignature() throws IOException {
         MatcherAssert.assertThat(
             new RtTransaction(
-                "003b;2018-07-19T21:25:07Z;ffffffffffa72367;xksQuJa9;98bb82c81735c4ee; For food;QCuLuVr4="
+                "003b;2018-07-19T21:25:07Z;ffffffffffa72367;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr4a1/="
             ).signature(),
-            new IsEqual<>("QCuLuVr4=")
+            new IsEqual<>("QCuLuVr4a1/=")
         );
     }
 
     @Test
-    public void invalidSignature() throws IOException {
+    public void invalidSignatureCharacters() throws IOException {
         this.thrown.expect(IOException.class);
         this.thrown.expectMessage(
-            Matchers.startsWith("Invalid signature 'QCuLuVr4!@*#'")
+            Matchers.startsWith("Invalid signature 'QCuLuVr!@*/='")
         );
         new RtTransaction(
-            "003b;2018-99-19T88:25:07Z;ffffffffffa72367;xksQuJa9;98bb82c81735c4ee; For food;QCuLuVr4!@*#"
+            "003b;2018-99-19T88:25:07Z;ffffffffffa72367;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr!@*/="
+        ).signature();
+    }
+
+    @Test
+    public void invalidSignatureLength() throws IOException {
+        this.thrown.expect(IOException.class);
+        this.thrown.expectMessage(
+            Matchers.startsWith("Invalid signature 'QCuLuVr4a21/='")
+        );
+        new RtTransaction(
+            "003b;2018-99-19T88:25:07Z;ffffffffffa72367;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr4a21/="
         ).signature();
     }
 
