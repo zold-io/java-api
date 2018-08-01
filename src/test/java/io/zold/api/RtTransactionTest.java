@@ -193,9 +193,59 @@ public final class RtTransactionTest {
         new RtTransaction("bnf()").bnf();
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void detailsIsNotYetImplemented() {
-        new RtTransaction("details()").details();
+    @Test
+    public void returnsDetails() throws IOException {
+        MatcherAssert.assertThat(
+            "Returned wrong details",
+            new RtTransaction(
+                "003b;2017-07-19T21:25:07Z;ffffffffffa72367;xksQuJa9;98bb82c81735c4ee;Payment for 3 beers.;QCuLuVr4..."
+            ).details(),
+            new IsEqual<>("Payment for 3 beers.")
+        );
+    }
+
+    @Test
+    public void detailsFormatViolated() throws IOException {
+        this.thrown.expect(IOException.class);
+        this.thrown.expectMessage(
+            Matchers.startsWith("Invalid details string '\\/^&'")
+        );
+        new RtTransaction(
+            "003b;2017-07-19T21:25:07Z;ffffffffffa72367;xksQuJa9;98bb82c81735c4ee;\\/^&;QCuLuVr4..."
+        ).details();
+    }
+
+    @Test
+    public void detailsSizeTooShort() throws IOException {
+        this.thrown.expect(IOException.class);
+        this.thrown.expectMessage(
+            Matchers.startsWith("Invalid details string ''")
+        );
+        new RtTransaction(
+            "003b;2017-07-19T21:25:07Z;ffffffffffa72367;FF4D;98bb82c81735c4ee;;QCuLuVr4..."
+        ).details();
+    }
+
+    @Test
+    public void detailsSizeTooLong() throws IOException {
+        this.thrown.expect(IOException.class);
+        this.thrown.expectMessage(
+            Matchers.startsWith("Invalid details string 'u87d2hova0OhJdYTk5rWxRZeAn6keCBONkERVbcXeUfpZIadF2ncJ5BRNjDjyaPXHaBAmpckf1UZWMq4OKsaVkN9tAmpMm8Fisq3F7E4LWnNFxWdh1LNKlsn7DDvJmB926839C8MZXCfU26AhmC2pgfTUCEkcQHjXjRp4sCXpRRLfYrd134BVjvcq1jFhNDca8JQHutL5PDLagBD80ZLefEOcqoP0YJQrTLnJMQDIhGKHBkPp0NL5IBbRjzmVS4PiW5WV2qHFhUoe98PkMet1OGPsuLIN61ZdeaQwhwEAolqrPDkxELMNz9oF4Zn2uUdubFqvk8OXcPiChpMRlDiyfVMZLgKZaHyL0NqKlhSajFz4KhPNcApOwS2ODxJEJZ9v6HMEWgvVn0MnxrO9Mw6882mf0K7iEEHFUBpxVaeC6MJqQUfZ6YiSNXrulDrVkzcsJEoSLXiPKFpXecmQupJO4f5tv7t59VUFLgQVFIMVHQsyKu7IMNdvW9Akc05T61HE'")
+        );
+        new RtTransaction(
+            "003b;2017-07-19T21:25:07Z;ffffffffffa72367;xksQuJa9;98bb82c81735c4ee;u87d2hova0OhJdYTk5rWxRZeAn6keCBONkERVbcXeUfpZIadF2ncJ5BRNjDjyaPXHaBAmpckf1UZWMq4OKsaVkN9tAmpMm8Fisq3F7E4LWnNFxWdh1LNKlsn7DDvJmB926839C8MZXCfU26AhmC2pgfTUCEkcQHjXjRp4sCXpRRLfYrd134BVjvcq1jFhNDca8JQHutL5PDLagBD80ZLefEOcqoP0YJQrTLnJMQDIhGKHBkPp0NL5IBbRjzmVS4PiW5WV2qHFhUoe98PkMet1OGPsuLIN61ZdeaQwhwEAolqrPDkxELMNz9oF4Zn2uUdubFqvk8OXcPiChpMRlDiyfVMZLgKZaHyL0NqKlhSajFz4KhPNcApOwS2ODxJEJZ9v6HMEWgvVn0MnxrO9Mw6882mf0K7iEEHFUBpxVaeC6MJqQUfZ6YiSNXrulDrVkzcsJEoSLXiPKFpXecmQupJO4f5tv7t59VUFLgQVFIMVHQsyKu7IMNdvW9Akc05T61HE;QCuLuVr4..."
+        ).details();
+    }
+
+    @Test
+    public void detailsAbsentTransactionString() throws IOException {
+        this.thrown.expect(IOException.class);
+        this.thrown.expectMessage(
+            Matchers.startsWith("The iterable doesn't have the position #5")
+        );
+        new RtTransaction(
+            "003b;2017-07-19T21:25:08Z;ffffffffffa72367"
+        ).details();
     }
 
     @Test(expected = UnsupportedOperationException.class)
