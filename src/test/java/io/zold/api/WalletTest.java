@@ -32,7 +32,6 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsIterableWithSize;
 import org.hamcrest.core.IsEqual;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -43,10 +42,6 @@ import org.llorllale.cactoos.matchers.FuncApplies;
  * Test case for {@link Wallet}.
  *
  * @since 0.1
- * @todo #33:30min CheckedScalar from 'cactoos' does not wrap runtime
- *  exceptions for some reason. Once it's fixed (see yegor256/cactoos#933)
- *  un-ignore WalletTest.throwIoExceptionIfReadingIdFails and make sure
- *  it works.
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle JavadocVariableCheck (500 lines)
  * @checkstyle MagicNumberCheck (500 lines)
@@ -66,10 +61,16 @@ public final class WalletTest {
         MatcherAssert.assertThat(wallet.id(), Matchers.is(id));
     }
 
-    @Ignore
     @Test
-    public void throwIoExceptionIfReadingIdFails() throws IOException {
-        this.error.expect(IOException.class);
+    public void throwRuntimeExceptionIfReadingIdFails() throws IOException {
+        this.error.expect(RuntimeException.class);
+        new Wallet.File(this.wallet("")).id();
+    }
+
+    @Test
+    public void throwNumberFormatExceptionIfIdIsInvalid() throws IOException {
+        this.error.expect(NumberFormatException.class);
+        this.error.expectMessage("For input string:");
         new Wallet.File(this.wallet("invalid_id")).id();
     }
 
