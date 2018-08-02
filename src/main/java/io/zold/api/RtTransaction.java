@@ -59,6 +59,11 @@ final class RtTransaction implements Transaction {
     private static final Pattern AMT = Pattern.compile("[A-Fa-f0-9]{16}");
 
     /**
+     * Pattern for parsing Signature.
+     */
+    private static final Pattern SIGN = Pattern.compile("[A-Za-z0-9+/]+={0,3}");
+
+    /**
      * Pattern for Details string.
      */
     private static final Pattern DTLS =
@@ -210,14 +215,30 @@ final class RtTransaction implements Transaction {
         return dtls;
     }
 
-    // @todo #15:30min Implement signature by parsing the string representation
-    //  of transaction according to the pattern, described in the white
-    //  paper. Replace relevant test case with actual tests.
     @Override
-    public String signature() {
-        throw new UnsupportedOperationException(
-            "signature() not yet implemented"
-        );
+    public String signature() throws IOException {
+        final String sign = new UncheckedText(
+            new IoCheckedScalar<>(
+                new ItemAt<>(
+                    // @checkstyle MagicNumber (1 line)
+                    6, new SplitText(this.transaction, ";")
+                )
+            ).value()
+        ).asString();
+        // @checkstyle MagicNumber (1 line)
+        if (sign.length() != 684
+            || !RtTransaction.SIGN.matcher(sign).matches()) {
+            throw new IOException(
+                new UncheckedText(
+                    new FormattedText(
+                        // @checkstyle LineLength (1 line)
+                        "Invalid signature '%s', expecting base64 string with 684 characters",
+                        sign
+                    )
+                ).asString()
+            );
+        }
+        return sign;
     }
 
     @Override

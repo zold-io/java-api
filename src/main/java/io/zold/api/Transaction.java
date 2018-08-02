@@ -81,8 +81,9 @@ public interface Transaction {
     /**
      * RSA Signature.
      * @return RSA Signature
+     * @throws IOException When something goes wrong
      */
-    String signature();
+    String signature() throws IOException;
 
     @Override
     boolean equals(Object obj);
