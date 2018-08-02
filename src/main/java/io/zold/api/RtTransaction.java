@@ -24,6 +24,7 @@
 package io.zold.api;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Pattern;
@@ -51,6 +52,11 @@ final class RtTransaction implements Transaction {
         //@checkstyle LineLengthCheck (1 line)
         "^([A-Za-z0-9+\\/]{4})*([A-Za-z0-9+\\/]{4}|[A-Za-z0-9+\\/]{3}=|[A-Za-z0-9+\\/]{2}==)$"
     );
+
+    /**
+     * Pattern for amount String.
+     */
+    private static final Pattern AMT = Pattern.compile("[A-Fa-f0-9]{16}");
 
     /**
      * Pattern for parsing Signature.
@@ -102,12 +108,28 @@ final class RtTransaction implements Transaction {
         ).value();
     }
 
-    // @todo #15:30min Implement amount() by parsing the string representation
-    //  of transaction according to the pattern, described in the white
-    //  paper. Replace relevant test case with actual tests.
     @Override
-    public long amount() {
-        throw new UnsupportedOperationException("amount() not yet implemented");
+    public long amount() throws IOException {
+        final String amnt = new UncheckedText(
+            new IoCheckedScalar<>(
+                new ItemAt<>(
+                    2, new SplitText(this.transaction, ";")
+                )
+            ).value()
+        ).asString();
+        if (!RtTransaction.AMT.matcher(amnt).matches()) {
+            throw new IOException(
+                new UncheckedText(
+                    new FormattedText(
+                        // @checkstyle LineLength (1 line)
+                        "Invalid amount '%s' expecting 64-bit signed hex string with 16 symbols",
+                        amnt
+                    )
+                ).asString()
+            );
+        }
+        // @checkstyle MagicNumber (1 line)
+        return new BigInteger(amnt, 16).longValue();
     }
 
     @Override

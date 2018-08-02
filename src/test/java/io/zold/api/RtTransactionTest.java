@@ -40,6 +40,7 @@ import org.junit.rules.ExpectedException;
  * @since 0.1
  * @checkstyle LineLengthCheck (500 lines)
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle MagicNumber (500 lines)
  */
 @SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.TooManyMethods"})
 public final class RtTransactionTest {
@@ -89,9 +90,68 @@ public final class RtTransactionTest {
         new RtTransaction("003b;").time();
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void amountIsNotYetImplemented() {
-        new RtTransaction("amount()").amount();
+    @Test
+    public void returnsPositiveAmount() throws IOException {
+        MatcherAssert.assertThat(
+            new RtTransaction(
+                "003b;2017-07-19T21:25:07Z;0000000000a72366;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr4..."
+            ).amount(),
+            new IsEqual<>(10953574L)
+        );
+    }
+
+    @Test
+    public void returnsNegativeAmount() throws IOException {
+        MatcherAssert.assertThat(
+            new RtTransaction(
+                "003b;2017-07-19T21:25:07Z;ffffffffffa72366;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr4..."
+            ).amount(),
+            new IsEqual<>(-5823642L)
+        );
+    }
+
+    @Test
+    public void amountFormatViolated() throws IOException {
+        this.thrown.expect(IOException.class);
+        this.thrown.expectMessage(
+            Matchers.startsWith("Invalid amount 'ffffffffffZX2367'")
+        );
+        new RtTransaction(
+            "003b;2017-07-19T21:25:07Z;ffffffffffZX2367;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr4..."
+        ).amount();
+    }
+
+    @Test
+    public void amountStringTooLong() throws IOException {
+        this.thrown.expect(IOException.class);
+        this.thrown.expectMessage(
+            Matchers.startsWith("Invalid amount '00000000000a72366'")
+        );
+        new RtTransaction(
+            "003b;2017-07-19T21:25:07Z;00000000000a72366;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr4..."
+        ).amount();
+    }
+
+    @Test
+    public void amountStringTooShort() throws IOException {
+        this.thrown.expect(IOException.class);
+        this.thrown.expectMessage(
+            Matchers.startsWith("Invalid amount '72366'")
+        );
+        new RtTransaction(
+            "003b;2017-07-19T21:25:07Z;72366;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr4..."
+        ).amount();
+    }
+
+    @Test
+    public void amountNotPresent() throws IOException {
+        this.thrown.expect(IOException.class);
+        this.thrown.expectMessage(
+            Matchers.startsWith("The iterable doesn't have the position #2")
+        );
+        new RtTransaction(
+            "003b;2017-07-19T21:25:07Z"
+        ).amount();
     }
 
     @Test
