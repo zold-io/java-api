@@ -204,9 +204,9 @@ public final class RtTransactionTest {
     public void returnsSignature() throws IOException {
         MatcherAssert.assertThat(
             new RtTransaction(
-                "003b;2018-07-19T21:25:07Z;ffffffffffa72367;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr4a1/="
+                "003b;2018-07-19T21:25:07Z;ffffffffffa72367;xksQuJa9;98bb82c81735c4ee;For food;WKF3Emi4R2OCbPqUuFSykGD4JtAeWc8WThSYUnmLH2w1RiNSa8KNBGUw56mh0jYjmA1AXRyP/Iktqatmczp+isvh2iBN9hpZgavJ1fFjOgoFmNFe8PT8vg4ZC/vOVgMc807icX7O5i36fi0MEvEv242+2z/Gju3vcb42cZMupDoOEF/CDcEy1Ng7iAFdyLoMja74cMo6H7U0z97e2c2Sa1Eidmkdn+mXNbFsx5RizLtLUfhMtghf697Qu9i1N9lY/Qwk8SvgSviPPWs1cjjK/Fsg1ezfHSWbbHmK8/4qkvgkHqAwVwfD7bWm+1McxzNkU4X5pqE/vW5Tm/K9o7wq4N8u355U+xpgTShPEDN9u6QfdE2O4b/Q6rTzVHMX4j66cLrB8am6K9OQ7LYGShRcqR5L078RyjqHm/wDSzfZWbq8NsjmVm7Dr8NVxJ+0jS2U/r+Fo2+uyjDBn5n/UcqxUGgt0qHaGPoi7kezFHcqeVXp8RLetfXa/TBTj39Gc7aBNBFxkfaM7I/TSpI+xjtjr1cfquut/NiVLMSEVipOIEZ+Sjgf9jLjmpNfRDavz3kGi20TkL4szEvgz8bD1dT6Kf7FKPu7YBMYFoyY12RK7NZcdVr+4yNLFbRtaZYwdhrRLYwKaHli4oUN2CjAOHivVw3Ig8x/JySGxsiy3aJD8L3="
             ).signature(),
-            new IsEqual<>("QCuLuVr4a1/=")
+            new IsEqual<>("WKF3Emi4R2OCbPqUuFSykGD4JtAeWc8WThSYUnmLH2w1RiNSa8KNBGUw56mh0jYjmA1AXRyP/Iktqatmczp+isvh2iBN9hpZgavJ1fFjOgoFmNFe8PT8vg4ZC/vOVgMc807icX7O5i36fi0MEvEv242+2z/Gju3vcb42cZMupDoOEF/CDcEy1Ng7iAFdyLoMja74cMo6H7U0z97e2c2Sa1Eidmkdn+mXNbFsx5RizLtLUfhMtghf697Qu9i1N9lY/Qwk8SvgSviPPWs1cjjK/Fsg1ezfHSWbbHmK8/4qkvgkHqAwVwfD7bWm+1McxzNkU4X5pqE/vW5Tm/K9o7wq4N8u355U+xpgTShPEDN9u6QfdE2O4b/Q6rTzVHMX4j66cLrB8am6K9OQ7LYGShRcqR5L078RyjqHm/wDSzfZWbq8NsjmVm7Dr8NVxJ+0jS2U/r+Fo2+uyjDBn5n/UcqxUGgt0qHaGPoi7kezFHcqeVXp8RLetfXa/TBTj39Gc7aBNBFxkfaM7I/TSpI+xjtjr1cfquut/NiVLMSEVipOIEZ+Sjgf9jLjmpNfRDavz3kGi20TkL4szEvgz8bD1dT6Kf7FKPu7YBMYFoyY12RK7NZcdVr+4yNLFbRtaZYwdhrRLYwKaHli4oUN2CjAOHivVw3Ig8x/JySGxsiy3aJD8L3=")
         );
     }
 
@@ -214,10 +214,10 @@ public final class RtTransactionTest {
     public void invalidSignatureCharacters() throws IOException {
         this.thrown.expect(IOException.class);
         this.thrown.expectMessage(
-            Matchers.startsWith("Invalid signature 'QCuLuVr!@*/='")
+            Matchers.startsWith("Invalid signature '!@#3Emi4R2OCbPqUuFSykGD4JtAeWc8WThSYUnmLH2w1RiNSa8KNBGUw56mh0jYjmA1AXRyP/Iktqatmczp+isvh2iBN9hpZgavJ1fFjOgoFmNFe8PT8vg4ZC/vOVgMc807icX7O5i36fi0MEvEv242+2z/Gju3vcb42cZMupDoOEF/CDcEy1Ng7iAFdyLoMja74cMo6H7U0z97e2c2Sa1Eidmkdn+mXNbFsx5RizLtLUfhMtghf697Qu9i1N9lY/Qwk8SvgSviPPWs1cjjK/Fsg1ezfHSWbbHmK8/4qkvgkHqAwVwfD7bWm+1McxzNkU4X5pqE/vW5Tm/K9o7wq4N8u355U+xpgTShPEDN9u6QfdE2O4b/Q6rTzVHMX4j66cLrB8am6K9OQ7LYGShRcqR5L078RyjqHm/wDSzfZWbq8NsjmVm7Dr8NVxJ+0jS2U/r+Fo2+uyjDBn5n/UcqxUGgt0qHaGPoi7kezFHcqeVXp8RLetfXa/TBTj39Gc7aBNBFxkfaM7I/TSpI+xjtjr1cfquut/NiVLMSEVipOIEZ+Sjgf9jLjmpNfRDavz3kGi20TkL4szEvgz8bD1dT6Kf7FKPu7YBMYFoyY12RK7NZcdVr+4yNLFbRtaZYwdhrRLYwKaHli4oUN2CjAOHivVw3Ig8x/JySGxsiy3aJD8L3W'")
         );
         new RtTransaction(
-            "003b;2018-99-19T88:25:07Z;ffffffffffa72367;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr!@*/="
+            "003b;2018-99-19T88:25:07Z;ffffffffffa72367;xksQuJa9;98bb82c81735c4ee;For food;!@#3Emi4R2OCbPqUuFSykGD4JtAeWc8WThSYUnmLH2w1RiNSa8KNBGUw56mh0jYjmA1AXRyP/Iktqatmczp+isvh2iBN9hpZgavJ1fFjOgoFmNFe8PT8vg4ZC/vOVgMc807icX7O5i36fi0MEvEv242+2z/Gju3vcb42cZMupDoOEF/CDcEy1Ng7iAFdyLoMja74cMo6H7U0z97e2c2Sa1Eidmkdn+mXNbFsx5RizLtLUfhMtghf697Qu9i1N9lY/Qwk8SvgSviPPWs1cjjK/Fsg1ezfHSWbbHmK8/4qkvgkHqAwVwfD7bWm+1McxzNkU4X5pqE/vW5Tm/K9o7wq4N8u355U+xpgTShPEDN9u6QfdE2O4b/Q6rTzVHMX4j66cLrB8am6K9OQ7LYGShRcqR5L078RyjqHm/wDSzfZWbq8NsjmVm7Dr8NVxJ+0jS2U/r+Fo2+uyjDBn5n/UcqxUGgt0qHaGPoi7kezFHcqeVXp8RLetfXa/TBTj39Gc7aBNBFxkfaM7I/TSpI+xjtjr1cfquut/NiVLMSEVipOIEZ+Sjgf9jLjmpNfRDavz3kGi20TkL4szEvgz8bD1dT6Kf7FKPu7YBMYFoyY12RK7NZcdVr+4yNLFbRtaZYwdhrRLYwKaHli4oUN2CjAOHivVw3Ig8x/JySGxsiy3aJD8L3W"
         ).signature();
     }
 
@@ -225,10 +225,10 @@ public final class RtTransactionTest {
     public void invalidSignatureLength() throws IOException {
         this.thrown.expect(IOException.class);
         this.thrown.expectMessage(
-            Matchers.startsWith("Invalid signature 'QCuLuVr4a21/='")
+            Matchers.startsWith("Invalid signature 'WKF3Emi4R2OCbPqUuFSykGD4JtAeWc8WThSYUnmLH2w1RiNSa8KNBGUw56mh0jYjmA1AXRyP/Iktqatmczp+isvh2iBN9hpZgavJ1fFjOgoFmNFe8PT8vg4ZC/vOVgMc807icX7O5i36fi0MEvEv242+2z/Gju3vcb42cZMupDoOEF/CDcEy1Ng7iAFdyLoMja74cMo6H7U0z97e2c2Sa1Eidmkdn+mXNbFsx5RizLtLUfhMtghf697Qu9i1N9lY/Qwk8SvgSviPPWs1cjjK/Fsg1ezfHSWbbHmK8/4qkvgkHqAwVwfD7bWm+1McxzNkU4X5pqE/vW5Tm/K9o7wq4N8u355U+xpgTShPEDN9u6QfdE2O4b/Q6rTzVHMX4j66cLrB8am6K9OQ7LYGShRcqR5L078RyjqHm/wDSzfZWbq8NsjmVm7Dr8NVxJ+0jS2U/r+Fo2+uyjDBn5n/UcqxUGgt0qHaGPoi7kezFHcqeVXp8RLetfXa/TBTj39Gc7aBNBFxkfaM7I/TSpI+xjtjr1cfquut/NiVLMSEVipOIEZ+Sjgf9jLjmpNfRDavz3kGi20TkL4szEvgz8bD1dT6Kf7FKPu7YBMYFoyY12RK7NZcdVr+4yNLFbRtaZYwdhrRLYwKaHli4oUN2CjAOHivVw3Ig8x/'")
         );
         new RtTransaction(
-            "003b;2018-99-19T88:25:07Z;ffffffffffa72367;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr4a21/="
+            "003b;2018-99-19T88:25:07Z;ffffffffffa72367;xksQuJa9;98bb82c81735c4ee;For food;WKF3Emi4R2OCbPqUuFSykGD4JtAeWc8WThSYUnmLH2w1RiNSa8KNBGUw56mh0jYjmA1AXRyP/Iktqatmczp+isvh2iBN9hpZgavJ1fFjOgoFmNFe8PT8vg4ZC/vOVgMc807icX7O5i36fi0MEvEv242+2z/Gju3vcb42cZMupDoOEF/CDcEy1Ng7iAFdyLoMja74cMo6H7U0z97e2c2Sa1Eidmkdn+mXNbFsx5RizLtLUfhMtghf697Qu9i1N9lY/Qwk8SvgSviPPWs1cjjK/Fsg1ezfHSWbbHmK8/4qkvgkHqAwVwfD7bWm+1McxzNkU4X5pqE/vW5Tm/K9o7wq4N8u355U+xpgTShPEDN9u6QfdE2O4b/Q6rTzVHMX4j66cLrB8am6K9OQ7LYGShRcqR5L078RyjqHm/wDSzfZWbq8NsjmVm7Dr8NVxJ+0jS2U/r+Fo2+uyjDBn5n/UcqxUGgt0qHaGPoi7kezFHcqeVXp8RLetfXa/TBTj39Gc7aBNBFxkfaM7I/TSpI+xjtjr1cfquut/NiVLMSEVipOIEZ+Sjgf9jLjmpNfRDavz3kGi20TkL4szEvgz8bD1dT6Kf7FKPu7YBMYFoyY12RK7NZcdVr+4yNLFbRtaZYwdhrRLYwKaHli4oUN2CjAOHivVw3Ig8x/"
         ).signature();
     }
 

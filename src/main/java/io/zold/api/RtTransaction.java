@@ -183,12 +183,13 @@ final class RtTransaction implements Transaction {
             ).value()
         ).asString();
         // @checkstyle MagicNumber (1 line)
-        if (sign.length() % 4 != 0
+        if (sign.length() != 684
             || !RtTransaction.SIGN.matcher(sign).matches()) {
             throw new IOException(
                 new UncheckedText(
                     new FormattedText(
-                        "Invalid signature '%s' expecting base64 string",
+                        // @checkstyle LineLength (1 line)
+                        "Invalid signature '%s', expecting base64 string with 684 characters",
                         sign
                     )
                 ).asString()
