@@ -54,9 +54,9 @@ final class RtTransaction implements Transaction {
     );
 
     /**
-     * Pattern for amount String.
+     * Pattern for 16 symbol hex string.
      */
-    private static final Pattern AMT = Pattern.compile("[A-Fa-f0-9]{16}");
+    private static final Pattern HEX = Pattern.compile("[A-Fa-f0-9]{16}");
 
     /**
      * Pattern for parsing Signature.
@@ -138,7 +138,7 @@ final class RtTransaction implements Transaction {
                 )
             ).value()
         ).asString();
-        if (!RtTransaction.AMT.matcher(amnt).matches()) {
+        if (!RtTransaction.HEX.matcher(amnt).matches()) {
             throw new IOException(
                 new UncheckedText(
                     new FormattedText(
@@ -183,12 +183,29 @@ final class RtTransaction implements Transaction {
         }
     }
 
-    // @todo #15:30min Implement bnf() by parsing the string representation
-    //  of transaction according to the pattern, described in the white
-    //  paper. Replace relevant test case with actual tests.
     @Override
-    public long bnf() {
-        throw new UnsupportedOperationException("bnf() not yet implemented");
+    public long bnf() throws IOException {
+        final String bnf = new UncheckedText(
+            new IoCheckedScalar<>(
+                new ItemAt<>(
+                    // @checkstyle MagicNumberCheck (1 line)
+                    4, new SplitText(this.transaction, ";")
+                )
+            ).value()
+        ).asString();
+        if (!RtTransaction.HEX.matcher(bnf).matches()) {
+            throw new IOException(
+                new UncheckedText(
+                    new FormattedText(
+                        // @checkstyle LineLength (1 line)
+                        "Invalid bnf string '%s', expecting hex string with 16 symbols",
+                        bnf
+                    )
+                ).asString()
+            );
+        }
+        // @checkstyle MagicNumber (1 line)
+        return new BigInteger(bnf, 16).longValue();
     }
 
     @Override
