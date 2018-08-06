@@ -253,7 +253,7 @@ public final class RtTransactionTest {
             new RtTransaction(
                 "003b;2017-07-19T21:25:07Z;0000000000a72366;xksQuJa9;000000C81735c4ee;For food;QCuLuVr4..."
             ).bnf(),
-            new IsEqual<>(859382858990L)
+            new IsEqual<>("000000C81735c4ee")
         );
     }
 

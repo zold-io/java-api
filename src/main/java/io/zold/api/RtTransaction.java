@@ -184,7 +184,7 @@ final class RtTransaction implements Transaction {
     }
 
     @Override
-    public long bnf() throws IOException {
+    public String bnf() throws IOException {
         final String bnf = new UncheckedText(
             new IoCheckedScalar<>(
                 new ItemAt<>(
@@ -204,8 +204,7 @@ final class RtTransaction implements Transaction {
                 ).asString()
             );
         }
-        // @checkstyle MagicNumber (1 line)
-        return new BigInteger(bnf, 16).longValue();
+        return bnf;
     }
 
     @Override

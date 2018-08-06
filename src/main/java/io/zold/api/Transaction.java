@@ -70,7 +70,7 @@ public interface Transaction {
      * @return Beneficiary
      * @throws IOException When something goes wrong
      */
-    long bnf() throws IOException;
+    String bnf() throws IOException;
 
     /**
      * Details.
