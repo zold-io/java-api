@@ -21,65 +21,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package io.zold.api;
 
+import org.cactoos.collection.CollectionOf;
+import org.cactoos.iterable.IterableOf;
+import org.cactoos.text.TextOf;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.core.IsEqual;
+import org.junit.Test;
+
 /**
- * Remote node.
+ * Test case for {@link Copies}.
  *
- * @since 0.1
+ * @since 1.0
+ * @todo #56:30min Add more test scenarios to Copies.
+ *  Scenarios:
+ *  remotes return empty list
+ *  remotes return single element
+ *  remotes return wallets with different content
+ * @checkstyle JavadocMethodCheck (500 lines)
  */
-public interface Remote {
-    /**
-     * This remote node's score.
-     * @return The score
-     */
-    Score score();
+public final class CopiesTest {
 
-    /**
-     * Pushes a {@link Wallet} to this remote.
-     * @param wallet Wallet to be pushed to this remote
-     */
-    void push(Wallet wallet);
-
-    /**
-     * Pull a wallet from this remote.
-     * @param id The wallet's {@link Wallet#id() id}
-     * @return The wallet
-     */
-    Wallet pull(long id);
-
-    /**
-     * Fake Remote.
-     */
-    final class Fake implements Remote {
-
-        /**
-         * Score.
-         */
-        private final Score score;
-
-        /**
-         * Ctor.
-         * @param score Score
-         */
-        public Fake(final Score score) {
-            this.score = score;
-        }
-
-        @Override
-        public Score score() {
-            return this.score;
-        }
-
-        @Override
-        public void push(final Wallet wallet) {
-            // nothing
-        }
-
-        @Override
-        public Wallet pull(final long id) {
-            return new Wallet.Fake(id);
-        }
+    @Test
+    public void createsOneCopy() {
+        final Iterable<Copies.Copy> copies = new Copies(
+            1L,
+            new IterableOf<>(
+                new Remote.Fake(new RtScore(new IterableOf<>(new TextOf("a")))),
+                new Remote.Fake(new RtScore(new IterableOf<>(new TextOf("b"))))
+            )
+        );
+        MatcherAssert.assertThat(
+            new CollectionOf<>(copies).size(),
+            new IsEqual<>(1)
+        );
+        MatcherAssert.assertThat(
+            new CollectionOf<>(
+                copies.iterator().next().score().suffixes()
+            ).size(),
+            new IsEqual<>(2)
+        );
     }
 }

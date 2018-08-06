@@ -27,6 +27,7 @@ import java.io.IOException;
 import org.cactoos.iterable.IterableOf;
 import org.cactoos.iterable.Repeated;
 import org.cactoos.text.RandomText;
+import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.Ignore;
@@ -43,6 +44,7 @@ import org.mockito.Mockito;
  *  wallets; Network.push must push a wallet to a remote based in remote.
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle MagicNumberCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 public final class NetworkTest {
 
@@ -120,9 +122,14 @@ public final class NetworkTest {
     public void pullsWalletWithTheRightId() throws IOException {
         final long id = 1L;
         MatcherAssert.assertThat(
-            new RtNetwork(new IterableOf<>()).pull(id).id(),
+            new RtNetwork(
+                new IterableOf<>(
+                    new Remote.Fake(
+                        new RtScore(new IterableOf<>(new TextOf("a")))
+                    )
+                )
+            ).pull(id).id(),
             new IsEqual<>(id)
         );
     }
-
 }
