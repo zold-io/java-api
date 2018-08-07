@@ -54,10 +54,6 @@ public final class RtNetwork implements Network {
         this.nodes =  remotes;
     }
 
-    // @todo #5:30min Implement scoring algorithm when paying taxes. Scoring
-    //  algorithm must select the node with the highest score and with score
-    //  >= 16. There are some tests for the scoring algorithm in NetworkTest:
-    //  remove ignore tag from them after algorithm implementation.
     @Override
     public void push(final Wallet wallet) {
         this.nodes.forEach(

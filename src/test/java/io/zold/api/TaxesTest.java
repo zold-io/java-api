@@ -23,27 +23,21 @@
  */
 package io.zold.api;
 
-import java.io.IOException;
+import org.cactoos.iterable.IterableOf;
+import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
- * Network of remote nodes.
+ * Test case for {@link Taxes}.
  *
- * @since 0.1
+ * @since 1.0
+ * @checkstyle JavadocMethodCheck (500 lines)
  */
-public interface Network extends Iterable<Remote> {
+public final class TaxesTest {
 
-    /**
-     * Push the wallet to the network.
-     * @param wallet The wallet
-     */
-    void push(Wallet wallet);
-
-    /**
-     * Pull a wallet from the network.
-     * @param id The wallet's {@link Wallet#id() id}
-     * @return The wallet
-     * @throws IOException If an IO error occurs
-     */
-    Wallet pull(long id) throws IOException;
+    @Test(expected = UnsupportedOperationException.class)
+    public void payNotYetSupported() throws Exception {
+        new Taxes(new IterableOf<>()).exec(Mockito.mock(Wallet.class));
+    }
 
 }
