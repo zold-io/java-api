@@ -105,7 +105,9 @@ public final class RtTransactionTest {
     public void idNotPresent() throws IOException {
         this.thrown.expect(IOException.class);
         this.thrown.expectMessage(
-            Matchers.startsWith("Invalid ID ''")
+            Matchers.startsWith(
+                "Invalid transaction string: string is empty"
+            )
         );
         new RtTransaction("").id();
     }
@@ -132,7 +134,9 @@ public final class RtTransactionTest {
     public void timeNotPresent() throws IOException {
         this.thrown.expect(IOException.class);
         this.thrown.expectMessage(
-            Matchers.startsWith("The iterable doesn't have the position #1")
+            Matchers.startsWith(
+                "Invalid transaction string: expected 7 fields but have 1"
+            )
         );
         new RtTransaction("003b;").time();
     }
@@ -194,7 +198,9 @@ public final class RtTransactionTest {
     public void amountNotPresent() throws IOException {
         this.thrown.expect(IOException.class);
         this.thrown.expectMessage(
-            Matchers.startsWith("The iterable doesn't have the position #2")
+            Matchers.startsWith(
+                "Invalid transaction string: expected 7 fields but have 2"
+            )
         );
         new RtTransaction(
             "003b;2017-07-19T21:25:07Z"
@@ -233,8 +239,14 @@ public final class RtTransactionTest {
         ).prefix();
     }
 
-    @Test(expected = IOException.class)
+    @Test
     public void prefixNotPresent() throws IOException {
+        this.thrown.expect(IOException.class);
+        this.thrown.expectMessage(
+            Matchers.startsWith(
+                "Invalid transaction string: expected 7 fields but have 3"
+             )
+        );
         new RtTransaction(
             "003b;2017-07-19T21:25:07Z;ffffffffffa72367"
         ).prefix();
@@ -294,7 +306,9 @@ public final class RtTransactionTest {
     public void bnfNotPresent() throws IOException {
         this.thrown.expect(IOException.class);
         this.thrown.expectMessage(
-            Matchers.startsWith("The iterable doesn't have the position #4")
+            Matchers.startsWith(
+                "Invalid transaction string: expected 7 fields but have 4"
+             )
         );
         new RtTransaction(
             "003b;2017-07-19T21:25:07Z;0000000000a72366;xksQuJa9;"
@@ -349,10 +363,12 @@ public final class RtTransactionTest {
     public void detailsAbsentTransactionString() throws IOException {
         this.thrown.expect(IOException.class);
         this.thrown.expectMessage(
-            Matchers.startsWith("The iterable doesn't have the position #5")
+            Matchers.startsWith(
+                "Invalid transaction string: expected 7 fields but have 5"
+            )
         );
         new RtTransaction(
-            "003b;2017-07-19T21:25:08Z;ffffffffffa72367"
+            "003b;2018-99-19T88:25:07Z;ffffffffffa72367;xksQuJa9;98bb82c81735c4ee;"
         ).details();
     }
 
@@ -392,8 +408,12 @@ public final class RtTransactionTest {
     public void signatureNotPresent() throws IOException {
         this.thrown.expect(IOException.class);
         this.thrown.expectMessage(
-            Matchers.startsWith("The iterable doesn't have the position #6")
+            Matchers.startsWith(
+                "Invalid transaction string: expected 7 fields but have 6"
+            )
         );
-        new RtTransaction("003d;").signature();
+        new RtTransaction(
+            "003b;2018-99-19T88:25:07Z;ffffffffffa72367;xksQuJa9;98bb82c81735c4ee;For food;"
+        ).signature();
     }
 }
