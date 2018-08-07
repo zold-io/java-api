@@ -185,14 +185,13 @@ final class RtTransaction implements Transaction {
 
     @Override
     public String bnf() throws IOException {
-        final String bnf = new UncheckedText(
+        final String bnf =
             new IoCheckedScalar<>(
-                new ItemAt<>(
+                () -> new ItemAt<>(
                     // @checkstyle MagicNumberCheck (1 line)
                     4, new SplitText(this.transaction, ";")
-                )
-            ).value()
-        ).asString();
+                ).value().asString()
+            ).value();
         if (!RtTransaction.HEX.matcher(bnf).matches()) {
             throw new IOException(
                 new UncheckedText(
