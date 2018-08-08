@@ -135,7 +135,7 @@ public final class RtTransactionTest {
         this.thrown.expect(IOException.class);
         this.thrown.expectMessage(
             Matchers.startsWith(
-                "Invalid transaction string: expected 7 fields but have 1"
+                "Invalid transaction string: expected 7 fields, but found 1"
             )
         );
         new RtTransaction("003b;").time();
@@ -199,7 +199,7 @@ public final class RtTransactionTest {
         this.thrown.expect(IOException.class);
         this.thrown.expectMessage(
             Matchers.startsWith(
-                "Invalid transaction string: expected 7 fields but have 2"
+                "Invalid transaction string: expected 7 fields, but found 2"
             )
         );
         new RtTransaction(
@@ -244,7 +244,7 @@ public final class RtTransactionTest {
         this.thrown.expect(IOException.class);
         this.thrown.expectMessage(
             Matchers.startsWith(
-                "Invalid transaction string: expected 7 fields but have 3"
+                "Invalid transaction string: expected 7 fields, but found 3"
              )
         );
         new RtTransaction(
@@ -307,7 +307,7 @@ public final class RtTransactionTest {
         this.thrown.expect(IOException.class);
         this.thrown.expectMessage(
             Matchers.startsWith(
-                "Invalid transaction string: expected 7 fields but have 4"
+                "Invalid transaction string: expected 7 fields, but found 4"
              )
         );
         new RtTransaction(
@@ -364,7 +364,7 @@ public final class RtTransactionTest {
         this.thrown.expect(IOException.class);
         this.thrown.expectMessage(
             Matchers.startsWith(
-                "Invalid transaction string: expected 7 fields but have 5"
+                "Invalid transaction string: expected 7 fields, but found 5"
             )
         );
         new RtTransaction(
@@ -409,7 +409,7 @@ public final class RtTransactionTest {
         this.thrown.expect(IOException.class);
         this.thrown.expectMessage(
             Matchers.startsWith(
-                "Invalid transaction string: expected 7 fields but have 6"
+                "Invalid transaction string: expected 7 fields, but found 6"
             )
         );
         new RtTransaction(
