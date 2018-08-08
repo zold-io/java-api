@@ -23,27 +23,47 @@
  */
 package io.zold.api;
 
-import java.io.IOException;
+import org.cactoos.Proc;
+import org.cactoos.text.FormattedText;
+import org.cactoos.text.UncheckedText;
 
 /**
- * Network of remote nodes.
+ * Taxes payment algorithm.
  *
- * @since 0.1
+ * @since 1.0
+ * @todo #40:30min Implement tax payment to remote nodes.
+ *  Payment should happen only if the wallet is in debt of more than
+ *  1 Zold. Debt is difference between current taxes that should have
+ *  been paid by wallet (see whitepaper for formula) and how much it
+ *  already paid in the past. A first algorithm could pay the
+ *  max to each node until there is nothing else to pay. The test
+ *  must also be updated.
  */
-public interface Network extends Iterable<Remote> {
+public final class Taxes implements Proc<Wallet> {
 
     /**
-     * Push the wallet to the network.
-     * @param wallet The wallet
+     * The beneficiary nodes.
      */
-    void push(Wallet wallet);
+    private final Iterable<Remote> bnfs;
 
     /**
-     * Pull a wallet from the network.
-     * @param id The wallet's {@link Wallet#id() id}
-     * @return The wallet
-     * @throws IOException If an IO error occurs
+     * Ctor.
+     *
+     * @param nodes Remote nodes.
      */
-    Wallet pull(long id) throws IOException;
+    public Taxes(final Iterable<Remote> nodes) {
+        this.bnfs = new TaxBeneficiaries(nodes);
+    }
 
+    @Override
+    public void exec(final Wallet wallet) {
+        throw new UnsupportedOperationException(
+            new UncheckedText(
+                new FormattedText(
+                    "paying taxes to %s not yet supported",
+                    this.bnfs
+                )
+            ).asString()
+        );
+    }
 }

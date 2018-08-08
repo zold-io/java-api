@@ -24,8 +24,11 @@
 
 package io.zold.api;
 
+import java.util.HashMap;
 import java.util.Map;
+import org.cactoos.iterable.Repeated;
 import org.cactoos.scalar.UncheckedScalar;
+import org.cactoos.text.RandomText;
 
 /**
  * Remote node.
@@ -53,17 +56,36 @@ public interface Remote {
     Wallet pull(long id);
 
     /**
-     * A fake {@link Remote}.
+     * A Fake {@link Remote}.
      */
     final class Fake implements Remote {
+
         /**
-         * Score.
+         * The remote's score.
          */
         private final Score score;
         /**
          * Pushed wallets.
          */
         private final Map<Long, Wallet> wallets;
+
+        /**
+         * Ctor.
+         * @param val The remote's score value
+         */
+        Fake(final int val) {
+            this(val, new HashMap<>());
+        }
+
+        /**
+         * Ctor.
+         * @param val The remote's score
+         */
+        Fake(final int val, final Map<Long, Wallet> wallets) {
+            this(
+                new RtScore(new Repeated<>(val, new RandomText())), wallets
+            );
+        }
 
         /**
          * Ctor.

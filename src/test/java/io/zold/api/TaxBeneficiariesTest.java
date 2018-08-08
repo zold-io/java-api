@@ -23,55 +23,54 @@
  */
 package io.zold.api;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import org.cactoos.iterable.IterableOf;
+import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
+import org.hamcrest.collection.IsIterableContainingInOrder;
 import org.hamcrest.core.IsEqual;
 import org.junit.Test;
 
 /**
- * Test case for {@link Network}.
+ * Test case for {@link TaxBeneficiaries}.
  *
- * @since 0.1
- * @todo #5:30min Implement Remote interface. Remote Interface must be
- *  implemented because Network depends on Remote behavior. Network.pull
- *  needs to search all remotes for some wallet id and merge all found
- *  wallets; Network.push must push a wallet to a remote based in remote.
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle MagicNumberCheck (500 lines)
- * @checkstyle ClassDataAbstractionCoupling (2 lines)
  */
-public final class NetworkTest {
+public final class TaxBeneficiariesTest {
 
     @Test
-    public void pushWalletToAllRemotes()  {
-        final Map<Long, Wallet> highwallets = new HashMap<>();
-        final Remote high = new Remote.Fake(20, highwallets);
-        final Map<Long, Wallet> lowwallets = new HashMap<>();
-        final Remote low = new Remote.Fake(20, lowwallets);
-        final long id = 1001L;
-        final Wallet wallet = new Wallet.Fake(id);
-        new RtNetwork(
-            new IterableOf<>(high, low)
-        ).push(wallet);
+    @SuppressWarnings("unchecked")
+    public void sorts() {
+        final Remote highremote = new Remote.Fake(20);
+        final Remote lowremote = new Remote.Fake(18);
         MatcherAssert.assertThat(
-            highwallets, Matchers.hasKey(id)
-        );
-        MatcherAssert.assertThat(
-            lowwallets, Matchers.hasKey(id)
+            "Can't sort",
+            new TaxBeneficiaries(
+                new IterableOf<>(lowremote, highremote)
+            ),
+            new IsIterableContainingInOrder<>(
+                new ListOf<>(
+                    new IsEqual<>(highremote),
+                    new IsEqual<>(lowremote)
+                )
+            )
         );
     }
 
     @Test
-    public void pullsWalletWithTheRightId() throws IOException {
-        final long id = 1L;
+    @SuppressWarnings("unchecked")
+    public void filters() {
+        final Remote highremote = new Remote.Fake(20);
+        final Remote vrylowremote = new Remote.Fake(14);
         MatcherAssert.assertThat(
-            new RtNetwork(new IterableOf<>()).pull(id).id(),
-            new IsEqual<>(id)
+            "Can't filter",
+            new TaxBeneficiaries(
+                new IterableOf<>(vrylowremote, highremote)
+            ),
+            new IsIterableContainingInOrder<>(
+                new ListOf<>(new IsEqual<>(highremote))
+            )
         );
     }
-
 }
