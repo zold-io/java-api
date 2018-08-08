@@ -46,7 +46,10 @@ import org.llorllale.cactoos.matchers.FuncApplies;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle JavadocVariableCheck (500 lines)
  * @checkstyle MagicNumberCheck (500 lines)
+ * @checkstyle LineLengthCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public final class WalletTest {
 
     @Rule
@@ -127,7 +130,7 @@ public final class WalletTest {
         final Wallet merged = wallet.merge(
             new Wallet.Fake(
                 id,
-                new RtTransaction("003b;2017-07-19T21:25:07Z;ffffffffffa72367;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr4...")
+                new RtTransaction("003b;2017-07-19T21:25:07Z;0000000000a72366;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr4...")
             )
         );
         MatcherAssert.assertThat(
@@ -143,7 +146,40 @@ public final class WalletTest {
         final Wallet merged = wallet.merge(
             new Wallet.Fake(
                 id,
-                new RtTransaction("003b;2017-07-18T21:25:07Z;ffffffffffa72367;xxsQuJa9;98bb82c81735c4ee;For food;QCuLuVr4...")
+                new RtTransaction("003b;2017-07-18T21:25:07Z;0000000000a72366;xxxxuuuu;98bb82c81735c4ee;For food;QCuLuVr4...")
+            )
+        );
+        MatcherAssert.assertThat(
+            new CollectionOf<>(merged.ledger()).size(),
+            new IsEqual<>(new CollectionOf<>(wallet.ledger()).size())
+        );
+    }
+
+    @Test
+    public void doesNotMergeTransactionsWithSameIdAndNegativeAmount()
+        throws IOException {
+        final long id = 5124095577148911L;
+        final Wallet wallet = new Wallet.File(this.wallet(id));
+        final Wallet merged = wallet.merge(
+            new Wallet.Fake(
+                id,
+                new RtTransaction("003b;2017-07-18T21:25:07Z;ffffffffffa72366;xxxxuuuu;98bb82c81735c4ee;For food;QCuLuVr4...")
+            )
+        );
+        MatcherAssert.assertThat(
+            new CollectionOf<>(merged.ledger()).size(),
+            new IsEqual<>(new CollectionOf<>(wallet.ledger()).size())
+        );
+    }
+
+    @Test
+    public void doesNotMergeTransactionsWithSamePrefix() throws IOException {
+        final long id = 5124095577148911L;
+        final Wallet wallet = new Wallet.File(this.wallet(id));
+        final Wallet merged = wallet.merge(
+            new Wallet.Fake(
+                id,
+                new RtTransaction("0011;2017-07-18T21:25:07Z;0000000000a72366;xksQuJa9;99bb82c81735c4ee;For food;QCuLuVr4...")
             )
         );
         MatcherAssert.assertThat(

@@ -53,6 +53,7 @@ public interface Wallet {
      * This wallet's ID: an unsigned 64-bit integer.
      * @return This wallet's id
      * @throws IOException If an IO error occurs
+     * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
      * @checkstyle MethodName (2 lines)
      */
     long id() throws IOException;
@@ -70,6 +71,7 @@ public interface Wallet {
      * same wallet, as identified by their {@link #id() id}.
      * @param other Other wallet
      * @return The merged wallet
+     * @throws IOException If an IO error occurs
      */
     Wallet merge(Wallet other) throws IOException;
 
@@ -90,6 +92,9 @@ public interface Wallet {
          */
         private final long id;
 
+        /**
+         * Transactions.
+         */
         private final Iterable<Transaction> transactions;
 
         /**
@@ -100,10 +105,20 @@ public interface Wallet {
             this(id, new IterableOf<>());
         }
 
+        /**
+         * Ctor.
+         * @param id The wallet id.
+         * @param transactions Transactions.
+         */
         public Fake(final long id, final Transaction... transactions) {
             this(id, new IterableOf<>(transactions));
         }
 
+        /**
+         * Ctor.
+         * @param id The wallet id.
+         * @param transactions Transactions.
+         */
         public Fake(final long id, final Iterable<Transaction> transactions) {
             this.id = id;
             this.transactions = transactions;
@@ -175,6 +190,21 @@ public interface Wallet {
         }
 
         @Override
+        // @todo #16:30min Following transactions should be ignored according
+        //  to the whitepaper:
+        //  a) If the transaction is negative and its signature is not valid,
+        //  it is ignored;
+        //  b) If the transaction makes the balance of the wallet negative,
+        //  it is ignored;
+        //  c) If the transaction is positive and it’s absent in the paying
+        //  wallet (which exists at the node), it’s ignored; If the paying
+        //  wallet doesn’t exist at the node, the transaction is ignored;
+        //
+        // @todo: #16:30min Merge method should update transactions
+        // in wallet's file and return concrete implementation not a fake one.
+        // Beware that tests should be refactored to take care of file cleanup
+        // after each case that merges wallets.
+        //
         public Wallet merge(final Wallet other) throws IOException {
             if (other.id() != this.id()) {
                 throw new IOException(
@@ -188,16 +218,17 @@ public interface Wallet {
                 );
             }
             final Iterable<Transaction> ledger = this.ledger();
-            final Collection<Transaction> candidates = new ArrayList<>();
+            final Collection<Transaction> candidates = new ArrayList<>(0);
             for (final Transaction remote : other.ledger()) {
                 final Collection<Transaction> filtered =
                     new Filtered<>(
                         input -> new UncheckedScalar<>(
                             new Or(
                                 () -> remote.equals(input),
-                                () -> remote.id() == input.id() &&
-                                    remote.bnf() == input.bnf(),
-                                () -> remote.id() == input.id() && remote.amount() < 0L,
+                                () -> remote.id() == input.id()
+                                    && remote.bnf().equals(input.bnf()),
+                                () -> remote.id() == input.id()
+                                    && remote.amount() < 0L,
                                 () -> remote.prefix().equals(input.prefix())
                             )
                         ).value(),
@@ -207,9 +238,11 @@ public interface Wallet {
                     candidates.add(remote);
                 }
             }
-            return new Wallet.Fake(this.id(), new Joined<>(ledger, candidates));
+            return new Wallet.Fake(
+                this.id(),
+                new Joined<Transaction>(ledger, candidates)
+            );
         }
-
 
         @Override
         public Iterable<Transaction> ledger() {
