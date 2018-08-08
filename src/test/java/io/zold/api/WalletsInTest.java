@@ -24,9 +24,12 @@
 package io.zold.api;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
+import org.hamcrest.collection.IsIterableWithSize;
+import org.hamcrest.core.IsEqual;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -52,20 +55,45 @@ public final class WalletsInTest {
         MatcherAssert.assertThat(
             new WalletsIn(Paths.get("src/test/resources/walletsIn")),
             // @checkstyle MagicNumber (1 line)
-            Matchers.iterableWithSize(5)
+            new IsIterableWithSize<>(new IsEqual<>(5))
         );
     }
 
     @Test
-    public void createIsNotYetImplemented() throws IOException {
-        this.thrown.expect(UnsupportedOperationException.class);
-        this.thrown.expectMessage(
-            Matchers.is(
-                "create() not yet supported"
-            )
+    public void createsWalletInWallets() throws IOException {
+        final Wallets wallets = new WalletsIn(this.folder.newFolder().toPath());
+        wallets.create();
+        MatcherAssert.assertThat(
+            "Can't create wallet in wallets",
+            wallets,
+            new IsIterableWithSize<>(new IsEqual<>(1))
         );
-        new WalletsIn(
-            this.folder.newFolder().toPath()
-        ).create();
+    }
+
+    @Test
+    public void createsWalletInFolder() throws IOException {
+        final Path path = this.folder.newFolder().toPath();
+        new WalletsIn(path).create();
+        MatcherAssert.assertThat(
+            "Can't create wallet in folder",
+            new WalletsIn(path),
+            new IsIterableWithSize<>(new IsEqual<>(1))
+        );
+    }
+
+    // @todo #12:30min Ensure creating a new wallet in a path where a
+    //  wallet with the same id throws an exception and does not
+    //  overwrite the existing one. This could be done using by
+    //  using a Random object with a similar seed in WalletsIn
+    //  and creating a wallet twice for example. When it is done
+    //  enable the test.
+    @Test
+    @Ignore("see todo above")
+    public void doesNotOverwriteExistingWallet() throws IOException {
+        final Path path = this.folder.newFolder().toPath();
+        new WalletsIn(path).create();
+        this.thrown.expect(IOException.class);
+        this.thrown.expectMessage("duplicate");
+        new WalletsIn(path).create();
     }
 }
