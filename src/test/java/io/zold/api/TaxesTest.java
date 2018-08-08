@@ -21,21 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package io.zold.api;
 
-import java.io.IOException;
+import org.cactoos.iterable.IterableOf;
+import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
- * Wallets.
+ * Test case for {@link Taxes}.
  *
- * @since 0.1
+ * @since 1.0
+ * @checkstyle JavadocMethodCheck (500 lines)
  */
-public interface Wallets extends Iterable<Wallet> {
-    /**
-     * Create a wallet.
-     * @return The new wallet.
-     * @throws IOException If an error occurs.
-     */
-    Wallet create() throws IOException;
+public final class TaxesTest {
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void payNotYetSupported() throws Exception {
+        new Taxes(new IterableOf<>()).exec(Mockito.mock(Wallet.class));
+    }
+
 }

@@ -24,6 +24,9 @@
 
 package io.zold.api;
 
+import org.cactoos.iterable.Repeated;
+import org.cactoos.text.RandomText;
+
 /**
  * Remote node.
  *
@@ -48,4 +51,52 @@ public interface Remote {
      * @return The wallet
      */
     Wallet pull(long id);
+
+    /**
+     * A Fake {@link Remote}.
+     */
+    final class Fake implements Remote {
+
+        /**
+         * The remote's score.
+         */
+        private final Score score;
+
+        /**
+         * Ctor.
+         * @param val The remote's score value
+         */
+        public Fake(final int val) {
+            this(new RtScore(
+                new Repeated<>(val, new RandomText())
+            ));
+        }
+
+        /**
+         * Ctor.
+         * @param score The remote's score
+         */
+        public Fake(final Score score) {
+            this.score = score;
+        }
+
+        @Override
+        public Score score() {
+            return this.score;
+        }
+
+        @Override
+        public void push(final Wallet wallet) {
+            throw new UnsupportedOperationException(
+                "push() not yet supported"
+            );
+        }
+
+        @Override
+        public Wallet pull(final long id) {
+            throw new UnsupportedOperationException(
+                "pull() not yet supported"
+            );
+        }
+    }
 }

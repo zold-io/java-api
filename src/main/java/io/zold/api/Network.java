@@ -31,9 +31,9 @@ import java.io.IOException;
  * @since 0.1
  */
 public interface Network extends Iterable<Remote> {
+
     /**
-     * Push the wallet to the network. The network will select the
-     * remote node with the highest score (with a minimum of {@code 16}).
+     * Push the wallet to the network.
      * @param wallet The wallet
      */
     void push(Wallet wallet);

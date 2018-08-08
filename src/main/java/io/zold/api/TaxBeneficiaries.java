@@ -21,21 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package io.zold.api;
 
-import java.io.IOException;
+import java.util.Comparator;
+import org.cactoos.iterable.Filtered;
+import org.cactoos.iterable.IterableEnvelope;
+import org.cactoos.iterable.LengthOf;
+import org.cactoos.iterable.Sorted;
 
 /**
- * Wallets.
+ * {@link Remote} nodes that should receive taxes.
  *
- * @since 0.1
+ * @since 1.0
  */
-public interface Wallets extends Iterable<Wallet> {
+public final class TaxBeneficiaries extends IterableEnvelope<Remote> {
+
     /**
-     * Create a wallet.
-     * @return The new wallet.
-     * @throws IOException If an error occurs.
+     * Ctor.
+     *
+     * @param nodes Remote nodes to select from.
      */
-    Wallet create() throws IOException;
+    public TaxBeneficiaries(final Iterable<Remote> nodes) {
+        super(() -> new Sorted<>(
+            Comparator.comparing(Remote::score),
+            new Filtered<>(
+                // @checkstyle MagicNumberCheck (1 line)
+                n -> new LengthOf(n.score().suffixes()).intValue() >= 16,
+                nodes
+            )
+        ));
+    }
 }
