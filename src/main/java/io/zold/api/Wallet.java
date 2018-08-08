@@ -27,17 +27,24 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collection;
+import org.cactoos.collection.Filtered;
 import org.cactoos.iterable.IterableOf;
+import org.cactoos.iterable.Joined;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.iterable.Skipped;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.CheckedScalar;
+import org.cactoos.scalar.Or;
+import org.cactoos.scalar.UncheckedScalar;
+import org.cactoos.text.FormattedText;
 import org.cactoos.text.SplitText;
 import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 
 /**
  * Wallet.
- *
  * @since 0.1
  */
 @SuppressWarnings({"PMD.ShortMethodName", "PMD.TooManyMethods"})
@@ -64,7 +71,7 @@ public interface Wallet {
      * @param other Other wallet
      * @return The merged wallet
      */
-    Wallet merge(Wallet other);
+    Wallet merge(Wallet other) throws IOException;
 
     /**
      * This wallet's ledger.
@@ -74,7 +81,6 @@ public interface Wallet {
 
     /**
      * A Fake {@link Wallet}.
-     *
      * @since 1.0
      */
     final class Fake implements Wallet {
@@ -84,13 +90,23 @@ public interface Wallet {
          */
         private final long id;
 
+        private final Iterable<Transaction> transactions;
+
         /**
          * Ctor.
-         *
          * @param id The wallet id.
          */
         public Fake(final long id) {
+            this(id, new IterableOf<>());
+        }
+
+        public Fake(final long id, final Transaction... transactions) {
+            this(id, new IterableOf<>(transactions));
+        }
+
+        public Fake(final long id, final Iterable<Transaction> transactions) {
             this.id = id;
+            this.transactions = transactions;
         }
 
         @Override
@@ -110,7 +126,7 @@ public interface Wallet {
 
         @Override
         public Iterable<Transaction> ledger() {
-            return new IterableOf<>();
+            return this.transactions;
         }
     }
 
@@ -158,16 +174,42 @@ public interface Wallet {
             }
         }
 
-        // @todo #6:30min Implement merge method. This should merge this wallet
-        //  with a copy of the same wallet. It should throw an error if a
-        //  wallet is provided. Also add a unit test to replace
-        //  WalletTest.mergeIsNotYetImplemented().
         @Override
-        public Wallet merge(final Wallet other) {
-            throw new UnsupportedOperationException(
-                "merge() not yet supported"
-            );
+        public Wallet merge(final Wallet other) throws IOException {
+            if (other.id() != this.id()) {
+                throw new IOException(
+                    new UncheckedText(
+                        new FormattedText(
+                            "Wallet ID mismatch, ours is %d, theirs is %d",
+                            other.id(),
+                            this.id()
+                        )
+                    ).asString()
+                );
+            }
+            final Iterable<Transaction> ledger = this.ledger();
+            final Collection<Transaction> candidates = new ArrayList<>();
+            for (final Transaction remote : other.ledger()) {
+                final Collection<Transaction> filtered =
+                    new Filtered<>(
+                        input -> new UncheckedScalar<>(
+                            new Or(
+                                () -> remote.equals(input),
+                                () -> remote.id() == input.id() &&
+                                    remote.bnf() == input.bnf(),
+                                () -> remote.id() == input.id() && remote.amount() < 0L,
+                                () -> remote.prefix().equals(input.prefix())
+                            )
+                        ).value(),
+                        ledger
+                    );
+                if (filtered.isEmpty()) {
+                    candidates.add(remote);
+                }
+            }
+            return new Wallet.Fake(this.id(), new Joined<>(ledger, candidates));
         }
+
 
         @Override
         public Iterable<Transaction> ledger() {
