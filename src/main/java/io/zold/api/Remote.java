@@ -24,6 +24,9 @@
 
 package io.zold.api;
 
+import java.util.Map;
+import org.cactoos.scalar.UncheckedScalar;
+
 /**
  * Remote node.
  *
@@ -48,4 +51,54 @@ public interface Remote {
      * @return The wallet
      */
     Wallet pull(long id);
+
+    /**
+     * A fake {@link Remote}.
+     */
+    final class Fake implements Remote {
+        /**
+         * Score.
+         */
+        private final Score score;
+        /**
+         * Pushed wallets.
+         */
+        private final Map<Long, Wallet> wallets;
+
+        /**
+         * Ctor.
+         * @param score Score
+         * @param wallets Wallets
+         */
+        Fake(final Score score, final Map<Long, Wallet> wallets) {
+            this.score = score;
+            this.wallets = wallets;
+        }
+
+        @Override
+        public Score score() {
+            return this.score;
+        }
+
+        @Override
+        public void push(final Wallet wallet) {
+            this.wallets.compute(
+                new UncheckedScalar<>(() -> wallet.id()).value(),
+                (id, stored) -> {
+                    final Wallet result;
+                    if (stored == null) {
+                        result = wallet;
+                    } else {
+                        result = stored.merge(wallet);
+                    }
+                    return result;
+                }
+            );
+        }
+
+        @Override
+        public Wallet pull(final long id) {
+            return this.wallets.get(id);
+        }
+    }
 }

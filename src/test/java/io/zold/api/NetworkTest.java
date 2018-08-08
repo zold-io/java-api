@@ -24,14 +24,16 @@
 package io.zold.api;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import org.cactoos.iterable.IterableOf;
 import org.cactoos.iterable.Repeated;
 import org.cactoos.text.RandomText;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.hamcrest.core.IsEqual;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 /**
  * Test case for {@link Network}.
@@ -43,77 +45,72 @@ import org.mockito.Mockito;
  *  wallets; Network.push must push a wallet to a remote based in remote.
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle MagicNumberCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCoupling (2 lines)
  */
 public final class NetworkTest {
 
     @Test
     @Ignore
-    public void pushWalletToRightRemote()  {
-        final Remote highremote = Mockito.mock(Remote.class);
-        final Score highscore = Mockito.mock(Score.class);
-        Mockito.when(highscore.suffixes()).thenReturn(
-            new Repeated<>(20, new RandomText())
+    public void pushWalletToRightRemote() {
+        final Map<Long, Wallet> highwallets = new HashMap<>();
+        final Remote high = new Remote.Fake(
+            new RtScore(new Repeated<>(20, new RandomText())), highwallets
         );
-        Mockito.when(highremote.score()).thenReturn(highscore);
-        final Remote lowremote = Mockito.mock(Remote.class);
-        final Score lowscore = Mockito.mock(Score.class);
-        Mockito.when(lowscore.suffixes()).thenReturn(
-            new Repeated<>(18, new RandomText())
+        final Map<Long, Wallet> lowwallets = new HashMap<>();
+        final Remote low = new Remote.Fake(
+            new RtScore(new Repeated<>(18, new RandomText())), lowwallets
         );
-        Mockito.when(lowremote.score()).thenReturn(lowscore);
-        final Wallet wallet = Mockito.mock(Wallet.class);
+        final long id = 1000L;
+        final Wallet wallet = new Wallet.Fake(id);
         new RtNetwork(
-            new IterableOf<Remote>(
-                highremote, lowremote
-            )
+            new IterableOf<>(high, low)
         ).push(wallet);
-        Mockito.verify(
-            highremote,
-            Mockito.times(1)
-        ).push(Mockito.any(Wallet.class));
-        Mockito.verify(
-            lowremote,
-            Mockito.never()
-        ).push(Mockito.any(Wallet.class));
+        MatcherAssert.assertThat(
+            highwallets, Matchers.hasKey(id)
+        );
+        MatcherAssert.assertThat(
+            lowwallets, Matchers.not(Matchers.hasKey(id))
+        );
     }
 
     @Test
     public void pushWalletToAllRemotes()  {
-        final Remote highremote = Mockito.mock(Remote.class);
-        final Remote lowremote = Mockito.mock(Remote.class);
-        final Wallet wallet = Mockito.mock(Wallet.class);
+        final Map<Long, Wallet> highwallets = new HashMap<>();
+        final Remote high = new Remote.Fake(
+            new RtScore(new Repeated<>(20, new RandomText())), highwallets
+        );
+        final Map<Long, Wallet> lowwallets = new HashMap<>();
+        final Remote low = new Remote.Fake(
+            new RtScore(new Repeated<>(20, new RandomText())), lowwallets
+        );
+        final long id = 1001L;
+        final Wallet wallet = new Wallet.Fake(id);
         new RtNetwork(
-            new IterableOf<Remote>(
-                highremote, lowremote
-            )
+            new IterableOf<>(high, low)
         ).push(wallet);
-        Mockito.verify(
-            highremote,
-            Mockito.times(1)
-        ).push(Mockito.any(Wallet.class));
-        Mockito.verify(
-            lowremote,
-            Mockito.times(1)
-        ).push(Mockito.any(Wallet.class));
+        MatcherAssert.assertThat(
+            highwallets, Matchers.hasKey(id)
+        );
+        MatcherAssert.assertThat(
+            lowwallets, Matchers.hasKey(id)
+        );
     }
 
     @Test
     @Ignore
     public void filtersUnqualifiedRemotesFromPush() {
-        final Remote remote = Mockito.mock(Remote.class);
-        final Score score = Mockito.mock(Score.class);
-        Mockito.when(score.suffixes()).thenReturn(
-            new Repeated<>(15, new RandomText())
+        final long id = 1002L;
+        final Wallet wallet = new Wallet.Fake(id);
+        final Map<Long, Wallet> wallets = new HashMap<>();
+        final Remote remote = new Remote.Fake(
+            new RtScore(new Repeated<>(15, new RandomText())), wallets
         );
-        Mockito.when(remote.score()).thenReturn(score);
-        final Wallet wallet = Mockito.mock(Wallet.class);
         new RtNetwork(
-            new IterableOf<Remote>(remote)
+            new IterableOf<>(remote)
         ).push(wallet);
-        Mockito.verify(
-            remote,
-            Mockito.never()
-        ).push(Mockito.any(Wallet.class));
+        MatcherAssert.assertThat(
+            wallets, Matchers.not(Matchers.hasKey(id))
+        );
     }
 
     @Test
