@@ -110,6 +110,11 @@ public final class WalletTest {
         );
     }
 
+    @Test(expected = UnsupportedOperationException.class)
+    public void keyIsNotYetImplemented() throws IOException {
+        new Wallet.File(this.folder.newFile().toPath()).key();
+    }
+
     private Path wallet(final long id) {
         return this.wallet(Long.toHexString(id));
     }
