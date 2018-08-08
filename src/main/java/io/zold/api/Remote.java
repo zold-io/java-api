@@ -80,6 +80,7 @@ public interface Remote {
         /**
          * Ctor.
          * @param val The remote's score
+         * @param wallets Wallets pushed
          */
         Fake(final int val, final Map<Long, Wallet> wallets) {
             this(
@@ -89,8 +90,8 @@ public interface Remote {
 
         /**
          * Ctor.
-         * @param score Score
-         * @param wallets Wallets
+         * @param score The remote's score
+         * @param wallets Wallets pushed
          */
         Fake(final Score score, final Map<Long, Wallet> wallets) {
             this.score = score;
