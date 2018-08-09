@@ -47,7 +47,7 @@ import org.llorllale.cactoos.matchers.FuncApplies;
  * @checkstyle JavadocVariableCheck (500 lines)
  * @checkstyle MagicNumberCheck (500 lines)
  * @checkstyle LineLengthCheck (500 lines)
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (3 lines)
  */
 @SuppressWarnings("PMD.TooManyMethods")
 public final class WalletTest {
