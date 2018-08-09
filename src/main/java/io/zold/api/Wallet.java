@@ -27,8 +27,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
 import org.cactoos.collection.Filtered;
 import org.cactoos.iterable.IterableOf;
 import org.cactoos.iterable.Joined;
@@ -218,26 +216,22 @@ public interface Wallet {
                 );
             }
             final Iterable<Transaction> ledger = this.ledger();
-            final Collection<Transaction> candidates = new ArrayList<>(0);
-            for (final Transaction remote : other.ledger()) {
-                final Collection<Transaction> filtered =
-                    new Filtered<>(
-                        input -> new UncheckedScalar<>(
-                            new Or(
-                                () -> remote.equals(input),
-                                () -> remote.id() == input.id()
-                                    && remote.bnf().equals(input.bnf()),
-                                () -> remote.id() == input.id()
-                                    && remote.amount() < 0L,
-                                () -> remote.prefix().equals(input.prefix())
-                            )
-                        ).value(),
-                        ledger
-                    );
-                if (filtered.isEmpty()) {
-                    candidates.add(remote);
-                }
-            }
+            final Iterable<Transaction> candidates = new Filtered<>(
+                origin -> new Filtered<>(
+                    incoming -> new UncheckedScalar<>(
+                        new Or(
+                            () -> incoming.equals(origin),
+                            () -> incoming.id() == origin.id()
+                                && incoming.bnf().equals(origin.bnf()),
+                            () -> incoming.id() == origin.id()
+                                && incoming.amount() < 0L,
+                            () -> incoming.prefix().equals(origin.prefix())
+                        )
+                    ).value(),
+                    ledger
+                ).isEmpty(),
+                other.ledger()
+            );
             return new Wallet.Fake(
                 this.id(),
                 new Joined<Transaction>(ledger, candidates)
