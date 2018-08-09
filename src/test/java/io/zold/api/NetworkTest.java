@@ -24,8 +24,6 @@
 package io.zold.api;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import org.cactoos.iterable.IterableOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -48,20 +46,18 @@ public final class NetworkTest {
 
     @Test
     public void pushWalletToAllRemotes()  {
-        final Map<Long, Wallet> highwallets = new HashMap<>();
-        final Remote high = new Remote.Fake(20, highwallets);
-        final Map<Long, Wallet> lowwallets = new HashMap<>();
-        final Remote low = new Remote.Fake(20, lowwallets);
+        final Remote.Fake high = new Remote.Fake(20);
+        final Remote.Fake low = new Remote.Fake(20);
         final long id = 1001L;
         final Wallet wallet = new Wallet.Fake(id);
         new RtNetwork(
             new IterableOf<>(high, low)
         ).push(wallet);
         MatcherAssert.assertThat(
-            highwallets, Matchers.hasKey(id)
+            high.wallets(), Matchers.hasKey(id)
         );
         MatcherAssert.assertThat(
-            lowwallets, Matchers.hasKey(id)
+            low.wallets(), Matchers.hasKey(id)
         );
     }
 

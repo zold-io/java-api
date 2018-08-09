@@ -71,20 +71,12 @@ public interface Remote {
 
         /**
          * Ctor.
-         * @param val The remote's score value
+         * @param val The remote's score
          */
         Fake(final int val) {
-            this(val, new HashMap<>());
-        }
-
-        /**
-         * Ctor.
-         * @param val The remote's score
-         * @param wallets Wallets pushed
-         */
-        Fake(final int val, final Map<Long, Wallet> wallets) {
             this(
-                new RtScore(new Repeated<>(val, new RandomText())), wallets
+                new RtScore(new Repeated<>(val, new RandomText())),
+                new HashMap<>()
             );
         }
 
@@ -122,6 +114,14 @@ public interface Remote {
         @Override
         public Wallet pull(final long id) {
             return this.wallets.get(id);
+        }
+
+        /**
+         * Retrieve wallets stored in memory. Used for testing.
+         * @return Pushed wallets
+         */
+        public Map<Long, Wallet> wallets() {
+            return this.wallets;
         }
     }
 }

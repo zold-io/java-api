@@ -25,7 +25,6 @@ package io.zold.api;
 
 import org.cactoos.iterable.IterableOf;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 /**
  * Test case for {@link Taxes}.
@@ -37,7 +36,7 @@ public final class TaxesTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void payNotYetSupported() throws Exception {
-        new Taxes(new IterableOf<>()).exec(Mockito.mock(Wallet.class));
+        new Taxes(new IterableOf<>()).exec(new Wallet.Fake(1L));
     }
 
 }
