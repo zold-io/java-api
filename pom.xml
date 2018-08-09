@@ -113,7 +113,7 @@ SOFTWARE.
           <plugin>
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
-            <version>0.8.0</version>
+            <version>0.8.1</version>
             <configuration>
               <output>file</output>
             </configuration>
@@ -133,6 +133,7 @@ SOFTWARE.
                 <configuration>
                   <excludes>
                     <exclude>**/*Envelope.class</exclude>
+                    <exclude>**/*Fk*.class</exclude>
                   </excludes>
                   <rules>
                     <rule>

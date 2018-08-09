@@ -85,12 +85,28 @@ public interface Wallet {
         private final long id;
 
         /**
+         * The wallet ledger.
+         */
+        private final Iterable<Transaction> ledger;
+
+        /**
          * Ctor.
          *
          * @param id The wallet id.
          */
         public Fake(final long id) {
+            this(id, new IterableOf<Transaction>());
+        }
+
+        /**
+         * Ctor.
+         *
+         * @param id The wallet id.
+         * @param ledger The transaction ledger.
+         */
+        public Fake(final long id, final Iterable<Transaction> ledger) {
             this.id = id;
+            this.ledger = ledger;
         }
 
         @Override
