@@ -282,9 +282,7 @@ final class RtTransaction implements Transaction {
 
     @Override
     public String toString() {
-        return new UncheckedScalar<>(
-            this.transaction
-        ).value();
+        return new UncheckedScalar<>(this.transaction).value();
     }
 
     @Override
