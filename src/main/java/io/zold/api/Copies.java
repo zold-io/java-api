@@ -58,7 +58,7 @@ public final class Copies extends IterableEnvelope<Copy> {
     @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     private static Iterable<Copy> copies(final long id,
         final Iterable<Remote> remotes) throws IOException {
-        final List<Copy> copies = new ArrayList<>(0);
+        final List<Copy> copies = new ArrayList<>(10);
         for (final Remote remote : remotes) {
             final Wallet wallet = remote.pull(id);
             boolean updated = false;

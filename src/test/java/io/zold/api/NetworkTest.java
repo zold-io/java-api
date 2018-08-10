@@ -44,7 +44,7 @@ import org.mockito.Mockito;
  *  wallets; Network.push must push a wallet to a remote based in remote.
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle MagicNumberCheck (500 lines)
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (2 lines)
  */
 public final class NetworkTest {
 
