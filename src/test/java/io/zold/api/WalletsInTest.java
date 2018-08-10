@@ -84,7 +84,7 @@ public final class WalletsInTest {
     @Test
     public void doesNotOverwriteExistingWallet() throws Exception {
         final Path path = this.folder.newFolder().toPath();
-        final Random random = new FkRandom();
+        final Random random = new FkRandom(16725L);
         new WalletsIn(path, random).create();
         this.thrown.expect(IOException.class);
         this.thrown.expectMessage("already exists");
@@ -101,10 +101,23 @@ public final class WalletsInTest {
          */
         private static final long serialVersionUID = 2905348968220129619L;
 
+        /**
+         * Value that represents a random number.
+         */
+        private final long value;
+
+        /**
+         * Ctor.
+         * @param val Value that represents a random number.
+         */
+        FkRandom(final long val) {
+            super();
+            this.value = val;
+        }
+
         @Override
         public long nextLong() {
-            // @checkstyle MagicNumberCheck (1 line)
-            return 16725L;
+            return this.value;
         }
     }
 }

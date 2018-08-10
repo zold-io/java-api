@@ -43,7 +43,7 @@ import org.cactoos.text.UncheckedText;
 /**
  * Wallets in path.
  * @since 0.1
- * @checkstyle ClassDataAbstractionCoupling (4 lines)
+ * @checkstyle ClassDataAbstractionCoupling (2 lines)
  */
 public final class WalletsIn implements Wallets {
 
@@ -125,7 +125,7 @@ public final class WalletsIn implements Wallets {
                 this.ext
             ).asString()
         );
-        if (Files.exists(wpth)) {
+        if (wpth.toFile().exists()) {
             throw new IOException(
                 new UncheckedText(
                     new FormattedText(
