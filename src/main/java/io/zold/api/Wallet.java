@@ -199,9 +199,9 @@ public interface Wallet {
         //  wallet doesn’t exist at the node, the transaction is ignored;
         //
         // @todo: #16:30min Merge method should update transactions
-        // in wallet's file and return concrete implementation not a fake one.
-        // Beware that tests should be refactored to take care of file cleanup
-        // after each case that merges wallets.
+        //  in wallet's file and return concrete implementation not a fake one.
+        //  Beware that tests should be refactored to take care of file cleanup
+        //  after each case that merges wallets.
         //
         public Wallet merge(final Wallet other) throws IOException {
             if (other.id() != this.id()) {
@@ -217,8 +217,8 @@ public interface Wallet {
             }
             final Iterable<Transaction> ledger = this.ledger();
             final Iterable<Transaction> candidates = new Filtered<>(
-                origin -> new Filtered<>(
-                    incoming -> new UncheckedScalar<>(
+                incoming -> new Filtered<>(
+                    origin -> new UncheckedScalar<>(
                         new Or(
                             () -> incoming.equals(origin),
                             () -> incoming.id() == origin.id()

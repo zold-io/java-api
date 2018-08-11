@@ -46,7 +46,6 @@ import org.llorllale.cactoos.matchers.FuncApplies;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle JavadocVariableCheck (500 lines)
  * @checkstyle MagicNumberCheck (500 lines)
- * @checkstyle LineLengthCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (3 lines)
  */
 @SuppressWarnings("PMD.TooManyMethods")
@@ -105,6 +104,7 @@ public final class WalletTest {
         final Wallet merged = wallet.merge(
             new Wallet.Fake(
                 id,
+                //@checkstyle LineLengthCheck (1 lines)
                 new RtTransaction("abcd;2017-07-19T21:25:07Z;0000000000a72366;xxsQuJa9;98bb82c81735c4ee;")
             )
         );
@@ -117,6 +117,7 @@ public final class WalletTest {
     @Test
     public void doesNotMergeWalletsWithDifferentId() throws IOException {
         this.error.expect(IOException.class);
+        //@checkstyle LineLengthCheck (1 lines)
         this.error.expectMessage("Wallet ID mismatch, ours is 123, theirs is 5124095577148911");
         final long id = 5124095577148911L;
         final Wallet wallet = new Wallet.File(this.wallet(id));
@@ -130,6 +131,7 @@ public final class WalletTest {
         final Wallet merged = wallet.merge(
             new Wallet.Fake(
                 id,
+                //@checkstyle LineLengthCheck (1 lines)
                 new RtTransaction("003b;2017-07-19T21:25:07Z;0000000000a72366;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr4...")
             )
         );
@@ -146,6 +148,7 @@ public final class WalletTest {
         final Wallet merged = wallet.merge(
             new Wallet.Fake(
                 id,
+                //@checkstyle LineLengthCheck (1 lines)
                 new RtTransaction("003b;2017-07-18T21:25:07Z;0000000000a72366;xxxxuuuu;98bb82c81735c4ee;For food;QCuLuVr4...")
             )
         );
@@ -163,7 +166,8 @@ public final class WalletTest {
         final Wallet merged = wallet.merge(
             new Wallet.Fake(
                 id,
-                new RtTransaction("003b;2017-07-18T21:25:07Z;ffffffffffa72366;xxxxuuuu;98bb82c81735c4ee;For food;QCuLuVr4...")
+                //@checkstyle LineLengthCheck (1 lines)
+                new RtTransaction("003b;2017-07-18T21:25:07Z;ffffffffffa72366;xxxxuuuu;98bb82c81735c4ff;For food;QCuLuVr4...")
             )
         );
         MatcherAssert.assertThat(
@@ -179,6 +183,7 @@ public final class WalletTest {
         final Wallet merged = wallet.merge(
             new Wallet.Fake(
                 id,
+                //@checkstyle LineLengthCheck (1 lines)
                 new RtTransaction("0011;2017-07-18T21:25:07Z;0000000000a72366;xksQuJa9;99bb82c81735c4ee;For food;QCuLuVr4...")
             )
         );
