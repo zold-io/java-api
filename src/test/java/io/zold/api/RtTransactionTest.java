@@ -247,9 +247,58 @@ public final class RtTransactionTest {
         ).prefix();
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void bnfIsNotYetImplemented() {
-        new RtTransaction("bnf()").bnf();
+    @Test
+    public void returnsBnf() throws IOException {
+        MatcherAssert.assertThat(
+            new RtTransaction(
+                "003b;2017-07-19T21:25:07Z;0000000000a72366;xksQuJa9;000000C81735c4ee;For food;QCuLuVr4..."
+            ).bnf(),
+            new IsEqual<>("000000C81735c4ee")
+        );
+    }
+
+    @Test
+    public void bnfSizeTooLong() throws IOException {
+        this.thrown.expect(IOException.class);
+        this.thrown.expectMessage(
+            Matchers.startsWith("Invalid bnf string '000000C81735c4eef'")
+        );
+        new RtTransaction(
+            "003b;2017-07-19T21:25:07Z;0000000000a72366;xksQuJa9;000000C81735c4eef;For food;QCuLuVr4..."
+        ).bnf();
+    }
+
+    @Test
+    public void bnfSizeTooShort() throws IOException {
+        this.thrown.expect(IOException.class);
+        this.thrown.expectMessage(
+            Matchers.startsWith("Invalid bnf string '000000C81735c4e'")
+        );
+        new RtTransaction(
+            "003b;2017-07-19T21:25:07Z;0000000000a72366;xksQuJa9;000000C81735c4e;For food;QCuLuVr4..."
+        ).bnf();
+    }
+
+    @Test
+    public void invalidBnfCharacter() throws IOException {
+        this.thrown.expect(IOException.class);
+        this.thrown.expectMessage(
+            Matchers.startsWith("Invalid bnf string '000000C81735X4ee'")
+        );
+        new RtTransaction(
+            "003b;2017-07-19T21:25:07Z;0000000000a72366;xksQuJa9;000000C81735X4ee;For food;QCuLuVr4..."
+        ).bnf();
+    }
+
+    @Test
+    public void bnfNotPresent() throws IOException {
+        this.thrown.expect(IOException.class);
+        this.thrown.expectMessage(
+            Matchers.startsWith("The iterable doesn't have the position #4")
+        );
+        new RtTransaction(
+            "003b;2017-07-19T21:25:07Z;0000000000a72366;xksQuJa9;"
+        ).bnf();
     }
 
     @Test

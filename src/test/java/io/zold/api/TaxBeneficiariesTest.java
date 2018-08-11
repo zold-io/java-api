@@ -23,60 +23,54 @@
  */
 package io.zold.api;
 
-import java.io.IOException;
 import org.cactoos.iterable.IterableOf;
-import org.cactoos.text.TextOf;
+import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.collection.IsIterableContainingInOrder;
 import org.hamcrest.core.IsEqual;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 /**
- * Test case for {@link Network}.
+ * Test case for {@link TaxBeneficiaries}.
  *
- * @since 0.1
- * @todo #5:30min Implement Remote interface. Remote Interface must be
- *  implemented because Network depends on Remote behavior. Network.pull
- *  needs to search all remotes for some wallet id and merge all found
- *  wallets; Network.push must push a wallet to a remote based in remote.
+ * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle MagicNumberCheck (500 lines)
- * @checkstyle ClassDataAbstractionCouplingCheck (2 lines)
  */
-public final class NetworkTest {
+public final class TaxBeneficiariesTest {
 
     @Test
-    public void pushWalletToAllRemotes()  {
-        final Remote highremote = Mockito.mock(Remote.class);
-        final Remote lowremote = Mockito.mock(Remote.class);
-        final Wallet wallet = Mockito.mock(Wallet.class);
-        new RtNetwork(
-            new IterableOf<Remote>(
-                highremote, lowremote
+    @SuppressWarnings("unchecked")
+    public void sorts() {
+        final Remote highremote = new Remote.Fake(20);
+        final Remote lowremote = new Remote.Fake(18);
+        MatcherAssert.assertThat(
+            "Can't sort",
+            new TaxBeneficiaries(
+                new IterableOf<>(lowremote, highremote)
+            ),
+            new IsIterableContainingInOrder<>(
+                new ListOf<>(
+                    new IsEqual<>(highremote),
+                    new IsEqual<>(lowremote)
+                )
             )
-        ).push(wallet);
-        Mockito.verify(
-            highremote,
-            Mockito.times(1)
-        ).push(Mockito.any(Wallet.class));
-        Mockito.verify(
-            lowremote,
-            Mockito.times(1)
-        ).push(Mockito.any(Wallet.class));
+        );
     }
 
     @Test
-    public void pullsWalletWithTheRightId() throws IOException {
-        final long id = 1L;
+    @SuppressWarnings("unchecked")
+    public void filters() {
+        final Remote highremote = new Remote.Fake(20);
+        final Remote vrylowremote = new Remote.Fake(14);
         MatcherAssert.assertThat(
-            new RtNetwork(
-                new IterableOf<>(
-                    new Remote.Fake(
-                        new RtScore(new IterableOf<>(new TextOf("a")))
-                    )
-                )
-            ).pull(id).id(),
-            new IsEqual<>(id)
+            "Can't filter",
+            new TaxBeneficiaries(
+                new IterableOf<>(vrylowremote, highremote)
+            ),
+            new IsIterableContainingInOrder<>(
+                new ListOf<>(new IsEqual<>(highremote))
+            )
         );
     }
 }

@@ -24,9 +24,12 @@
 package io.zold.api;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Random;
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
+import org.hamcrest.collection.IsIterableWithSize;
+import org.hamcrest.core.IsEqual;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -52,20 +55,69 @@ public final class WalletsInTest {
         MatcherAssert.assertThat(
             new WalletsIn(Paths.get("src/test/resources/walletsIn")),
             // @checkstyle MagicNumber (1 line)
-            Matchers.iterableWithSize(5)
+            new IsIterableWithSize<>(new IsEqual<>(5))
         );
     }
 
     @Test
-    public void createIsNotYetImplemented() throws IOException {
-        this.thrown.expect(UnsupportedOperationException.class);
-        this.thrown.expectMessage(
-            Matchers.is(
-                "create() not yet supported"
-            )
+    public void createsWalletInWallets() throws IOException {
+        final Wallets wallets = new WalletsIn(this.folder.newFolder().toPath());
+        wallets.create();
+        MatcherAssert.assertThat(
+            "Can't create wallet in wallets",
+            wallets,
+            new IsIterableWithSize<>(new IsEqual<>(1))
         );
-        new WalletsIn(
-            this.folder.newFolder().toPath()
-        ).create();
+    }
+
+    @Test
+    public void createsWalletInFolder() throws IOException {
+        final Path path = this.folder.newFolder().toPath();
+        new WalletsIn(path).create();
+        MatcherAssert.assertThat(
+            "Can't create wallet in folder",
+            new WalletsIn(path),
+            new IsIterableWithSize<>(new IsEqual<>(1))
+        );
+    }
+
+    @Test
+    public void doesNotOverwriteExistingWallet() throws Exception {
+        final Path path = this.folder.newFolder().toPath();
+        final Random random = new FkRandom(16725L);
+        new WalletsIn(path, random).create();
+        this.thrown.expect(IOException.class);
+        this.thrown.expectMessage("already exists");
+        new WalletsIn(path, random).create();
+    }
+
+    /**
+     * Fake randomizer that returns the same value each time.
+     */
+    private static class FkRandom extends Random {
+
+        /**
+         * Serial version.
+         */
+        private static final long serialVersionUID = 2905348968220129619L;
+
+        /**
+         * Value that represents a random number.
+         */
+        private final long value;
+
+        /**
+         * Ctor.
+         * @param val Value that represents a random number.
+         */
+        FkRandom(final long val) {
+            super();
+            this.value = val;
+        }
+
+        @Override
+        public long nextLong() {
+            return this.value;
+        }
     }
 }

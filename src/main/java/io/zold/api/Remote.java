@@ -24,6 +24,9 @@
 
 package io.zold.api;
 
+import org.cactoos.iterable.Repeated;
+import org.cactoos.text.RandomText;
+
 /**
  * Remote node.
  *
@@ -50,18 +53,28 @@ public interface Remote {
     Wallet pull(long id);
 
     /**
-     * Fake Remote.
+     * A Fake {@link Remote}.
      */
     final class Fake implements Remote {
 
         /**
-         * Score.
+         * The remote's score.
          */
         private final Score score;
 
         /**
          * Ctor.
-         * @param score Score
+         * @param val The remote's score value
+         */
+        public Fake(final int val) {
+            this(new RtScore(
+                new Repeated<>(val, new RandomText())
+            ));
+        }
+
+        /**
+         * Ctor.
+         * @param score The remote's score
          */
         public Fake(final Score score) {
             this.score = score;
