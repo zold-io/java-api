@@ -26,10 +26,10 @@ package io.zold.api;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Random;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.collection.IsIterableWithSize;
 import org.hamcrest.core.IsEqual;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -81,19 +81,43 @@ public final class WalletsInTest {
         );
     }
 
-    // @todo #12:30min Ensure creating a new wallet in a path where a
-    //  wallet with the same id throws an exception and does not
-    //  overwrite the existing one. This could be done using by
-    //  using a Random object with a similar seed in WalletsIn
-    //  and creating a wallet twice for example. When it is done
-    //  enable the test.
     @Test
-    @Ignore("see todo above")
-    public void doesNotOverwriteExistingWallet() throws IOException {
+    public void doesNotOverwriteExistingWallet() throws Exception {
         final Path path = this.folder.newFolder().toPath();
-        new WalletsIn(path).create();
+        final Random random = new FkRandom(16725L);
+        new WalletsIn(path, random).create();
         this.thrown.expect(IOException.class);
-        this.thrown.expectMessage("duplicate");
-        new WalletsIn(path).create();
+        this.thrown.expectMessage("already exists");
+        new WalletsIn(path, random).create();
+    }
+
+    /**
+     * Fake randomizer that returns the same value each time.
+     */
+    private static class FkRandom extends Random {
+
+        /**
+         * Serial version.
+         */
+        private static final long serialVersionUID = 2905348968220129619L;
+
+        /**
+         * Value that represents a random number.
+         */
+        private final long value;
+
+        /**
+         * Ctor.
+         * @param val Value that represents a random number.
+         */
+        FkRandom(final long val) {
+            super();
+            this.value = val;
+        }
+
+        @Override
+        public long nextLong() {
+            return this.value;
+        }
     }
 }
