@@ -27,9 +27,10 @@ package io.zold.api;
  * Computed Transaction.
  *
  * @since 1.0
- * @todo #29:30min Implement the computation of the transaction string
- *  based on the white paper. The unit test should also be updated to
- *  ensure it works as expected.
+ * @todo #54:30min Implement the computation of the transaction string
+ *  based on the white paper. The unit tests should also be updated to
+ *  ensure it works as expected and test for
+ *  returnSignatureForNegativeTransaction must be implemented.
  */
 public final class CpTransaction extends TransactionEnvelope {
 

@@ -73,6 +73,12 @@ public interface Wallet {
     Iterable<Transaction> ledger();
 
     /**
+     * This wallet's RSA key.
+     * @return This wallet's RSA key.
+     */
+    String key();
+
+    /**
      * A Fake {@link Wallet}.
      *
      * @since 1.0
@@ -111,6 +117,11 @@ public interface Wallet {
         @Override
         public Iterable<Transaction> ledger() {
             return new IterableOf<>();
+        }
+
+        @Override
+        public String key() {
+            return Long.toString(this.id);
         }
     }
 
@@ -183,6 +194,16 @@ public interface Wallet {
                     // @checkstyle MagicNumberCheck (1 line)
                     5
                 )
+            );
+        }
+
+        // @todo #54:30min Implement key method. This should return the
+        //  public RSA key of the wallet owner in Base64. Also add a unit test
+        //  to replace WalletTest.keyIsNotYetImplemented().
+        @Override
+        public String key() {
+            throw new UnsupportedOperationException(
+                "key() not yet supported"
             );
         }
     }
