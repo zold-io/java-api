@@ -49,13 +49,14 @@ import org.cactoos.time.ZonedDateTimeOf;
  * @since 0.1
  * @checkstyle ClassDataAbstractionCoupling (3 lines)
  */
-@SuppressWarnings("PMD.AvoidCatchingGenericException")
+@SuppressWarnings({"PMD.AvoidCatchingGenericException",
+    "PMD.AvoidFieldNameMatchingMethodName"})
 final class RtTransaction implements Transaction {
 
     /**
-     * Pattern for transaction String.
+     * Pattern for Prefix String.
      */
-    private static final Pattern TRANSACTION = Pattern.compile(
+    private static final Pattern PREFIX = Pattern.compile(
         //@checkstyle LineLengthCheck (1 line)
         "^([A-Za-z0-9+\\/]{4})*([A-Za-z0-9+\\/]{4}|[A-Za-z0-9+\\/]{3}=|[A-Za-z0-9+\\/]{2}==)$"
     );
@@ -200,7 +201,7 @@ final class RtTransaction implements Transaction {
         if (prefix.length() < 8 || prefix.length() > 32) {
             throw new IOException("Invalid prefix size");
         }
-        if (!RtTransaction.TRANSACTION.matcher(prefix).matches()) {
+        if (!RtTransaction.PREFIX.matcher(prefix).matches()) {
             throw new IOException("Invalid base64 prefix");
         }
         return prefix;
