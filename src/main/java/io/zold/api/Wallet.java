@@ -44,7 +44,7 @@ import org.cactoos.text.UncheckedText;
 /**
  * Wallet.
  * @since 0.1
- * @todo: #16:30min Merge method should update transactions
+ * @todo #16:30min Merge method should update transactions
  *  in wallet's file and return concrete implementation not a fake one.
  *  Beware that tests should be refactored to take care of file cleanup
  *  after each case that merges wallets.
