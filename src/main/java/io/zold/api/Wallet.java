@@ -44,6 +44,10 @@ import org.cactoos.text.UncheckedText;
 /**
  * Wallet.
  * @since 0.1
+ * @todo: #16:30min Merge method should update transactions
+ *  in wallet's file and return concrete implementation not a fake one.
+ *  Beware that tests should be refactored to take care of file cleanup
+ *  after each case that merges wallets.
  */
 @SuppressWarnings({"PMD.ShortMethodName", "PMD.TooManyMethods"})
 public interface Wallet {
@@ -187,7 +191,6 @@ public interface Wallet {
             }
         }
 
-        @Override
         // @todo #16:30min Following transactions should be ignored according
         //  to the whitepaper:
         //  a) If the transaction is negative and its signature is not valid,
@@ -197,12 +200,7 @@ public interface Wallet {
         //  c) If the transaction is positive and it’s absent in the paying
         //  wallet (which exists at the node), it’s ignored; If the paying
         //  wallet doesn’t exist at the node, the transaction is ignored;
-        //
-        // @todo: #16:30min Merge method should update transactions
-        //  in wallet's file and return concrete implementation not a fake one.
-        //  Beware that tests should be refactored to take care of file cleanup
-        //  after each case that merges wallets.
-        //
+        @Override
         public Wallet merge(final Wallet other) throws IOException {
             if (other.id() != this.id()) {
                 throw new IOException(
