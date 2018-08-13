@@ -98,7 +98,7 @@ final class RtTransaction implements Transaction {
                     if (
                         new TrimmedText(
                             new TextOf(trnsct)
-                        ).asString().length() < 1
+                        ).asString().isEmpty()
                     ) {
                         throw new IOException(
                             "Invalid transaction string: string is empty"

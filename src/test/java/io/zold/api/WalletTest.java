@@ -111,7 +111,7 @@ public final class WalletTest {
             new Wallet.Fake(
                 id,
                 //@checkstyle LineLengthCheck (1 lines)
-                new RtTransaction("abcd;2017-07-19T21:25:07Z;0000000000a72366;xxsQuJa9;98bb82c81735c4ee;")
+                new RtTransaction("abcd;2017-07-19T21:25:07Z;0000000000a72366;xxsQuJa9;98bb82c81735c4ee;For food;QCuLuVr4...")
             )
         );
         MatcherAssert.assertThat(
