@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.cactoos.collection.CollectionOf;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -45,7 +46,9 @@ import org.llorllale.cactoos.matchers.FuncApplies;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle JavadocVariableCheck (500 lines)
  * @checkstyle MagicNumberCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCouplingCheck (3 lines)
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public final class WalletTest {
 
     @Rule
@@ -94,10 +97,99 @@ public final class WalletTest {
         );
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void mergeIsNotYetImplemented() throws IOException {
-        new Wallet.File(this.folder.newFile().toPath()).merge(
-            new Wallet.File(this.folder.newFile().toPath())
+    @Test
+    public void mergesWallets() throws IOException {
+        final long id = 5124095577148911L;
+        final Wallet wallet = new Wallet.File(this.wallet(id));
+        final Wallet merged = wallet.merge(
+            new Wallet.Fake(
+                id,
+                //@checkstyle LineLengthCheck (1 lines)
+                new RtTransaction("abcd;2017-07-19T21:25:07Z;0000000000a72366;xxsQuJa9;98bb82c81735c4ee;")
+            )
+        );
+        MatcherAssert.assertThat(
+            new CollectionOf<>(merged.ledger()).size(),
+            new IsEqual<>(new CollectionOf<>(wallet.ledger()).size() + 1)
+        );
+    }
+
+    @Test
+    public void doesNotMergeWalletsWithDifferentId() throws IOException {
+        this.error.expect(IOException.class);
+        //@checkstyle LineLengthCheck (1 lines)
+        this.error.expectMessage("Wallet ID mismatch, ours is 123, theirs is 5124095577148911");
+        final long id = 5124095577148911L;
+        final Wallet wallet = new Wallet.File(this.wallet(id));
+        wallet.merge(new Wallet.Fake(123L));
+    }
+
+    @Test
+    public void doesNotMergeExistingTransactions() throws IOException {
+        final long id = 5124095577148911L;
+        final Wallet wallet = new Wallet.File(this.wallet(id));
+        final Wallet merged = wallet.merge(
+            new Wallet.Fake(
+                id,
+                //@checkstyle LineLengthCheck (1 lines)
+                new RtTransaction("003b;2017-07-19T21:25:07Z;0000000000a72366;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr4...")
+            )
+        );
+        MatcherAssert.assertThat(
+            new CollectionOf<>(merged.ledger()).size(),
+            new IsEqual<>(new CollectionOf<>(wallet.ledger()).size())
+        );
+    }
+
+    @Test
+    public void doesNotMergeTransactionsWithSameIdAndBnf() throws IOException {
+        final long id = 5124095577148911L;
+        final Wallet wallet = new Wallet.File(this.wallet(id));
+        final Wallet merged = wallet.merge(
+            new Wallet.Fake(
+                id,
+                //@checkstyle LineLengthCheck (1 lines)
+                new RtTransaction("003b;2017-07-18T21:25:07Z;0000000000a72366;xxxxuuuu;98bb82c81735c4ee;For food;QCuLuVr4...")
+            )
+        );
+        MatcherAssert.assertThat(
+            new CollectionOf<>(merged.ledger()).size(),
+            new IsEqual<>(new CollectionOf<>(wallet.ledger()).size())
+        );
+    }
+
+    @Test
+    public void doesNotMergeTransactionsWithSameIdAndNegativeAmount()
+        throws IOException {
+        final long id = 5124095577148911L;
+        final Wallet wallet = new Wallet.File(this.wallet(id));
+        final Wallet merged = wallet.merge(
+            new Wallet.Fake(
+                id,
+                //@checkstyle LineLengthCheck (1 lines)
+                new RtTransaction("003b;2017-07-18T21:25:07Z;ffffffffffa72366;xxxxuuuu;98bb82c81735c4ff;For food;QCuLuVr4...")
+            )
+        );
+        MatcherAssert.assertThat(
+            new CollectionOf<>(merged.ledger()).size(),
+            new IsEqual<>(new CollectionOf<>(wallet.ledger()).size())
+        );
+    }
+
+    @Test
+    public void doesNotMergeTransactionsWithSamePrefix() throws IOException {
+        final long id = 5124095577148911L;
+        final Wallet wallet = new Wallet.File(this.wallet(id));
+        final Wallet merged = wallet.merge(
+            new Wallet.Fake(
+                id,
+                //@checkstyle LineLengthCheck (1 lines)
+                new RtTransaction("0011;2017-07-18T21:25:07Z;0000000000a72366;xksQuJa9;99bb82c81735c4ee;For food;QCuLuVr4...")
+            )
+        );
+        MatcherAssert.assertThat(
+            new CollectionOf<>(merged.ledger()).size(),
+            new IsEqual<>(new CollectionOf<>(wallet.ledger()).size())
         );
     }
 
@@ -108,6 +200,11 @@ public final class WalletTest {
             new Wallet.File(this.wallet(5124095577148911L)).ledger(),
             Matchers.iterableWithSize(2)
         );
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void keyIsNotYetImplemented() throws IOException {
+        new Wallet.File(this.folder.newFile().toPath()).key();
     }
 
     private Path wallet(final long id) {

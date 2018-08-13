@@ -27,18 +27,27 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Path;
+import org.cactoos.collection.Filtered;
 import org.cactoos.iterable.IterableOf;
+import org.cactoos.iterable.Joined;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.iterable.Skipped;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.CheckedScalar;
+import org.cactoos.scalar.Or;
+import org.cactoos.scalar.UncheckedScalar;
+import org.cactoos.text.FormattedText;
 import org.cactoos.text.SplitText;
 import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 
 /**
  * Wallet.
- *
  * @since 0.1
+ * @todo #16:30min Merge method should update transactions
+ *  in wallet's file and return concrete implementation not a fake one.
+ *  Beware that tests should be refactored to take care of file cleanup
+ *  after each case that merges wallets.
  */
 @SuppressWarnings({"PMD.ShortMethodName", "PMD.TooManyMethods"})
 public interface Wallet {
@@ -46,6 +55,7 @@ public interface Wallet {
      * This wallet's ID: an unsigned 64-bit integer.
      * @return This wallet's id
      * @throws IOException If an IO error occurs
+     * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
      * @checkstyle MethodName (2 lines)
      */
     long id() throws IOException;
@@ -63,8 +73,9 @@ public interface Wallet {
      * same wallet, as identified by their {@link #id() id}.
      * @param other Other wallet
      * @return The merged wallet
+     * @throws IOException If an IO error occurs
      */
-    Wallet merge(Wallet other);
+    Wallet merge(Wallet other) throws IOException;
 
     /**
      * This wallet's ledger.
@@ -73,8 +84,13 @@ public interface Wallet {
     Iterable<Transaction> ledger();
 
     /**
+     * This wallet's RSA key.
+     * @return This wallet's RSA key.
+     */
+    String key();
+
+    /**
      * A Fake {@link Wallet}.
-     *
      * @since 1.0
      */
     final class Fake implements Wallet {
@@ -85,28 +101,35 @@ public interface Wallet {
         private final long id;
 
         /**
-         * The wallet ledger.
+         * Transactions.
          */
-        private final Iterable<Transaction> ledger;
+        private final Iterable<Transaction> transactions;
 
         /**
          * Ctor.
-         *
          * @param id The wallet id.
          */
         public Fake(final long id) {
-            this(id, new IterableOf<Transaction>());
+            this(id, new IterableOf<>());
         }
 
         /**
          * Ctor.
-         *
          * @param id The wallet id.
-         * @param ledger The transaction ledger.
+         * @param transactions Transactions.
          */
-        public Fake(final long id, final Iterable<Transaction> ledger) {
+        public Fake(final long id, final Transaction... transactions) {
+            this(id, new IterableOf<>(transactions));
+        }
+
+        /**
+         * Ctor.
+         * @param id The wallet id.
+         * @param transactions Transactions.
+         */
+        public Fake(final long id, final Iterable<Transaction> transactions) {
             this.id = id;
-            this.ledger = ledger;
+            this.transactions = transactions;
         }
 
         @Override
@@ -126,7 +149,12 @@ public interface Wallet {
 
         @Override
         public Iterable<Transaction> ledger() {
-            return new IterableOf<>();
+            return this.transactions;
+        }
+
+        @Override
+        public String key() {
+            return Long.toString(this.id);
         }
     }
 
@@ -174,14 +202,48 @@ public interface Wallet {
             }
         }
 
-        // @todo #6:30min Implement merge method. This should merge this wallet
-        //  with a copy of the same wallet. It should throw an error if a
-        //  wallet is provided. Also add a unit test to replace
-        //  WalletTest.mergeIsNotYetImplemented().
+        // @todo #16:30min Following transactions should be ignored according
+        //  to the whitepaper:
+        //  a) If the transaction is negative and its signature is not valid,
+        //  it is ignored;
+        //  b) If the transaction makes the balance of the wallet negative,
+        //  it is ignored;
+        //  c) If the transaction is positive and it’s absent in the paying
+        //  wallet (which exists at the node), it’s ignored; If the paying
+        //  wallet doesn’t exist at the node, the transaction is ignored;
         @Override
-        public Wallet merge(final Wallet other) {
-            throw new UnsupportedOperationException(
-                "merge() not yet supported"
+        public Wallet merge(final Wallet other) throws IOException {
+            if (other.id() != this.id()) {
+                throw new IOException(
+                    new UncheckedText(
+                        new FormattedText(
+                            "Wallet ID mismatch, ours is %d, theirs is %d",
+                            other.id(),
+                            this.id()
+                        )
+                    ).asString()
+                );
+            }
+            final Iterable<Transaction> ledger = this.ledger();
+            final Iterable<Transaction> candidates = new Filtered<>(
+                incoming -> new Filtered<>(
+                    origin -> new UncheckedScalar<>(
+                        new Or(
+                            () -> incoming.equals(origin),
+                            () -> incoming.id() == origin.id()
+                                && incoming.bnf().equals(origin.bnf()),
+                            () -> incoming.id() == origin.id()
+                                && incoming.amount() < 0L,
+                            () -> incoming.prefix().equals(origin.prefix())
+                        )
+                    ).value(),
+                    ledger
+                ).isEmpty(),
+                other.ledger()
+            );
+            return new Wallet.Fake(
+                this.id(),
+                new Joined<Transaction>(ledger, candidates)
             );
         }
 
@@ -199,6 +261,16 @@ public interface Wallet {
                     // @checkstyle MagicNumberCheck (1 line)
                     5
                 )
+            );
+        }
+
+        // @todo #54:30min Implement key method. This should return the
+        //  public RSA key of the wallet owner in Base64. Also add a unit test
+        //  to replace WalletTest.keyIsNotYetImplemented().
+        @Override
+        public String key() {
+            throw new UnsupportedOperationException(
+                "key() not yet supported"
             );
         }
     }
