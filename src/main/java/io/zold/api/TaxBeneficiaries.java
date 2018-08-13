@@ -23,24 +23,32 @@
  */
 package io.zold.api;
 
+import java.util.Comparator;
+import org.cactoos.iterable.Filtered;
+import org.cactoos.iterable.IterableEnvelope;
+import org.cactoos.iterable.LengthOf;
+import org.cactoos.iterable.Sorted;
+
 /**
- * Computed Transaction.
+ * {@link Remote} nodes that should receive taxes.
  *
  * @since 1.0
- * @todo #54:30min Implement the computation of the transaction string
- *  based on the white paper. The unit tests should also be updated to
- *  ensure it works as expected and test for
- *  returnSignatureForNegativeTransaction must be implemented.
  */
-public final class CpTransaction extends TransactionEnvelope {
+public final class TaxBeneficiaries extends IterableEnvelope<Remote> {
 
     /**
      * Ctor.
      *
-     * @param amt Amount to pay in zents
-     * @param bnf Wallet ID of beneficiary
+     * @param nodes Remote nodes to select from.
      */
-    CpTransaction(final long amt, final long bnf) {
-        super(new RtTransaction(Long.toString(amt + bnf)));
+    public TaxBeneficiaries(final Iterable<Remote> nodes) {
+        super(() -> new Sorted<>(
+            Comparator.comparing(Remote::score),
+            new Filtered<>(
+                // @checkstyle MagicNumberCheck (1 line)
+                n -> new LengthOf(n.score().suffixes()).intValue() >= 16,
+                nodes
+            )
+        ));
     }
 }

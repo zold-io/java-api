@@ -24,6 +24,10 @@
 package io.zold.api;
 
 import java.io.IOException;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.core.IsEqual;
+import org.hamcrest.core.StringContains;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -35,8 +39,57 @@ import org.junit.Test;
  * @checkstyle MagicNumberCheck (500 lines)
  */
 public final class CpTransactionTest {
-    @Test(expected = IOException.class)
-    public void cpTransactionIsNotYetImplemented() throws IOException {
-        new CpTransaction(1, 1234).amount();
+
+    @Test
+    @Ignore
+    public void returnAmount() throws IOException {
+        final long amount = 256;
+        MatcherAssert.assertThat(
+            "Cannot return amount",
+            new CpTransaction(amount, 1024).amount(),
+            new IsEqual<>(256)
+        );
+    }
+
+    @Test
+    @Ignore
+    public void returnSignatureForPositiveTransaction() throws IOException {
+        final long id = 1024;
+        MatcherAssert.assertThat(
+            "Cannot return signature",
+            new CpTransaction(256, id).signature(),
+            new IsEqual<>("1024")
+        );
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void returnSignatureForNegativeTransaction() throws IOException {
+        throw new UnsupportedOperationException(
+            "returnSignatureForNegativeTransaction() not yet implemented"
+        );
+    }
+
+    @Test
+    @Ignore
+    public void returnPrefix() throws IOException {
+        final long id = 1024;
+        final Wallet wallet = new Wallet.Fake(id);
+        MatcherAssert.assertThat(
+            "Cannot return prefix",
+            wallet.key(),
+            new StringContains(new CpTransaction(256, id).prefix())
+        );
+    }
+
+    @Test
+    @Ignore
+    public void returnBeneficiary() throws IOException {
+        final long id = 1024;
+        final Wallet wallet = new Wallet.Fake(id);
+        MatcherAssert.assertThat(
+            "Cannot return beneficiary",
+            new CpTransaction(256, id).bnf(),
+            new IsEqual<>(wallet.key())
+        );
     }
 }

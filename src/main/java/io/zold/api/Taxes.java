@@ -23,24 +23,47 @@
  */
 package io.zold.api;
 
+import org.cactoos.Proc;
+import org.cactoos.text.FormattedText;
+import org.cactoos.text.UncheckedText;
+
 /**
- * Computed Transaction.
+ * Taxes payment algorithm.
  *
  * @since 1.0
- * @todo #54:30min Implement the computation of the transaction string
- *  based on the white paper. The unit tests should also be updated to
- *  ensure it works as expected and test for
- *  returnSignatureForNegativeTransaction must be implemented.
+ * @todo #40:30min Implement tax payment to remote nodes.
+ *  Payment should happen only if the wallet is in debt of more than
+ *  1 Zold. Debt is difference between current taxes that should have
+ *  been paid by wallet (see whitepaper for formula) and how much it
+ *  already paid in the past. A first algorithm could pay the
+ *  max to each node until there is nothing else to pay. The test
+ *  must also be updated.
  */
-public final class CpTransaction extends TransactionEnvelope {
+public final class Taxes implements Proc<Wallet> {
+
+    /**
+     * The beneficiary nodes.
+     */
+    private final Iterable<Remote> bnfs;
 
     /**
      * Ctor.
      *
-     * @param amt Amount to pay in zents
-     * @param bnf Wallet ID of beneficiary
+     * @param nodes Remote nodes.
      */
-    CpTransaction(final long amt, final long bnf) {
-        super(new RtTransaction(Long.toString(amt + bnf)));
+    public Taxes(final Iterable<Remote> nodes) {
+        this.bnfs = new TaxBeneficiaries(nodes);
+    }
+
+    @Override
+    public void exec(final Wallet wallet) {
+        throw new UnsupportedOperationException(
+            new UncheckedText(
+                new FormattedText(
+                    "paying taxes to %s not yet supported",
+                    this.bnfs
+                )
+            ).asString()
+        );
     }
 }

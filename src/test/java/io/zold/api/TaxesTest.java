@@ -23,24 +23,21 @@
  */
 package io.zold.api;
 
+import org.cactoos.iterable.IterableOf;
+import org.junit.Test;
+import org.mockito.Mockito;
+
 /**
- * Computed Transaction.
+ * Test case for {@link Taxes}.
  *
  * @since 1.0
- * @todo #54:30min Implement the computation of the transaction string
- *  based on the white paper. The unit tests should also be updated to
- *  ensure it works as expected and test for
- *  returnSignatureForNegativeTransaction must be implemented.
+ * @checkstyle JavadocMethodCheck (500 lines)
  */
-public final class CpTransaction extends TransactionEnvelope {
+public final class TaxesTest {
 
-    /**
-     * Ctor.
-     *
-     * @param amt Amount to pay in zents
-     * @param bnf Wallet ID of beneficiary
-     */
-    CpTransaction(final long amt, final long bnf) {
-        super(new RtTransaction(Long.toString(amt + bnf)));
+    @Test(expected = UnsupportedOperationException.class)
+    public void payNotYetSupported() throws Exception {
+        new Taxes(new IterableOf<>()).exec(Mockito.mock(Wallet.class));
     }
+
 }
