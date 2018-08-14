@@ -82,10 +82,8 @@ public final class Copies extends IterableEnvelope<Copy> {
      * @param second Second wallet
      * @return Boolean Boolean
      * @throws IOException If fails
-     * @todo #56:30min Comparing of two wallets should be done in a different
-     *  manner. Wallets should implement Bytes interface from cactoos and
-     *  comparison should be done with Equality class (from cactoos).
-     *  Content of wallet's ledger should be compared also.
+     * @todo #56:30min Compare the entire content of two wallets. In addition
+     *  to id, compare RSA key and all transactions.
      */
     private static boolean equalWallets(final Wallet first,
         final Wallet second) throws IOException {
