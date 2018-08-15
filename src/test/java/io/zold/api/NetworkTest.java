@@ -26,9 +26,9 @@ package io.zold.api;
 import java.io.IOException;
 import org.cactoos.iterable.IterableOf;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.hamcrest.core.IsEqual;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 /**
  * Test case for {@link Network}.
@@ -39,27 +39,26 @@ import org.mockito.Mockito;
  *  needs to search all remotes for some wallet id and merge all found
  *  wallets; Network.push must push a wallet to a remote based in remote.
  * @checkstyle JavadocMethodCheck (500 lines)
+ * @checkstyle MagicNumberCheck (500 lines)
+ * @checkstyle ClassDataAbstractionCoupling (2 lines)
  */
 public final class NetworkTest {
 
     @Test
     public void pushWalletToAllRemotes()  {
-        final Remote highremote = Mockito.mock(Remote.class);
-        final Remote lowremote = Mockito.mock(Remote.class);
-        final Wallet wallet = Mockito.mock(Wallet.class);
+        final Remote.Fake high = new Remote.Fake(20);
+        final Remote.Fake low = new Remote.Fake(20);
+        final long id = 1001L;
+        final Wallet wallet = new Wallet.Fake(id);
         new RtNetwork(
-            new IterableOf<Remote>(
-                highremote, lowremote
-            )
+            new IterableOf<>(high, low)
         ).push(wallet);
-        Mockito.verify(
-            highremote,
-            Mockito.times(1)
-        ).push(Mockito.any(Wallet.class));
-        Mockito.verify(
-            lowremote,
-            Mockito.times(1)
-        ).push(Mockito.any(Wallet.class));
+        MatcherAssert.assertThat(
+            high.wallets(), Matchers.hasKey(id)
+        );
+        MatcherAssert.assertThat(
+            low.wallets(), Matchers.hasKey(id)
+        );
     }
 
     @Test

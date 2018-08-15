@@ -24,7 +24,10 @@
 
 package io.zold.api;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.cactoos.iterable.Repeated;
+import org.cactoos.scalar.UncheckedScalar;
 import org.cactoos.text.RandomText;
 
 /**
@@ -61,23 +64,30 @@ public interface Remote {
          * The remote's score.
          */
         private final Score score;
+        /**
+         * Pushed wallets.
+         */
+        private final Map<Long, Wallet> wallets;
 
         /**
          * Ctor.
-         * @param val The remote's score value
+         * @param val The remote's score
          */
-        public Fake(final int val) {
-            this(new RtScore(
-                new Repeated<>(val, new RandomText())
-            ));
+        Fake(final int val) {
+            this(
+                new RtScore(new Repeated<>(val, new RandomText())),
+                new HashMap<>()
+            );
         }
 
         /**
          * Ctor.
          * @param score The remote's score
+         * @param wallets Wallets pushed
          */
-        public Fake(final Score score) {
+        Fake(final Score score, final Map<Long, Wallet> wallets) {
             this.score = score;
+            this.wallets = wallets;
         }
 
         @Override
@@ -87,16 +97,31 @@ public interface Remote {
 
         @Override
         public void push(final Wallet wallet) {
-            throw new UnsupportedOperationException(
-                "push() not yet supported"
+            this.wallets.compute(
+                new UncheckedScalar<>(() -> wallet.id()).value(),
+                (id, stored) -> {
+                    final Wallet result;
+                    if (stored == null) {
+                        result = wallet;
+                    } else {
+                        result = stored.merge(wallet);
+                    }
+                    return result;
+                }
             );
         }
 
         @Override
         public Wallet pull(final long id) {
-            throw new UnsupportedOperationException(
-                "pull() not yet supported"
-            );
+            return this.wallets.get(id);
+        }
+
+        /**
+         * Retrieve wallets stored in memory. Used for testing.
+         * @return Pushed wallets
+         */
+        public Map<Long, Wallet> wallets() {
+            return this.wallets;
         }
     }
 }
