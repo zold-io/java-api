@@ -38,4 +38,16 @@ public interface Wallets extends Iterable<Wallet> {
      * @throws IOException If an error occurs.
      */
     Wallet create() throws IOException;
+
+    /**
+     * Create a wallet.
+     *
+     * @param id The wallet id.
+     * @param pubkey The wallet public key.
+     * @param network The network the wallet belongs.
+     * @return The new wallet.
+     * @throws IOException If an error occurs.
+     */
+    Wallet create(final long id, final String pubkey, final String
+        network) throws IOException;
 }

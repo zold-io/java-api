@@ -81,6 +81,27 @@ public final class WalletsInTest {
         );
     }
 
+    @Test(expected = UnsupportedOperationException.class)
+    public void createsRightWallet() throws IOException {
+        final Path path = this.folder.newFolder().toPath();
+        final String network = "zold";
+        final String pubkey = "AAAAB3NzaC1yc2EAAAADAQABAAABAQC";
+        final long id = 1;
+        final Wallet actual = new WalletsIn(path).create(
+            id, pubkey, network
+        );
+        final Wallet expected = new Wallet.Fake(
+            id,
+            pubkey,
+            network
+        );
+        MatcherAssert.assertThat(
+            "Created wallet with different values than expected",
+            actual,
+            new IsEqual<>(expected)
+        );
+    }
+
     @Test
     public void doesNotOverwriteExistingWallet() throws Exception {
         final Path path = this.folder.newFolder().toPath();

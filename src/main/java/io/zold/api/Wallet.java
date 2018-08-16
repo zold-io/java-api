@@ -49,7 +49,8 @@ import org.cactoos.text.UncheckedText;
  *  Beware that tests should be refactored to take care of file cleanup
  *  after each case that merges wallets.
  */
-@SuppressWarnings({"PMD.ShortMethodName", "PMD.TooManyMethods"})
+@SuppressWarnings({"PMD.ShortMethodName", "PMD.TooManyMethods",
+    "PMD.UnusedFormalParameter"})
 public interface Wallet {
     /**
      * This wallet's ID: an unsigned 64-bit integer.
@@ -92,6 +93,13 @@ public interface Wallet {
     /**
      * A Fake {@link Wallet}.
      * @since 1.0
+     * @todo #65:30min Complete Wallet implementations with id, public RSA
+     *  key and network id. Wallets.create(Long, String, String) must
+     *  create a Wallet with these strings set and a constructor must be
+     *  added to all Walletl realizations (Wallet(final long id, final String
+     *  pubkey, final String network, final Transaction... transactions). After
+     *  completing these implementations fix tests that uses Wallets.create()
+     *  and all Wallet realizations.
      */
     final class Fake implements Wallet {
 
@@ -120,6 +128,17 @@ public interface Wallet {
          */
         public Fake(final long id, final Transaction... transactions) {
             this(id, new IterableOf<>(transactions));
+        }
+
+        /**
+         * Complete Ctor.
+         * @param id The wallet id.
+         * @param pubkey The wallet public key.
+         * @param network The network the walet belongs to.
+         * @checkstyle UnusedFormalParameter (2 lines)
+         */
+        public Fake(final long id, final String pubkey, final String network) {
+            this(id);
         }
 
         /**
