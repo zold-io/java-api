@@ -87,16 +87,12 @@ public interface Remote {
 
         @Override
         public void push(final Wallet wallet) {
-            throw new UnsupportedOperationException(
-                "push() not yet supported"
-            );
+            // nothing
         }
 
         @Override
         public Wallet pull(final long id) {
-            throw new UnsupportedOperationException(
-                "pull() not yet supported"
-            );
+            return new Wallet.Fake(id);
         }
     }
 }
