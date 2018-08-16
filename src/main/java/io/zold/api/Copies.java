@@ -83,7 +83,8 @@ public final class Copies extends IterableEnvelope<Copy> {
      * @return Boolean Boolean
      * @throws IOException If fails
      * @todo #56:30min Compare the entire content of two wallets. In addition
-     *  to id, compare RSA key and all transactions.
+     *  to id, compare RSA key and all transactions one by one. Entire content
+     *  of each transaction should be compared.
      */
     private static boolean equalWallets(final Wallet first,
         final Wallet second) throws IOException {
