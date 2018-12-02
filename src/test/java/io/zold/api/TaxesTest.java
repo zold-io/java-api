@@ -61,7 +61,7 @@ public final class TaxesTest {
         // @checkstyle AvoidInstantiatingObjectsInLoops (26 lines)
         for (int index = 0; index < 5; index = index + 1) {
             ledger.add(
-                new FkTransaction(
+                new Transaction.Fake(
                     index,
                     first.plusDays(index),
                     1024 * index,
@@ -81,7 +81,7 @@ public final class TaxesTest {
             );
         }
         final List<Remote> remotes = new ArrayList<>(5);
-        for (int counter = 0; counter < 5; counter = counter + 1) {
+        for (int counter = 0; counter < ledger.size(); counter = counter + 1) {
             remotes.add(
                 new Remote.Fake(counter)
             );
