@@ -131,9 +131,9 @@ public interface Wallet {
         }
 
         /**
-         * Complete Ctor.
+         * Constructor.
          * @param id The wallet id.
-         * @param pubkey The wallet public key.
+         * @param pubkey The public RSA key of the wallet owner.
          * @param network The network the walet belongs to.
          * @checkstyle UnusedFormalParameter (2 lines)
          */
