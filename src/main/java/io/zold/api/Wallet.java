@@ -114,7 +114,7 @@ public interface Wallet {
         private final Iterable<Transaction> transactions;
 
         /**
-         * Ctor.
+         * Constructor.
          * @param id The wallet id.
          */
         public Fake(final long id) {
