@@ -94,9 +94,9 @@ public final class TaxesTest {
             new IsCollectionContaining<Transaction>(
                 // @todo #61:30min Create and implement an Transaction
                 //  matcher, where we can assure if some transaction have
-                // some values for its fields. After its implementation, fix
-                // this test so it can assure that the wallet has at least
-                // one transaction with TAXES prefix
+                //  some values for its fields. After its implementation, fix
+                //  this test so it can assure that the wallet has at least
+                //  one transaction with TAXES prefix
                 new IsEqual<>(
                     new StringContains("TAXES")
                 )
