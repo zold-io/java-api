@@ -59,7 +59,7 @@ public final class TaxesTest {
             ).value();
         final List<Transaction> ledger = new ArrayList<>(5);
         // @checkstyle AvoidInstantiatingObjectsInLoops (26 lines)
-        for (int index = 0; index < 5; index = index + 1) {
+        for (int index = 0; index < 5; index = ++index) {
             ledger.add(
                 new Transaction.Fake(
                     index,
@@ -81,7 +81,7 @@ public final class TaxesTest {
             );
         }
         final List<Remote> remotes = new ArrayList<>(5);
-        for (int counter = 0; counter < ledger.size(); counter = counter + 1) {
+        for (int counter = 0; counter < ledger.size(); ++counter) {
             remotes.add(
                 new Remote.Fake(counter)
             );
@@ -91,7 +91,7 @@ public final class TaxesTest {
         MatcherAssert.assertThat(
             "Didn't paid anything",
             wallet.ledger(),
-            new IsCollectionContaining<Transaction>(
+            new IsCollectionContaining<>(
                 // @todo #61:30min Create and implement an Transaction
                 //  matcher, where we can assure if some transaction have
                 //  some values for its fields. After its implementation, fix
