@@ -133,6 +133,7 @@ SOFTWARE.
                 <configuration>
                   <excludes>
                     <exclude>**/*Envelope.class</exclude>
+                    <exclude>**/*Transaction$*.*</exclude>
                   </excludes>
                   <rules>
                     <rule>
