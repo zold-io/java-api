@@ -16,6 +16,8 @@
 [![Test Coverage](https://img.shields.io/codecov/c/github/zold-io/java-api.svg)](https://codecov.io/github/zold-io/java-api?branch=master)
 [![SonarQube](https://img.shields.io/badge/sonar-ok-green.svg)](https://sonarcloud.io/dashboard?id=io.zold%3java-api)
 
+[![Hits-of-Code](https://hitsofcode.com/github/zold-io/java-api)](https://hitsofcode.com/view/github/zold-io/java-api)
+
 Java API for Zold. Ruby API is in [zold-io/zold](https://github.com/zold-io/zold).
 
 All you need is this:
