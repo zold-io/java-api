@@ -206,7 +206,7 @@ SOFTWARE.
     <dependency>
       <groupId>org.llorllale</groupId>
       <artifactId>cactoos-matchers</artifactId>
-      <version>0.11</version>
+      <version>0.22</version>
       <scope>test</scope>
     </dependency>
     <dependency>
