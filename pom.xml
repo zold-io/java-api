@@ -27,7 +27,7 @@ SOFTWARE.
   <parent>
     <groupId>com.jcabi</groupId>
     <artifactId>parent</artifactId>
-    <version>0.49.2</version>
+    <version>0.51.1</version>
   </parent>
   <groupId>io.zold</groupId>
   <artifactId>java-api</artifactId>
