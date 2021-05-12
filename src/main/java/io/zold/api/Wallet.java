@@ -27,17 +27,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Path;
-import org.cactoos.collection.Filtered;
+import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.IterableOf;
 import org.cactoos.iterable.Joined;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.iterable.Skipped;
 import org.cactoos.list.ListOf;
-import org.cactoos.scalar.CheckedScalar;
+import org.cactoos.scalar.IoChecked;
 import org.cactoos.scalar.Or;
-import org.cactoos.scalar.UncheckedScalar;
+import org.cactoos.scalar.Unchecked;
 import org.cactoos.text.FormattedText;
-import org.cactoos.text.SplitText;
+import org.cactoos.text.Split;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 
@@ -198,18 +198,17 @@ public interface Wallet {
 
         @Override
         public long id() throws IOException {
-            return new CheckedScalar<>(
+            return new IoChecked<>(
                 () -> Long.parseUnsignedLong(
                     new ListOf<>(
-                        new SplitText(
+                        new Split(
                             new TextOf(this.path),
                             "\n"
                         )
                     ).get(2).asString(),
                     // @checkstyle MagicNumber (1 line)
                     16
-                ),
-                e -> new IOException(e)
+                )
             ).value();
         }
 
@@ -245,18 +244,20 @@ public interface Wallet {
             }
             final Iterable<Transaction> ledger = this.ledger();
             final Iterable<Transaction> candidates = new Filtered<>(
-                incoming -> new Filtered<>(
-                    origin -> new UncheckedScalar<>(
-                        new Or(
-                            () -> incoming.equals(origin),
-                            () -> incoming.id() == origin.id()
-                                && incoming.bnf().equals(origin.bnf()),
-                            () -> incoming.id() == origin.id()
-                                && incoming.amount() < 0L,
-                            () -> incoming.prefix().equals(origin.prefix())
-                        )
-                    ).value(),
-                    ledger
+                incoming -> new ListOf<>(
+                    new Filtered<>(
+                        origin -> new Unchecked<>(
+                            new Or(
+                                () -> incoming.equals(origin),
+                                () -> incoming.id() == origin.id()
+                                    && incoming.bnf().equals(origin.bnf()),
+                                () -> incoming.id() == origin.id()
+                                    && incoming.amount() < 0L,
+                                () -> incoming.prefix().equals(origin.prefix())
+                            )
+                        ).value(),
+                        ledger
+                    )
                 ).isEmpty(),
                 other.ledger()
             );
@@ -271,14 +272,14 @@ public interface Wallet {
             return new Mapped<>(
                 txt -> new RtTransaction(txt.asString()),
                 new Skipped<>(
+                    // @checkstyle MagicNumberCheck (1 line)
+                    5,
                     new ListOf<>(
-                        new SplitText(
+                        new Split(
                             new TextOf(this.path),
                             "\\n"
                         )
-                    ),
-                    // @checkstyle MagicNumberCheck (1 line)
-                    5
+                    )
                 )
             );
         }

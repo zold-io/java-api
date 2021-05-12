@@ -27,11 +27,11 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import org.cactoos.text.JoinedText;
+import org.cactoos.text.Joined;
 import org.cactoos.time.ZonedDateTimeOf;
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.core.IsCollectionContaining;
 import org.hamcrest.core.IsEqual;
+import org.hamcrest.core.IsIterableContaining;
 import org.hamcrest.core.StringContains;
 import org.junit.Test;
 
@@ -67,12 +67,12 @@ public final class TaxesTest {
                     1024 * index,
                     prefix,
                     beneficiary,
-                    new JoinedText(
+                    new Joined(
                         "",
                         prefix,
                         Integer.toString(index)
                     ).asString(),
-                    new JoinedText(
+                    new Joined(
                         "",
                         "signature",
                         Integer.toString(index)
@@ -91,7 +91,7 @@ public final class TaxesTest {
         MatcherAssert.assertThat(
             "Didn't paid anything",
             wallet.ledger(),
-            new IsCollectionContaining<>(
+            new IsIterableContaining<>(
                 // @todo #61:30min Create and implement an Transaction
                 //  matcher, where we can assure if some transaction have
                 //  some values for its fields. After its implementation, fix

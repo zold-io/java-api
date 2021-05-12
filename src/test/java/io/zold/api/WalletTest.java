@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.cactoos.collection.CollectionOf;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -38,7 +37,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
-import org.llorllale.cactoos.matchers.FuncApplies;
+import org.llorllale.cactoos.matchers.IsApplicable;
 
 /**
  * Test case for {@link Wallet}.
@@ -94,7 +93,7 @@ public final class WalletTest {
                 wlt.pay(1, 1234);
                 return wlt.ledger();
             },
-            new FuncApplies<>(
+            new IsApplicable<>(
                 wallet,
                 new IsIterableWithSize<Transaction>(
                     new IsEqual<>(new ListOf<>(wallet.ledger()).size() + 1)
@@ -115,8 +114,8 @@ public final class WalletTest {
             )
         );
         MatcherAssert.assertThat(
-            new CollectionOf<>(merged.ledger()).size(),
-            new IsEqual<>(new CollectionOf<>(wallet.ledger()).size() + 1)
+            new ListOf<>(merged.ledger()).size(),
+            new IsEqual<>(new ListOf<>(wallet.ledger()).size() + 1)
         );
     }
 
@@ -142,8 +141,8 @@ public final class WalletTest {
             )
         );
         MatcherAssert.assertThat(
-            new CollectionOf<>(merged.ledger()).size(),
-            new IsEqual<>(new CollectionOf<>(wallet.ledger()).size())
+            new ListOf<>(merged.ledger()).size(),
+            new IsEqual<>(new ListOf<>(wallet.ledger()).size())
         );
     }
 
@@ -159,8 +158,8 @@ public final class WalletTest {
             )
         );
         MatcherAssert.assertThat(
-            new CollectionOf<>(merged.ledger()).size(),
-            new IsEqual<>(new CollectionOf<>(wallet.ledger()).size())
+            new ListOf<>(merged.ledger()).size(),
+            new IsEqual<>(new ListOf<>(wallet.ledger()).size())
         );
     }
 
@@ -177,8 +176,8 @@ public final class WalletTest {
             )
         );
         MatcherAssert.assertThat(
-            new CollectionOf<>(merged.ledger()).size(),
-            new IsEqual<>(new CollectionOf<>(wallet.ledger()).size())
+            new ListOf<>(merged.ledger()).size(),
+            new IsEqual<>(new ListOf<>(wallet.ledger()).size())
         );
     }
 
@@ -194,8 +193,8 @@ public final class WalletTest {
             )
         );
         MatcherAssert.assertThat(
-            new CollectionOf<>(merged.ledger()).size(),
-            new IsEqual<>(new CollectionOf<>(wallet.ledger()).size())
+            new ListOf<>(merged.ledger()).size(),
+            new IsEqual<>(new ListOf<>(wallet.ledger()).size())
         );
     }
 

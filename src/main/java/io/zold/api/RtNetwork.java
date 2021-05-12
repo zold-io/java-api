@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.iterable.Sorted;
-import org.cactoos.scalar.IoCheckedScalar;
+import org.cactoos.scalar.IoChecked;
 import org.cactoos.scalar.Reduced;
 
 /**
@@ -63,7 +63,7 @@ public final class RtNetwork implements Network {
 
     @Override
     public Wallet pull(final long id) throws IOException {
-        return new IoCheckedScalar<>(
+        return new IoChecked<>(
             new Reduced<>(
                 Wallet::merge,
                 new Mapped<>(

@@ -24,7 +24,8 @@
 package io.zold.api;
 
 import org.cactoos.Text;
-import org.cactoos.iterable.LengthOf;
+import org.cactoos.scalar.LengthOf;
+import org.cactoos.scalar.Unchecked;
 
 /**
  * Default implementation for {@link Score}.
@@ -49,8 +50,11 @@ public final class RtScore implements Score {
 
     @Override
     public int compareTo(final Score other) {
-        return new LengthOf(other.suffixes()).intValue()
-            - new LengthOf(this.sfxs).intValue();
+        return new Unchecked<>(
+            new LengthOf(other.suffixes())
+        ).value().intValue() - new Unchecked<>(
+            new LengthOf(this.sfxs)
+        ).value().intValue();
     }
 
     @Override

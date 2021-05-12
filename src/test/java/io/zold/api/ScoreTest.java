@@ -24,8 +24,8 @@
 package io.zold.api;
 
 import org.cactoos.iterable.IterableOf;
+import org.cactoos.iterable.Sorted;
 import org.cactoos.list.ListOf;
-import org.cactoos.list.Sorted;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.collection.IsIterableContainingInOrder;

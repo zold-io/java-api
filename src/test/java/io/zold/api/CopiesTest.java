@@ -23,8 +23,8 @@
  */
 package io.zold.api;
 
-import org.cactoos.collection.CollectionOf;
 import org.cactoos.iterable.IterableOf;
+import org.cactoos.list.ListOf;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
@@ -53,11 +53,11 @@ public final class CopiesTest {
             )
         );
         MatcherAssert.assertThat(
-            new CollectionOf<>(copies).size(),
+            new ListOf<>(copies).size(),
             new IsEqual<>(1)
         );
         MatcherAssert.assertThat(
-            new CollectionOf<>(
+            new ListOf<>(
                 copies.iterator().next().score().suffixes()
             ).size(),
             new IsEqual<>(2)
