@@ -1,3 +1,6 @@
+architect:
+  - yegor256
+  - davvd
 docker:
   image: yegor256/rultor-image:1.9.1
 assets:
