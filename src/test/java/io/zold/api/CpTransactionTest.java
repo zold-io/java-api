@@ -27,8 +27,8 @@ import java.io.IOException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.hamcrest.core.StringContains;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link CpTransaction}.
@@ -41,7 +41,7 @@ import org.junit.Test;
 public final class CpTransactionTest {
 
     @Test
-    @Ignore
+    @Disabled
     public void returnAmount() throws IOException {
         final long amount = 256;
         MatcherAssert.assertThat(
@@ -52,7 +52,7 @@ public final class CpTransactionTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void returnSignatureForPositiveTransaction() throws IOException {
         final long id = 1024;
         MatcherAssert.assertThat(
@@ -62,15 +62,8 @@ public final class CpTransactionTest {
         );
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void returnSignatureForNegativeTransaction() throws IOException {
-        throw new UnsupportedOperationException(
-            "returnSignatureForNegativeTransaction() not yet implemented"
-        );
-    }
-
     @Test
-    @Ignore
+    @Disabled
     public void returnPrefix() throws IOException {
         final long id = 1024;
         final Wallet wallet = new Wallet.Fake(id);
@@ -82,7 +75,7 @@ public final class CpTransactionTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void returnBeneficiary() throws IOException {
         final long id = 1024;
         final Wallet wallet = new Wallet.Fake(id);

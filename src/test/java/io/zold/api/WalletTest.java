@@ -36,7 +36,7 @@ import org.hamcrest.core.IsEqual;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.rules.TemporaryFolder;
 import org.llorllale.cactoos.matchers.FuncApplies;
 
@@ -55,9 +55,6 @@ public final class WalletTest {
     @Rule
     public final TemporaryFolder folder = new TemporaryFolder();
 
-    @Rule
-    public final ExpectedException error = ExpectedException.none();
-
     @Test
     public void readsWalletId() throws IOException {
         final long id = 5124095577148911L;
@@ -67,15 +64,21 @@ public final class WalletTest {
 
     @Test
     public void throwRuntimeExceptionIfReadingIdFails() throws IOException {
-        this.error.expect(RuntimeException.class);
-        new Wallet.File(this.wallet("")).id();
+        Assertions.assertThrows(
+            RuntimeException.class,
+            () -> new Wallet.File(this.wallet("")).id()
+        );
     }
 
     @Test
     public void throwNumberFormatExceptionIfIdIsInvalid() throws IOException {
-        this.error.expect(NumberFormatException.class);
-        this.error.expectMessage("For input string:");
-        new Wallet.File(this.wallet("invalid_id")).id();
+        MatcherAssert.assertThat(
+            Assertions.assertThrows(
+                NumberFormatException.class,
+                () -> new Wallet.File(this.wallet("invalid_id")).id()
+            ).getMessage(),
+            Matchers.startsWith("For input string:")
+        );
     }
 
     // @todo #21:30min This test had to be marked as ignored after #30 because
@@ -122,12 +125,17 @@ public final class WalletTest {
 
     @Test
     public void doesNotMergeWalletsWithDifferentId() throws IOException {
-        this.error.expect(IOException.class);
-        //@checkstyle LineLengthCheck (1 lines)
-        this.error.expectMessage("Wallet ID mismatch, ours is 123, theirs is 5124095577148911");
         final long id = 5124095577148911L;
         final Wallet wallet = new Wallet.File(this.wallet(id));
-        wallet.merge(new Wallet.Fake(123L));
+        MatcherAssert.assertThat(
+            Assertions.assertThrows(
+                IOException.class,
+                () -> wallet.merge(new Wallet.Fake(123L))
+            ).getMessage(),
+            Matchers.startsWith(
+                "Wallet ID mismatch, ours is 123, theirs is 5124095577148911"
+            )
+        );
     }
 
     @Test

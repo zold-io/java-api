@@ -28,11 +28,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Random;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsIterableWithSize;
 import org.hamcrest.core.IsEqual;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.rules.TemporaryFolder;
 
 /**
@@ -43,9 +44,6 @@ import org.junit.rules.TemporaryFolder;
  * @checkstyle JavadocVariableCheck (500 lines)
  */
 public final class WalletsInTest {
-
-    @Rule
-    public final ExpectedException thrown = ExpectedException.none();
 
     @Rule
     public final TemporaryFolder folder = new TemporaryFolder();
@@ -107,9 +105,13 @@ public final class WalletsInTest {
         final Path path = this.folder.newFolder().toPath();
         final Random random = new FkRandom(16725L);
         new WalletsIn(path, random).create();
-        this.thrown.expect(IOException.class);
-        this.thrown.expectMessage("already exists");
-        new WalletsIn(path, random).create();
+        MatcherAssert.assertThat(
+            Assertions.assertThrows(
+                IOException.class,
+                () -> new WalletsIn(path, random).create()
+            ).getMessage(),
+            Matchers.containsString("already exists")
+        );
     }
 
     /**
