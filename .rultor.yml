@@ -7,9 +7,6 @@ assets:
   settings.xml: zerocracy/home#assets/zold/settings.xml
   pubring.gpg: zerocracy/home#assets/pubring.gpg
   secring.gpg: zerocracy/home#assets/secring.gpg
-install: |
-  sudo gem install --no-rdoc --no-ri pdd
-  sudo gem install --no-rdoc --no-ri xcop
 merge:
   script: |
     mvn clean install -Pqulice --errors --settings ../settings.xml
