@@ -10,9 +10,6 @@ assets:
 install: |
   sudo gem install --no-rdoc --no-ri pdd
   sudo gem install --no-rdoc --no-ri xcop
-architect:
-- yegor256
-- llorllale
 merge:
   script: |
     mvn clean install -Pqulice --errors --settings ../settings.xml
