@@ -93,7 +93,7 @@ These are the requirements for this API.
 * Non-functional requirements were not made, but we expect
   * Flawless concurrency
   * "Decent" performance
-  * Design must respect the principles of [elegant objects](www.elegantobjects.org)
+  * Design must respect the principles of [elegant objects](https://www.elegantobjects.org/)
   * Design must resemble the design of the original [ruby API](https://github.com/zold-io/zold)
 
 
