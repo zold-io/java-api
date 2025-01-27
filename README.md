@@ -121,4 +121,3 @@ These are the requirements for this API.
 
 * The `cactoos-http` project might not obtain the resources to reach maturity, or may not reach maturity for some other reason.
 * Our bottleneck will be reading/writing our local database file. We might not be able to manage a "heavy" throughput.
-

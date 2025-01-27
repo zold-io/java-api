@@ -19,4 +19,3 @@ zold <-right- jsec
 zold <-down-> wallet.zold
 zold <-down-> nodes.json
 @enduml
-
