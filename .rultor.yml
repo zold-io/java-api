@@ -14,6 +14,7 @@ merge:
     mvn clean
     pdd --source=$(pwd) --verbose --file=/dev/null
 release:
+  pre: false
   script: |-
     [[ "${tag}" =~ ^[0-9]+(\.[0-9]+)*$ ]] || exit -1
     mvn versions:set "-DnewVersion=${tag}"
