@@ -1,12 +1,12 @@
 <img src="https://www.zold.io/logo.svg" width="92px" height="92px"/>
 
-[![EO principles respected here](http://www.elegantobjects.org/badge.svg)](http://www.elegantobjects.org)
-[![DevOps By Rultor.com](http://www.rultor.com/b/zold-io/java-api)](http://www.rultor.com/p/zold-io/java-api)
-[![We recommend IntelliJ IDEA](http://www.elegantobjects.org/intellij-idea.svg)](https://www.jetbrains.com/idea/)
+[![EO principles respected here](https://www.elegantobjects.org/badge.svg)](https://www.elegantobjects.org)
+[![DevOps By Rultor.com](https://www.rultor.com/b/zold-io/java-api)](https://www.rultor.com/p/zold-io/java-api)
+[![We recommend IntelliJ IDEA](https://www.elegantobjects.org/intellij-idea.svg)](https://www.jetbrains.com/idea/)
 
 [![mvn](https://github.com/zold-io/java-api/actions/workflows/mvn.yml/badge.svg)](https://github.com/zold-io/java-api/actions/workflows/mvn.yml)
-[![Javadoc](http://www.javadoc.io/badge/io.zold/java-api.svg)](http://www.javadoc.io/doc/io.zold/java-api)
-[![PDD status](http://www.0pdd.com/svg?name=zold-io/java-api)](http://www.0pdd.com/p?name=zold-io/java-api)
+[![Javadoc](https://www.javadoc.io/badge/io.zold/java-api.svg)](https://www.javadoc.io/doc/io.zold/java-api)
+[![PDD status](https://www.0pdd.com/svg?name=zold-io/java-api)](https://www.0pdd.com/p?name=zold-io/java-api)
 [![Maven Central](https://img.shields.io/maven-central/v/io.zold/java-api.svg)](https://maven-badges.herokuapp.com/maven-central/io.zold/java-api)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/zold-io/java-api/blob/master/LICENSE.txt)
 [![Test Coverage](https://img.shields.io/codecov/c/github/zold-io/java-api.svg)](https://codecov.io/github/zold-io/java-api?branch=master)
