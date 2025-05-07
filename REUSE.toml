@@ -4,9 +4,6 @@
 version = 1
 [[annotations]]
 path = [
-    "src/site/resources/plantuml/architecture.plantuml",
-    "src/test/resources/wallets/**",
-    "src/test/resources/walletsIn/**",
     ".DS_Store",
     ".gitattributes",
     ".gitignore",
@@ -29,6 +26,9 @@ path = [
     "**/CNAME",
     "README.md",
     "renovate.json",
+    "src/site/resources/plantuml/architecture.plantuml",
+    "src/test/resources/wallets/**",
+    "src/test/resources/walletsIn/**",
 ]
 precedence = "override"
 SPDX-FileCopyrightText = "Copyright (c) 2025 Yegor Bugayenko"
