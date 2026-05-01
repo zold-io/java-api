@@ -13,7 +13,7 @@ assets:
   secring.gpg: zerocracy/home#assets/secring.gpg
 merge:
   script: |
-    mvn clean install -Pqulice --errors --settings ../settings.xml
+    mvn clean install -ntp -Pqulice --errors --settings ../settings.xml
     mvn clean site -Psite --errors --settings ../settings.xml
     mvn clean
     pdd --source=$(pwd) --verbose --file=/dev/null
@@ -23,4 +23,4 @@ release:
     [[ "${tag}" =~ ^[0-9]+(\.[0-9]+)*$ ]] || exit -1
     mvn versions:set "-DnewVersion=${tag}"
     git commit -am "${tag}"
-    mvn clean deploy -Pzold -Psonar -Pqulice -Psonatype --errors --settings ../settings.xml
+    mvn clean deploy -ntp -Pzold -Psonar -Pqulice -Psonatype --errors --settings ../settings.xml
