@@ -117,7 +117,7 @@ public interface Wallet {
          * Constructor.
          * @param id The wallet id
          * @param pubkey The public RSA key of the wallet owner
-         * @param network The network the walet belongs to
+         * @param network The network the wallet belongs to
          * @checkstyle UnusedFormalParameter (2 lines)
          */
         public Fake(final long id, final String pubkey, final String network) {

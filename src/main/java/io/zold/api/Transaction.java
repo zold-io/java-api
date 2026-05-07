@@ -129,7 +129,7 @@ public interface Transaction {
          * @todo #61:30min Too many parameters on Fake constructor.
          *  Transaction.Fake have too many parameters; think and implement a
          *  way of reducing this number. After this implementation correct
-         *  all other Fake usages to receive the new paramater values.
+         *  all other Fake usages to receive the new parameter values.
          */
         public Fake(final int id, final ZonedDateTime time, final long
             amount, final String prefix, final String bnf, final String details,
