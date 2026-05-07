@@ -23,6 +23,7 @@ import org.junit.rules.TemporaryFolder;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle JavadocVariableCheck (500 lines)
  */
+@SuppressWarnings("PMD.UnnecessaryLocalRule")
 public final class WalletsInTest {
 
     @Rule
@@ -73,7 +74,7 @@ public final class WalletsInTest {
     @Test
     public void doesNotOverwriteExistingWallet() throws Exception {
         final Path path = this.folder.newFolder().toPath();
-        final Random random = new FkRandom(16_725L);
+        final Random random = new WalletsInTest.FkRandom(16_725L);
         new WalletsIn(path, random).create();
         MatcherAssert.assertThat(
             Assertions.assertThrows(

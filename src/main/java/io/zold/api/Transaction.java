@@ -79,6 +79,7 @@ public interface Transaction {
      * Fake implementation of Transaction.
      * @since 1.0
      */
+    @SuppressWarnings("PMD.DataClass")
     final class Fake implements Transaction {
 
         /**

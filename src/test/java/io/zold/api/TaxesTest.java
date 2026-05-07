@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
  * @checkstyle MethodBodyCommentsCheck (500 lines)
  * @checkstyle AbbreviationAsWordInNameCheck (500 lines)
  */
+@SuppressWarnings("PMD.UnnecessaryLocalRule")
 final class TaxesTest {
 
     @Test
@@ -35,7 +36,7 @@ final class TaxesTest {
             ).value();
         final List<Transaction> ledger = new ArrayList<>(5);
         // @checkstyle AvoidInstantiatingObjectsInLoops (26 lines)
-        for (int index = 0; index < 5; index = ++index) {
+        for (int index = 0; index < 5; ++index) {
             ledger.add(
                 new Transaction.Fake(
                     index,

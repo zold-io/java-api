@@ -5,7 +5,6 @@
 package io.zold.api;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
@@ -34,7 +33,6 @@ import org.cactoos.text.UncheckedText;
  *  Beware that tests should be refactored to take care of file cleanup
  *  after each case that merges wallets.
  */
-@SuppressWarnings("PMD.UnusedFormalParameter")
 public interface Wallet {
 
     /**
@@ -203,11 +201,10 @@ public interface Wallet {
         @Override
         public void pay(final long amt, final long bnf) throws IOException {
             try (
-                OutputStream stream = Files.newOutputStream(
-                    this.path,
-                    StandardOpenOption.APPEND
-                );
-                Writer out = new OutputStreamWriter(stream, StandardCharsets.UTF_8)
+                Writer out = new OutputStreamWriter(
+                    Files.newOutputStream(this.path, StandardOpenOption.APPEND),
+                    StandardCharsets.UTF_8
+                )
             ) {
                 out.write('\n');
                 out.write(new CpTransaction(amt, bnf).toString());
@@ -237,25 +234,27 @@ public interface Wallet {
                 );
             }
             final Iterable<Transaction> ledger = this.ledger();
-            final Iterable<Transaction> candidates = new Filtered<>(
-                incoming -> !new Filtered<>(
-                    origin -> new Unchecked<>(
-                        new Or(
-                            () -> incoming.equals(origin),
-                            () -> incoming.id() == origin.id()
-                                && incoming.bnf().equals(origin.bnf()),
-                            () -> incoming.id() == origin.id()
-                                && incoming.amount() < 0L,
-                            () -> incoming.prefix().equals(origin.prefix())
-                        )
-                    ).value(),
-                    ledger
-                ).iterator().hasNext(),
-                other.ledger()
-            );
             return new Wallet.Fake(
                 this.id(),
-                new Joined<Transaction>(ledger, candidates)
+                new Joined<Transaction>(
+                    ledger,
+                    new Filtered<>(
+                        incoming -> !new Filtered<>(
+                            origin -> new Unchecked<>(
+                                new Or(
+                                    () -> incoming.equals(origin),
+                                    () -> incoming.id() == origin.id()
+                                        && incoming.bnf().equals(origin.bnf()),
+                                    () -> incoming.id() == origin.id()
+                                        && incoming.amount() < 0L,
+                                    () -> incoming.prefix().equals(origin.prefix())
+                                )
+                            ).value(),
+                            ledger
+                        ).iterator().hasNext(),
+                        other.ledger()
+                    )
+                )
             );
         }
 

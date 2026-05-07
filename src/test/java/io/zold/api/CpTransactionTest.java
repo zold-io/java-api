@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle MagicNumberCheck (500 lines)
  */
+@SuppressWarnings("PMD.UnnecessaryLocalRule")
 final class CpTransactionTest {
 
     @Test

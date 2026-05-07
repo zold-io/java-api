@@ -28,7 +28,7 @@ import org.llorllale.cactoos.matchers.IsApplicable;
  * @checkstyle MagicNumberCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (3 lines)
  */
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.UnnecessaryLocalRule"})
 public final class WalletTest {
 
     @Rule

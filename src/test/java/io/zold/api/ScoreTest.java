@@ -19,6 +19,7 @@ import org.junit.Test;
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.UnnecessaryLocalRule")
 public final class ScoreTest {
 
     @Test

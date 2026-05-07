@@ -272,8 +272,7 @@ final class RtTransaction implements Transaction {
         if (obj == null || this.getClass() != obj.getClass()) {
             return false;
         }
-        final RtTransaction that = (RtTransaction) obj;
-        return this.transaction.equals(that.transaction);
+        return this.transaction.equals(((RtTransaction) obj).transaction);
     }
 
     @Override

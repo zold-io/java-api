@@ -23,26 +23,25 @@ import org.mockito.Mockito;
  * @checkstyle MagicNumberCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (2 lines)
  */
+@SuppressWarnings("PMD.UnnecessaryLocalRule")
 final class NetworkTest {
 
     @Test
-    void pushWalletToAllRemotes() {
-        final Remote highremote = Mockito.mock(Remote.class);
-        final Remote lowremote = Mockito.mock(Remote.class);
+    void pushesWalletToTheFirstRemote() {
+        final Remote first = Mockito.mock(Remote.class);
+        final Remote second = Mockito.mock(Remote.class);
         final Wallet wallet = Mockito.mock(Wallet.class);
-        new RtNetwork(
-            new IterableOf<Remote>(
-                highremote, lowremote
-            )
-        ).push(wallet);
-        Mockito.verify(
-            highremote,
-            Mockito.times(1)
-        ).push(Mockito.any(Wallet.class));
-        Mockito.verify(
-            lowremote,
-            Mockito.times(1)
-        ).push(Mockito.any(Wallet.class));
+        new RtNetwork(new IterableOf<Remote>(first, second)).push(wallet);
+        Mockito.verify(first, Mockito.times(1)).push(Mockito.any(Wallet.class));
+    }
+
+    @Test
+    void pushesWalletToTheSecondRemote() {
+        final Remote first = Mockito.mock(Remote.class);
+        final Remote second = Mockito.mock(Remote.class);
+        final Wallet wallet = Mockito.mock(Wallet.class);
+        new RtNetwork(new IterableOf<Remote>(first, second)).push(wallet);
+        Mockito.verify(second, Mockito.times(1)).push(Mockito.any(Wallet.class));
     }
 
     @Test

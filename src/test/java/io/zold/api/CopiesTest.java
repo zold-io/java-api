@@ -25,22 +25,29 @@ final class CopiesTest {
 
     @Test
     void createsOneCopy() {
-        final Iterable<Copies.Copy> copies = new Copies(
+        MatcherAssert.assertThat(
+            new ListOf<>(CopiesTest.copies()).size(),
+            new IsEqual<>(1)
+        );
+    }
+
+    @Test
+    void groupsRemotesScoresIntoSingleCopy() {
+        MatcherAssert.assertThat(
+            new ListOf<>(
+                CopiesTest.copies().iterator().next().score().suffixes()
+            ).size(),
+            new IsEqual<>(2)
+        );
+    }
+
+    private static Iterable<Copies.Copy> copies() {
+        return new Copies(
             1L,
             new IterableOf<>(
                 new Remote.Fake(new RtScore(new IterableOf<>(new TextOf("a")))),
                 new Remote.Fake(new RtScore(new IterableOf<>(new TextOf("b"))))
             )
-        );
-        MatcherAssert.assertThat(
-            new ListOf<>(copies).size(),
-            new IsEqual<>(1)
-        );
-        MatcherAssert.assertThat(
-            new ListOf<>(
-                copies.iterator().next().score().suffixes()
-            ).size(),
-            new IsEqual<>(2)
         );
     }
 }
