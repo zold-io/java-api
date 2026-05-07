@@ -26,12 +26,9 @@ import org.cactoos.time.ZonedDateTimeOf;
 
 /**
  * RtTransaction.
- *
  * @since 0.1
  * @checkstyle ClassDataAbstractionCoupling (3 lines)
  */
-@SuppressWarnings({"PMD.AvoidCatchingGenericException",
-    "PMD.AvoidFieldNameMatchingMethodName"})
 final class RtTransaction implements Transaction {
 
     /**
@@ -71,6 +68,7 @@ final class RtTransaction implements Transaction {
     /**
      * Ctor.
      * @param trnsct String representation of transaction
+     * @checkstyle LambdaBodyLengthCheck (28 lines)
      */
     RtTransaction(final String trnsct) {
         this.transaction = new IoChecked<>(
@@ -106,7 +104,6 @@ final class RtTransaction implements Transaction {
     }
 
     @Override
-    @SuppressWarnings("PMD.ShortMethodName")
     public int id() throws IOException {
         final String ident = new UncheckedText(
             new IoChecked<>(
@@ -268,7 +265,6 @@ final class RtTransaction implements Transaction {
     }
 
     @Override
-    @SuppressWarnings("PMD.OnlyOneReturn")
     public boolean equals(final Object obj) {
         if (this == obj) {
             return true;

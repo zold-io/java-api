@@ -10,10 +10,10 @@ import org.cactoos.text.Randomized;
 
 /**
  * Remote node.
- *
  * @since 0.1
  */
 public interface Remote {
+
     /**
      * This remote node's score.
      * @return The score
@@ -35,6 +35,7 @@ public interface Remote {
 
     /**
      * A Fake {@link Remote}.
+     * @since 1.0
      */
     final class Fake implements Remote {
 

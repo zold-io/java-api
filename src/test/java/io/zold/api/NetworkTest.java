@@ -14,7 +14,6 @@ import org.mockito.Mockito;
 
 /**
  * Test case for {@link Network}.
- *
  * @since 0.1
  * @todo #5:30min Implement Remote interface. Remote Interface must be
  *  implemented because Network depends on Remote behavior. Network.pull
@@ -24,10 +23,10 @@ import org.mockito.Mockito;
  * @checkstyle MagicNumberCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (2 lines)
  */
-public final class NetworkTest {
+final class NetworkTest {
 
     @Test
-    public void pushWalletToAllRemotes()  {
+    void pushWalletToAllRemotes() {
         final Remote highremote = Mockito.mock(Remote.class);
         final Remote lowremote = Mockito.mock(Remote.class);
         final Wallet wallet = Mockito.mock(Wallet.class);
@@ -47,7 +46,7 @@ public final class NetworkTest {
     }
 
     @Test
-    public void pullsWalletWithTheRightId() throws IOException {
+    void pullsWalletWithTheRightId() throws IOException {
         final long id = 1L;
         MatcherAssert.assertThat(
             new RtNetwork(

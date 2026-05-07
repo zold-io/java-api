@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Copies}.
- *
  * @since 1.0
  * @todo #56:30min Add more test scenarios to Copies.
  *  Scenarios:
@@ -22,10 +21,10 @@ import org.junit.jupiter.api.Test;
  *  remotes return wallets with different content
  * @checkstyle JavadocMethodCheck (500 lines)
  */
-public final class CopiesTest {
+final class CopiesTest {
 
     @Test
-    public void createsOneCopy() {
+    void createsOneCopy() {
         final Iterable<Copies.Copy> copies = new Copies(
             1L,
             new IterableOf<>(

@@ -22,8 +22,8 @@ public final class Copies extends IterableEnvelope<Copy> {
 
     /**
      * Ctor.
-     * @param id Id of the wallet to pull.
-     * @param remotes Remote nodes.
+     * @param id Id of the wallet to pull
+     * @param remotes Remote nodes
      */
     Copies(final long id, final Iterable<Remote> remotes) {
         super(new IterableOf<>(() -> copies(id, remotes).iterator()));
@@ -36,7 +36,6 @@ public final class Copies extends IterableEnvelope<Copy> {
      * @return Iterable Iterable of Copy
      * @throws IOException If fails
      */
-    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     private static Iterable<Copy> copies(final long id,
         final Iterable<Remote> remotes) throws IOException {
         final List<Copy> copies = new ArrayList<>(10);
@@ -51,7 +50,7 @@ public final class Copies extends IterableEnvelope<Copy> {
                 }
             }
             if (!updated) {
-                copies.add(new Copy(wallet, remote));
+                copies.add(new Copies.Copy(wallet, remote));
             }
         }
         return new IterableOf<>(copies.iterator());
@@ -92,8 +91,8 @@ public final class Copies extends IterableEnvelope<Copy> {
 
         /**
          * Ctor.
-         * @param wallet The wallet.
-         * @param remotes The remote nodes where the wallet was found.
+         * @param wallet The wallet
+         * @param remotes The remote nodes where the wallet was found
          */
         Copy(final Wallet wallet, final Remote... remotes) {
             this(wallet, new IterableOf<>(remotes));
@@ -101,12 +100,28 @@ public final class Copies extends IterableEnvelope<Copy> {
 
         /**
          * Ctor.
-         * @param wallet The wallet.
-         * @param remotes The remote nodes where the wallet was found.
+         * @param wallet The wallet
+         * @param remotes The remote nodes where the wallet was found
          */
         Copy(final Wallet wallet, final Iterable<Remote> remotes) {
             this.wlt = wallet;
             this.remotes = remotes;
+        }
+
+        @Override
+        public int compareTo(final Copy other) {
+            return this.score().compareTo(other.score());
+        }
+
+        @Override
+        public boolean equals(final Object obj) {
+            return obj instanceof Copy
+                && this.compareTo((Copy) obj) == 0;
+        }
+
+        @Override
+        public int hashCode() {
+            return this.wlt.hashCode();
         }
 
         /**
@@ -114,29 +129,24 @@ public final class Copies extends IterableEnvelope<Copy> {
          * @param remote Remote
          * @return Copy Copy
          */
-        public Copy with(final Remote remote) {
-            return new Copy(this.wallet(), new Joined<>(remote, this.remotes));
+        Copies.Copy with(final Remote remote) {
+            return new Copies.Copy(this.wallet(), new Joined<>(remote, this.remotes));
         }
 
         /**
          * The wallet.
-         * @return The wallet.
+         * @return The wallet
          */
-        public Wallet wallet() {
+        Wallet wallet() {
             return this.wlt;
         }
 
         /**
          * The summary of the score of all the remote nodes.
-         * @return The score.
+         * @return The score
          */
-        public Score score() {
+        Score score() {
             return new Score.Summed(new Mapped<>(Remote::score, this.remotes));
-        }
-
-        @Override
-        public int compareTo(final Copy other) {
-            return this.score().compareTo(other.score());
         }
     }
 }

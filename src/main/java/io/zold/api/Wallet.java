@@ -4,10 +4,14 @@
  */
 package io.zold.api;
 
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.IterableOf;
 import org.cactoos.iterable.Joined;
@@ -30,9 +34,9 @@ import org.cactoos.text.UncheckedText;
  *  Beware that tests should be refactored to take care of file cleanup
  *  after each case that merges wallets.
  */
-@SuppressWarnings({"PMD.ShortMethodName", "PMD.TooManyMethods",
-    "PMD.UnusedFormalParameter"})
+@SuppressWarnings("PMD.UnusedFormalParameter")
 public interface Wallet {
+
     /**
      * This wallet's ID: an unsigned 64-bit integer.
      * @return This wallet's id
@@ -67,7 +71,7 @@ public interface Wallet {
 
     /**
      * This wallet's RSA key.
-     * @return This wallet's RSA key.
+     * @return This wallet's RSA key
      */
     String key();
 
@@ -96,7 +100,7 @@ public interface Wallet {
 
         /**
          * Constructor.
-         * @param id The wallet id.
+         * @param id The wallet id
          */
         public Fake(final long id) {
             this(id, new IterableOf<>());
@@ -104,8 +108,8 @@ public interface Wallet {
 
         /**
          * Ctor.
-         * @param id The wallet id.
-         * @param transactions Transactions.
+         * @param id The wallet id
+         * @param transactions Transactions
          */
         public Fake(final long id, final Transaction... transactions) {
             this(id, new IterableOf<>(transactions));
@@ -113,9 +117,9 @@ public interface Wallet {
 
         /**
          * Constructor.
-         * @param id The wallet id.
-         * @param pubkey The public RSA key of the wallet owner.
-         * @param network The network the walet belongs to.
+         * @param id The wallet id
+         * @param pubkey The public RSA key of the wallet owner
+         * @param network The network the walet belongs to
          * @checkstyle UnusedFormalParameter (2 lines)
          */
         public Fake(final long id, final String pubkey, final String network) {
@@ -124,8 +128,8 @@ public interface Wallet {
 
         /**
          * Ctor.
-         * @param id The wallet id.
-         * @param transactions Transactions.
+         * @param id The wallet id
+         * @param transactions Transactions
          */
         public Fake(final long id, final Iterable<Transaction> transactions) {
             this.id = id;
@@ -160,6 +164,7 @@ public interface Wallet {
 
     /**
      * Default File implementation.
+     * @since 1.0
      * @checkstyle ClassDataAbstractionCouplingCheck (2 lines)
      */
     final class File implements Wallet {
@@ -179,6 +184,7 @@ public interface Wallet {
 
         @Override
         public long id() throws IOException {
+            // @checkstyle ProhibitLineSeparatorInStringsCheck (10 lines)
             return new Checked<>(
                 () -> Long.parseUnsignedLong(
                     new ListOf<>(
@@ -196,7 +202,13 @@ public interface Wallet {
 
         @Override
         public void pay(final long amt, final long bnf) throws IOException {
-            try (final Writer out = new FileWriter(this.path.toFile(), true)) {
+            try (
+                OutputStream stream = Files.newOutputStream(
+                    this.path,
+                    StandardOpenOption.APPEND
+                );
+                Writer out = new OutputStreamWriter(stream, StandardCharsets.UTF_8)
+            ) {
                 out.write('\n');
                 out.write(new CpTransaction(amt, bnf).toString());
             }

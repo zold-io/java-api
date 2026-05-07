@@ -22,7 +22,6 @@ import org.llorllale.cactoos.matchers.IsApplicable;
 
 /**
  * Test case for {@link Wallet}.
- *
  * @since 0.1
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle JavadocVariableCheck (500 lines)
@@ -37,7 +36,7 @@ public final class WalletTest {
 
     @Test
     public void readsWalletId() throws IOException {
-        final long id = 5124095577148911L;
+        final long id = 5_124_095_577_148_911L;
         final Wallet wallet = new Wallet.File(this.wallet(id));
         MatcherAssert.assertThat(wallet.id(), Matchers.is(id));
     }
@@ -70,7 +69,7 @@ public final class WalletTest {
     public void pay() throws IOException {
         final Path path = this.folder.newFile().toPath();
         path.toFile().delete();
-        Files.copy(this.wallet(5124095577148911L), path);
+        Files.copy(this.wallet(5_124_095_577_148_911L), path);
         final Wallet wallet = new Wallet.File(path);
         MatcherAssert.assertThat(
             wlt -> {
@@ -88,7 +87,7 @@ public final class WalletTest {
 
     @Test
     public void mergesWallets() throws IOException {
-        final long id = 5124095577148911L;
+        final long id = 5_124_095_577_148_911L;
         final Wallet wallet = new Wallet.File(this.wallet(id));
         final Wallet merged = wallet.merge(
             new Wallet.Fake(
@@ -105,7 +104,7 @@ public final class WalletTest {
 
     @Test
     public void doesNotMergeWalletsWithDifferentId() throws IOException {
-        final long id = 5124095577148911L;
+        final long id = 5_124_095_577_148_911L;
         final Wallet wallet = new Wallet.File(this.wallet(id));
         MatcherAssert.assertThat(
             Assertions.assertThrows(
@@ -120,7 +119,7 @@ public final class WalletTest {
 
     @Test
     public void doesNotMergeExistingTransactions() throws IOException {
-        final long id = 5124095577148911L;
+        final long id = 5_124_095_577_148_911L;
         final Wallet wallet = new Wallet.File(this.wallet(id));
         final Wallet merged = wallet.merge(
             new Wallet.Fake(
@@ -137,7 +136,7 @@ public final class WalletTest {
 
     @Test
     public void doesNotMergeTransactionsWithSameIdAndBnf() throws IOException {
-        final long id = 5124095577148911L;
+        final long id = 5_124_095_577_148_911L;
         final Wallet wallet = new Wallet.File(this.wallet(id));
         final Wallet merged = wallet.merge(
             new Wallet.Fake(
@@ -155,7 +154,7 @@ public final class WalletTest {
     @Test
     public void doesNotMergeTransactionsWithSameIdAndNegativeAmount()
         throws IOException {
-        final long id = 5124095577148911L;
+        final long id = 5_124_095_577_148_911L;
         final Wallet wallet = new Wallet.File(this.wallet(id));
         final Wallet merged = wallet.merge(
             new Wallet.Fake(
@@ -172,7 +171,7 @@ public final class WalletTest {
 
     @Test
     public void doesNotMergeTransactionsWithSamePrefix() throws IOException {
-        final long id = 5124095577148911L;
+        final long id = 5_124_095_577_148_911L;
         final Wallet wallet = new Wallet.File(this.wallet(id));
         final Wallet merged = wallet.merge(
             new Wallet.Fake(
@@ -188,17 +187,20 @@ public final class WalletTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public void walletShouldBeAbleToReturnLedger() throws Exception {
         MatcherAssert.assertThat(
-            new Wallet.File(this.wallet(5124095577148911L)).ledger(),
+            new Wallet.File(this.wallet(5_124_095_577_148_911L)).ledger(),
             Matchers.iterableWithSize(2)
         );
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void keyIsNotYetImplemented() throws IOException {
-        new Wallet.File(this.folder.newFile().toPath()).key();
+        final Path path = this.folder.newFile().toPath();
+        Assertions.assertThrows(
+            UnsupportedOperationException.class,
+            () -> new Wallet.File(path).key()
+        );
     }
 
     private Path wallet(final long id) {

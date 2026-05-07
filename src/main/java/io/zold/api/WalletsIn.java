@@ -76,8 +76,8 @@ public final class WalletsIn implements Wallets {
     /**
      * Ctor.
      * @param pth Path with wallets
-     * @param random Randomizer
      * @param ext Wallets file extension
+     * @param random Randomizer
      */
     public WalletsIn(final Scalar<Path> pth, final String ext,
         final Random random) {
@@ -85,7 +85,7 @@ public final class WalletsIn implements Wallets {
             new Solid<>(pth)
         );
         this.filter = new IoCheckedFunc<Path, Boolean>(
-            (file) -> file.toFile().isFile()
+            file -> file.toFile().isFile()
                 && FileSystems.getDefault()
                 .getPathMatcher(String.format("glob:**.%s", ext))
                 .matches(file)
@@ -135,7 +135,7 @@ public final class WalletsIn implements Wallets {
     public Iterator<Wallet> iterator() {
         try {
             return new Mapped<Wallet>(
-                (pth) -> new Wallet.File(pth),
+                pth -> new Wallet.File(pth),
                 new Filtered<>(this.filter, new Directory(this.path.value()))
             ).iterator();
         } catch (final IOException ex) {

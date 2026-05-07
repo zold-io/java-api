@@ -13,7 +13,6 @@ import org.cactoos.scalar.Reduced;
 
 /**
  * Network implementation.
- *
  * @since 0.1
  * @todo #5:30min We must figure out how to 'load' some network. Loading the
  *  network will be loading a local JSON file that contains data on all
@@ -32,7 +31,7 @@ public final class RtNetwork implements Network {
      * @param remotes Remotes of the network
      */
     RtNetwork(final Iterable<Remote> remotes) {
-        this.nodes =  remotes;
+        this.nodes = remotes;
     }
 
     @Override

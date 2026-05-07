@@ -10,12 +10,10 @@ import java.time.ZonedDateTime;
 
 /**
  * A payment transaction.
- *
  * @since 0.1
  * @checkstyle ParameterNumberCheck (500 lines)
  */
 @GenerateEnvelope
-@SuppressWarnings("PMD.TooManyMethods")
 public interface Transaction {
 
     /**
@@ -24,7 +22,6 @@ public interface Transaction {
      * @throws IOException When something goes wrong
      * @checkstyle MethodNameCheck (3 lines)
      */
-    @SuppressWarnings("PMD.ShortMethodName")
     int id() throws IOException;
 
     /**
@@ -80,6 +77,7 @@ public interface Transaction {
 
     /**
      * Fake implementation of Transaction.
+     * @since 1.0
      */
     final class Fake implements Transaction {
 
@@ -92,22 +90,27 @@ public interface Transaction {
          * Datetime of the transaction.
          */
         private final ZonedDateTime time;
+
         /**
          * Transaction amount.
          */
         private final long amount;
+
         /**
          * Transaction prefix.
          */
         private final String prefix;
+
         /**
          * Transaction beneficiary.
          */
         private final String bnf;
+
         /**
          * Transaction details.
          */
         private final String details;
+
         /**
          * Transaction signature.
          */
@@ -115,7 +118,6 @@ public interface Transaction {
 
         /**
          * Constructor.
-         *
          * @param id Transaction id
          * @param time Transaction time
          * @param amount Transaction amount
@@ -141,7 +143,6 @@ public interface Transaction {
         }
 
         @Override
-        @SuppressWarnings("PMD.ShortMethodName")
         public int id() throws IOException {
             return this.id;
         }

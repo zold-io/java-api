@@ -8,7 +8,6 @@ import java.io.IOException;
 
 /**
  * Network of remote nodes.
- *
  * @since 0.1
  */
 public interface Network extends Iterable<Remote> {
@@ -26,5 +25,4 @@ public interface Network extends Iterable<Remote> {
      * @throws IOException If an IO error occurs
      */
     Wallet pull(long id) throws IOException;
-
 }
