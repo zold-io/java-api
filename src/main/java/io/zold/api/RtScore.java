@@ -5,11 +5,11 @@
 package io.zold.api;
 
 import org.cactoos.Text;
-import org.cactoos.iterable.LengthOf;
+import org.cactoos.scalar.LengthOf;
+import org.cactoos.scalar.Unchecked;
 
 /**
  * Default implementation for {@link Score}.
- *
  * @since 1.0
  */
 public final class RtScore implements Score {
@@ -21,8 +21,7 @@ public final class RtScore implements Score {
 
     /**
      * Ctor.
-     *
-     * @param sfxs The suffixes.
+     * @param sfxs The suffixes
      */
     RtScore(final Iterable<Text> sfxs) {
         this.sfxs = sfxs;
@@ -30,8 +29,8 @@ public final class RtScore implements Score {
 
     @Override
     public int compareTo(final Score other) {
-        return new LengthOf(other.suffixes()).intValue()
-            - new LengthOf(this.sfxs).intValue();
+        return new Unchecked<>(new LengthOf(other.suffixes())).value().intValue()
+            - new Unchecked<>(new LengthOf(this.sfxs)).value().intValue();
     }
 
     @Override

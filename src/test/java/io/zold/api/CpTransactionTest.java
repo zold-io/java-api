@@ -13,17 +13,17 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link CpTransaction}.
- *
  * @since 1.0
  * @checkstyle LineLengthCheck (500 lines)
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle MagicNumberCheck (500 lines)
  */
-public final class CpTransactionTest {
+@SuppressWarnings("PMD.UnnecessaryLocalRule")
+final class CpTransactionTest {
 
     @Test
     @Disabled
-    public void returnAmount() throws IOException {
+    void returnAmount() throws IOException {
         final long amount = 256;
         MatcherAssert.assertThat(
             "Cannot return amount",
@@ -34,7 +34,7 @@ public final class CpTransactionTest {
 
     @Test
     @Disabled
-    public void returnSignatureForPositiveTransaction() throws IOException {
+    void returnSignatureForPositiveTransaction() throws IOException {
         final long id = 1024;
         MatcherAssert.assertThat(
             "Cannot return signature",
@@ -45,7 +45,7 @@ public final class CpTransactionTest {
 
     @Test
     @Disabled
-    public void returnPrefix() throws IOException {
+    void returnPrefix() throws IOException {
         final long id = 1024;
         final Wallet wallet = new Wallet.Fake(id);
         MatcherAssert.assertThat(
@@ -57,7 +57,7 @@ public final class CpTransactionTest {
 
     @Test
     @Disabled
-    public void returnBeneficiary() throws IOException {
+    void returnBeneficiary() throws IOException {
         final long id = 1024;
         final Wallet wallet = new Wallet.Fake(id);
         MatcherAssert.assertThat(

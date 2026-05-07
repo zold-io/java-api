@@ -6,14 +6,14 @@
 package io.zold.api;
 
 import org.cactoos.iterable.Repeated;
-import org.cactoos.text.RandomText;
+import org.cactoos.text.Randomized;
 
 /**
  * Remote node.
- *
  * @since 0.1
  */
 public interface Remote {
+
     /**
      * This remote node's score.
      * @return The score
@@ -35,6 +35,7 @@ public interface Remote {
 
     /**
      * A Fake {@link Remote}.
+     * @since 1.0
      */
     final class Fake implements Remote {
 
@@ -49,7 +50,7 @@ public interface Remote {
          */
         public Fake(final int val) {
             this(new RtScore(
-                new Repeated<>(val, new RandomText())
+                new Repeated<>(val, new Randomized())
             ));
         }
 

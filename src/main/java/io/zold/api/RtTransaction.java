@@ -11,27 +11,24 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.cactoos.Text;
-import org.cactoos.iterable.LengthOf;
 import org.cactoos.list.ListOf;
-import org.cactoos.scalar.IoCheckedScalar;
+import org.cactoos.scalar.IoChecked;
 import org.cactoos.scalar.ItemAt;
-import org.cactoos.scalar.StickyScalar;
-import org.cactoos.scalar.UncheckedScalar;
+import org.cactoos.scalar.LengthOf;
+import org.cactoos.scalar.Sticky;
+import org.cactoos.scalar.Unchecked;
 import org.cactoos.text.FormattedText;
-import org.cactoos.text.SplitText;
+import org.cactoos.text.Split;
 import org.cactoos.text.TextOf;
-import org.cactoos.text.TrimmedText;
+import org.cactoos.text.Trimmed;
 import org.cactoos.text.UncheckedText;
 import org.cactoos.time.ZonedDateTimeOf;
 
 /**
  * RtTransaction.
- *
  * @since 0.1
  * @checkstyle ClassDataAbstractionCoupling (3 lines)
  */
-@SuppressWarnings({"PMD.AvoidCatchingGenericException",
-    "PMD.AvoidFieldNameMatchingMethodName"})
 final class RtTransaction implements Transaction {
 
     /**
@@ -66,18 +63,19 @@ final class RtTransaction implements Transaction {
     /**
      * String representation of transaction.
      */
-    private final IoCheckedScalar<String> transaction;
+    private final IoChecked<String> transaction;
 
     /**
      * Ctor.
      * @param trnsct String representation of transaction
+     * @checkstyle LambdaBodyLengthCheck (28 lines)
      */
     RtTransaction(final String trnsct) {
-        this.transaction = new IoCheckedScalar<>(
-            new StickyScalar<>(
+        this.transaction = new IoChecked<>(
+            new Sticky<>(
                 () -> {
                     if (
-                        new TrimmedText(
+                        new Trimmed(
                             new TextOf(trnsct)
                         ).asString().isEmpty()
                     ) {
@@ -87,10 +85,10 @@ final class RtTransaction implements Transaction {
                     }
                     final List<Text> pieces =
                         new ListOf<>(
-                            new SplitText(trnsct, ";")
+                            new Split(trnsct, ";")
                         );
                     // @checkstyle MagicNumberCheck (1 line)
-                    if (new LengthOf(pieces).intValue() != 7) {
+                    if (new LengthOf(pieces).value().intValue() != 7) {
                         throw new IOException(
                             new FormattedText(
                                 // @checkstyle LineLength (1 line)
@@ -106,12 +104,11 @@ final class RtTransaction implements Transaction {
     }
 
     @Override
-    @SuppressWarnings("PMD.ShortMethodName")
     public int id() throws IOException {
         final String ident = new UncheckedText(
-            new IoCheckedScalar<>(
+            new IoChecked<>(
                 new ItemAt<>(
-                    0, new SplitText(this.transaction.value(), ";")
+                    0, new Split(this.transaction.value(), ";")
                 )
             ).value()
         ).asString();
@@ -134,9 +131,9 @@ final class RtTransaction implements Transaction {
     public ZonedDateTime time() throws IOException {
         return new ZonedDateTimeOf(
             new UncheckedText(
-                new IoCheckedScalar<>(
+                new IoChecked<>(
                     new ItemAt<>(
-                        1, new SplitText(this.transaction.value(), ";")
+                        1, new Split(this.transaction.value(), ";")
                     )
                 ).value()
             ).asString(),
@@ -147,9 +144,9 @@ final class RtTransaction implements Transaction {
     @Override
     public long amount() throws IOException {
         final String amnt = new UncheckedText(
-            new IoCheckedScalar<>(
+            new IoChecked<>(
                 new ItemAt<>(
-                    2, new SplitText(this.transaction.value(), ";")
+                    2, new Split(this.transaction.value(), ";")
                 )
             ).value()
         ).asString();
@@ -171,10 +168,10 @@ final class RtTransaction implements Transaction {
     @Override
     public String prefix() throws IOException {
         final String prefix = new UncheckedText(
-            new IoCheckedScalar<>(
+            new IoChecked<>(
                 new ItemAt<>(
                     //@checkstyle MagicNumberCheck (1 line)
-                    3, new SplitText(this.transaction.value(), ";")
+                    3, new Split(this.transaction.value(), ";")
                 )
             ).value()
         ).asString();
@@ -191,10 +188,10 @@ final class RtTransaction implements Transaction {
     @Override
     public String bnf() throws IOException {
         final String bnf = new UncheckedText(
-            new IoCheckedScalar<>(
+            new IoChecked<>(
                 new ItemAt<>(
                     //@checkstyle MagicNumberCheck (1 line)
-                    4, new SplitText(this.transaction.value(), ";")
+                    4, new Split(this.transaction.value(), ";")
                 )
             ).value()
         ).asString();
@@ -215,10 +212,10 @@ final class RtTransaction implements Transaction {
     @Override
     public String details() throws IOException {
         final String dtls = new UncheckedText(
-            new IoCheckedScalar<>(
+            new IoChecked<>(
                 new ItemAt<>(
                     //@checkstyle MagicNumberCheck (1 line)
-                    5, new SplitText(this.transaction.value(), ";")
+                    5, new Split(this.transaction.value(), ";")
                 )
             ).value()
         ).asString();
@@ -239,10 +236,10 @@ final class RtTransaction implements Transaction {
     @Override
     public String signature() throws IOException {
         final String sign = new UncheckedText(
-            new IoCheckedScalar<>(
+            new IoChecked<>(
                 new ItemAt<>(
                     //@checkstyle MagicNumberCheck (1 line)
-                    6, new SplitText(this.transaction.value(), ";")
+                    6, new Split(this.transaction.value(), ";")
                 )
             ).value()
         ).asString();
@@ -264,11 +261,10 @@ final class RtTransaction implements Transaction {
 
     @Override
     public String toString() {
-        return new UncheckedScalar<>(this.transaction).value();
+        return new Unchecked<>(this.transaction).value();
     }
 
     @Override
-    @SuppressWarnings("PMD.OnlyOneReturn")
     public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
@@ -276,8 +272,7 @@ final class RtTransaction implements Transaction {
         if (obj == null || this.getClass() != obj.getClass()) {
             return false;
         }
-        final RtTransaction that = (RtTransaction) obj;
-        return this.transaction.equals(that.transaction);
+        return this.transaction.equals(((RtTransaction) obj).transaction);
     }
 
     @Override

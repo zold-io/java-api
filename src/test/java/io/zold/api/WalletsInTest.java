@@ -19,11 +19,11 @@ import org.junit.rules.TemporaryFolder;
 
 /**
  * Test case for {@link WalletsIn}.
- *
  * @since 0.1
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle JavadocVariableCheck (500 lines)
  */
+@SuppressWarnings("PMD.UnnecessaryLocalRule")
 public final class WalletsInTest {
 
     @Rule
@@ -60,31 +60,21 @@ public final class WalletsInTest {
         );
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void createsRightWallet() throws IOException {
         final Path path = this.folder.newFolder().toPath();
-        final String network = "zold";
-        final String pubkey = "AAAAB3NzaC1yc2EAAAADAQABAAABAQC";
-        final long id = 1;
-        final Wallet actual = new WalletsIn(path).create(
-            id, pubkey, network
-        );
-        final Wallet expected = new Wallet.Fake(
-            id,
-            pubkey,
-            network
-        );
-        MatcherAssert.assertThat(
-            "Created wallet with different values than expected",
-            actual,
-            new IsEqual<>(expected)
+        Assertions.assertThrows(
+            UnsupportedOperationException.class,
+            () -> new WalletsIn(path).create(
+                1L, "AAAAB3NzaC1yc2EAAAADAQABAAABAQC", "zold"
+            )
         );
     }
 
     @Test
     public void doesNotOverwriteExistingWallet() throws Exception {
         final Path path = this.folder.newFolder().toPath();
-        final Random random = new FkRandom(16725L);
+        final Random random = new WalletsInTest.FkRandom(16_725L);
         new WalletsIn(path, random).create();
         MatcherAssert.assertThat(
             Assertions.assertThrows(
@@ -97,8 +87,9 @@ public final class WalletsInTest {
 
     /**
      * Fake randomizer that returns the same value each time.
+     * @since 1.0
      */
-    private static class FkRandom extends Random {
+    private static final class FkRandom extends Random {
 
         /**
          * Serial version.
@@ -112,7 +103,7 @@ public final class WalletsInTest {
 
         /**
          * Ctor.
-         * @param val Value that represents a random number.
+         * @param val Value that represents a random number
          */
         FkRandom(final long val) {
             super();

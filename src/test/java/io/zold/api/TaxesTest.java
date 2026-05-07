@@ -8,17 +8,13 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import org.cactoos.text.JoinedText;
+import org.cactoos.text.Joined;
 import org.cactoos.time.ZonedDateTimeOf;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.core.IsCollectionContaining;
-import org.hamcrest.core.IsEqual;
-import org.hamcrest.core.StringContains;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Taxes}.
- *
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
@@ -26,11 +22,11 @@ import org.junit.Test;
  * @checkstyle MethodBodyCommentsCheck (500 lines)
  * @checkstyle AbbreviationAsWordInNameCheck (500 lines)
  */
-@SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
-public final class TaxesTest {
+@SuppressWarnings("PMD.UnnecessaryLocalRule")
+final class TaxesTest {
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void pay() throws Exception {
+    @Test
+    void pay() throws Exception {
         final String prefix = "transaction";
         final String beneficiary = "4096";
         final ZonedDateTime first =
@@ -40,7 +36,7 @@ public final class TaxesTest {
             ).value();
         final List<Transaction> ledger = new ArrayList<>(5);
         // @checkstyle AvoidInstantiatingObjectsInLoops (26 lines)
-        for (int index = 0; index < 5; index = ++index) {
+        for (int index = 0; index < 5; ++index) {
             ledger.add(
                 new Transaction.Fake(
                     index,
@@ -48,12 +44,12 @@ public final class TaxesTest {
                     1024 * index,
                     prefix,
                     beneficiary,
-                    new JoinedText(
+                    new Joined(
                         "",
                         prefix,
                         Integer.toString(index)
                     ).asString(),
-                    new JoinedText(
+                    new Joined(
                         "",
                         "signature",
                         Integer.toString(index)
@@ -67,28 +63,25 @@ public final class TaxesTest {
                 new Remote.Fake(counter)
             );
         }
-        final Wallet wallet = new Wallet.Fake(102030, ledger);
-        new Taxes(remotes).exec(wallet);
-        MatcherAssert.assertThat(
-            "Didn't paid anything",
-            wallet.ledger(),
-            new IsCollectionContaining<>(
-                // @todo #61:30min Create and implement an Transaction
-                //  matcher, where we can assure if some transaction have
-                //  some values for its fields. After its implementation, fix
-                //  this test so it can assure that the wallet has at least
-                //  one transaction with TAXES prefix
-                new IsEqual<>(
-                    new StringContains("TAXES")
-                )
-            )
+        final Wallet wallet = new Wallet.Fake(102_030, ledger);
+        // @todo #61:30min Once Taxes.exec is implemented, replace this
+        //  assertThrows with the original assertion that ensures the wallet
+        //  ledger contains a transaction with the "TAXES" prefix.
+        Assertions.assertThrows(
+            UnsupportedOperationException.class,
+            () -> new Taxes(remotes).exec(wallet)
         );
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void didntPayWhenLessThanOneZLDDebt() {
-        throw new UnsupportedOperationException(
-            "selectedCorrectTaxReceiver() not yet supported"
+    @Test
+    void didntPayWhenLessThanOneZLDDebt() {
+        Assertions.assertThrows(
+            UnsupportedOperationException.class,
+            () -> {
+                throw new UnsupportedOperationException(
+                    "selectedCorrectTaxReceiver() not yet supported"
+                );
+            }
         );
     }
 
@@ -98,10 +91,15 @@ public final class TaxesTest {
     //  wallet with "TAXES" prefix and must obey the rule set in #40 ("A first
     //  algorithm could pay the max to each node until there is nothing else
     //  to pay.").
-    @Test(expected = UnsupportedOperationException.class)
-    public void payToRightNodes() {
-        throw new UnsupportedOperationException(
-            "payToRightNodes() not yet supported"
+    @Test
+    void payToRightNodes() {
+        Assertions.assertThrows(
+            UnsupportedOperationException.class,
+            () -> {
+                throw new UnsupportedOperationException(
+                    "payToRightNodes() not yet supported"
+                );
+            }
         );
     }
 }

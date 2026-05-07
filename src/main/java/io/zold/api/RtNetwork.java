@@ -8,12 +8,11 @@ import java.io.IOException;
 import java.util.Iterator;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.iterable.Sorted;
-import org.cactoos.scalar.IoCheckedScalar;
+import org.cactoos.scalar.IoChecked;
 import org.cactoos.scalar.Reduced;
 
 /**
  * Network implementation.
- *
  * @since 0.1
  * @todo #5:30min We must figure out how to 'load' some network. Loading the
  *  network will be loading a local JSON file that contains data on all
@@ -32,7 +31,7 @@ public final class RtNetwork implements Network {
      * @param remotes Remotes of the network
      */
     RtNetwork(final Iterable<Remote> remotes) {
-        this.nodes =  remotes;
+        this.nodes = remotes;
     }
 
     @Override
@@ -44,7 +43,7 @@ public final class RtNetwork implements Network {
 
     @Override
     public Wallet pull(final long id) throws IOException {
-        return new IoCheckedScalar<>(
+        return new IoChecked<>(
             new Reduced<>(
                 Wallet::merge,
                 new Mapped<>(

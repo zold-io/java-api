@@ -9,26 +9,24 @@ import java.io.IOException;
 
 /**
  * Wallets.
- *
  * @since 0.1
  */
 public interface Wallets extends Iterable<Wallet> {
+
     /**
      * Create a wallet.
-     * @return The new wallet.
-     * @throws IOException If an error occurs.
+     * @return The new wallet
+     * @throws IOException If an error occurs
      */
     Wallet create() throws IOException;
 
     /**
      * Create a wallet.
-     *
-     * @param id The wallet id.
-     * @param pubkey The wallet public key.
-     * @param network The network the wallet belongs.
-     * @return The new wallet.
-     * @throws IOException If an error occurs.
+     * @param id The wallet id
+     * @param pubkey The wallet public key
+     * @param network The network the wallet belongs
+     * @return The new wallet
+     * @throws IOException If an error occurs
      */
-    Wallet create(final long id, final String pubkey, final String
-        network) throws IOException;
+    Wallet create(long id, String pubkey, String network) throws IOException;
 }

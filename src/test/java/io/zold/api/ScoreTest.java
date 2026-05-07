@@ -5,8 +5,8 @@
 package io.zold.api;
 
 import org.cactoos.iterable.IterableOf;
+import org.cactoos.iterable.Sorted;
 import org.cactoos.list.ListOf;
-import org.cactoos.list.Sorted;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.collection.IsIterableContainingInOrder;
@@ -15,11 +15,11 @@ import org.junit.Test;
 
 /**
  * Test case for {@link Score}.
- *
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
+@SuppressWarnings("PMD.UnnecessaryLocalRule")
 public final class ScoreTest {
 
     @Test
