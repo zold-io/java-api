@@ -8,11 +8,11 @@ import io.zold.api.Copies.Copy;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.cactoos.collection.CollectionOf;
 import org.cactoos.iterable.IterableEnvelope;
 import org.cactoos.iterable.IterableOf;
 import org.cactoos.iterable.Joined;
 import org.cactoos.iterable.Mapped;
+import org.cactoos.list.ListOf;
 
 /**
  * Multiple copies of a Wallet.
@@ -26,7 +26,7 @@ public final class Copies extends IterableEnvelope<Copy> {
      * @param remotes Remote nodes.
      */
     Copies(final long id, final Iterable<Remote> remotes) {
-        super(() -> copies(id, remotes));
+        super(new IterableOf<>(() -> copies(id, remotes).iterator()));
     }
 
     /**
@@ -54,7 +54,7 @@ public final class Copies extends IterableEnvelope<Copy> {
                 copies.add(new Copy(wallet, remote));
             }
         }
-        return new IterableOf<>(copies);
+        return new IterableOf<>(copies.iterator());
     }
 
     /**
@@ -69,9 +69,9 @@ public final class Copies extends IterableEnvelope<Copy> {
      */
     private static boolean equalWallets(final Wallet first,
         final Wallet second) throws IOException {
-        return first.id() == second.id() && new CollectionOf<>(
+        return first.id() == second.id() && new ListOf<>(
             first.ledger()
-        ).size() == new CollectionOf<>(second.ledger()).size();
+        ).size() == new ListOf<>(second.ledger()).size();
     }
 
     /**

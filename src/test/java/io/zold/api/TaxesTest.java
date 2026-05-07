@@ -8,7 +8,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import org.cactoos.text.JoinedText;
+import org.cactoos.text.Joined;
 import org.cactoos.time.ZonedDateTimeOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsCollectionContaining;
@@ -48,12 +48,12 @@ public final class TaxesTest {
                     1024 * index,
                     prefix,
                     beneficiary,
-                    new JoinedText(
+                    new Joined(
                         "",
                         prefix,
                         Integer.toString(index)
                     ).asString(),
-                    new JoinedText(
+                    new Joined(
                         "",
                         "signature",
                         Integer.toString(index)
