@@ -15,10 +15,10 @@ import org.cactoos.func.IoCheckedFunc;
 import org.cactoos.io.Directory;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.scalar.IoCheckedScalar;
-import org.cactoos.scalar.SolidScalar;
+import org.cactoos.scalar.IoChecked;
+import org.cactoos.scalar.Solid;
 import org.cactoos.text.FormattedText;
-import org.cactoos.text.JoinedText;
+import org.cactoos.text.Joined;
 import org.cactoos.text.UncheckedText;
 
 /**
@@ -31,7 +31,7 @@ public final class WalletsIn implements Wallets {
     /**
      * Path containing wallets.
      */
-    private final IoCheckedScalar<Path> path;
+    private final IoChecked<Path> path;
 
     /**
      * Filter for matching file extensions.
@@ -76,16 +76,16 @@ public final class WalletsIn implements Wallets {
     /**
      * Ctor.
      * @param pth Path with wallets
-     * @param random Randomizer
      * @param ext Wallets file extension
+     * @param random Randomizer
      */
     public WalletsIn(final Scalar<Path> pth, final String ext,
         final Random random) {
-        this.path = new IoCheckedScalar<>(
-            new SolidScalar<>(pth)
+        this.path = new IoChecked<>(
+            new Solid<>(pth)
         );
         this.filter = new IoCheckedFunc<Path, Boolean>(
-            (file) -> file.toFile().isFile()
+            file -> file.toFile().isFile()
                 && FileSystems.getDefault()
                 .getPathMatcher(String.format("glob:**.%s", ext))
                 .matches(file)
@@ -97,10 +97,12 @@ public final class WalletsIn implements Wallets {
     @Override
     public Wallet create() throws IOException {
         final Path wpth = this.path.value().resolve(
-            new JoinedText(
-                ".",
-                Long.toHexString(this.random.nextLong()),
-                this.ext
+            new UncheckedText(
+                new Joined(
+                    ".",
+                    Long.toHexString(this.random.nextLong()),
+                    this.ext
+                )
             ).asString()
         );
         if (wpth.toFile().exists()) {
@@ -132,8 +134,8 @@ public final class WalletsIn implements Wallets {
     @Override
     public Iterator<Wallet> iterator() {
         try {
-            return new Mapped<Path, Wallet>(
-                (pth) -> new Wallet.File(pth),
+            return new Mapped<Wallet>(
+                pth -> new Wallet.File(pth),
                 new Filtered<>(this.filter, new Directory(this.path.value()))
             ).iterator();
         } catch (final IOException ex) {

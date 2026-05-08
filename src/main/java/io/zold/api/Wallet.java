@@ -4,21 +4,24 @@
  */
 package io.zold.api;
 
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import org.cactoos.collection.Filtered;
+import java.nio.file.StandardOpenOption;
+import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.IterableOf;
 import org.cactoos.iterable.Joined;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.iterable.Skipped;
 import org.cactoos.list.ListOf;
-import org.cactoos.scalar.CheckedScalar;
+import org.cactoos.scalar.Checked;
 import org.cactoos.scalar.Or;
-import org.cactoos.scalar.UncheckedScalar;
+import org.cactoos.scalar.Unchecked;
 import org.cactoos.text.FormattedText;
-import org.cactoos.text.SplitText;
+import org.cactoos.text.Split;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 
@@ -30,9 +33,8 @@ import org.cactoos.text.UncheckedText;
  *  Beware that tests should be refactored to take care of file cleanup
  *  after each case that merges wallets.
  */
-@SuppressWarnings({"PMD.ShortMethodName", "PMD.TooManyMethods",
-    "PMD.UnusedFormalParameter"})
 public interface Wallet {
+
     /**
      * This wallet's ID: an unsigned 64-bit integer.
      * @return This wallet's id
@@ -67,7 +69,7 @@ public interface Wallet {
 
     /**
      * This wallet's RSA key.
-     * @return This wallet's RSA key.
+     * @return This wallet's RSA key
      */
     String key();
 
@@ -96,7 +98,7 @@ public interface Wallet {
 
         /**
          * Constructor.
-         * @param id The wallet id.
+         * @param id The wallet id
          */
         public Fake(final long id) {
             this(id, new IterableOf<>());
@@ -104,8 +106,8 @@ public interface Wallet {
 
         /**
          * Ctor.
-         * @param id The wallet id.
-         * @param transactions Transactions.
+         * @param id The wallet id
+         * @param transactions Transactions
          */
         public Fake(final long id, final Transaction... transactions) {
             this(id, new IterableOf<>(transactions));
@@ -113,9 +115,9 @@ public interface Wallet {
 
         /**
          * Constructor.
-         * @param id The wallet id.
-         * @param pubkey The public RSA key of the wallet owner.
-         * @param network The network the walet belongs to.
+         * @param id The wallet id
+         * @param pubkey The public RSA key of the wallet owner
+         * @param network The network the wallet belongs to
          * @checkstyle UnusedFormalParameter (2 lines)
          */
         public Fake(final long id, final String pubkey, final String network) {
@@ -124,8 +126,8 @@ public interface Wallet {
 
         /**
          * Ctor.
-         * @param id The wallet id.
-         * @param transactions Transactions.
+         * @param id The wallet id
+         * @param transactions Transactions
          */
         public Fake(final long id, final Iterable<Transaction> transactions) {
             this.id = id;
@@ -160,6 +162,7 @@ public interface Wallet {
 
     /**
      * Default File implementation.
+     * @since 1.0
      * @checkstyle ClassDataAbstractionCouplingCheck (2 lines)
      */
     final class File implements Wallet {
@@ -179,10 +182,11 @@ public interface Wallet {
 
         @Override
         public long id() throws IOException {
-            return new CheckedScalar<>(
+            // @checkstyle ProhibitLineSeparatorInStringsCheck (10 lines)
+            return new Checked<>(
                 () -> Long.parseUnsignedLong(
                     new ListOf<>(
-                        new SplitText(
+                        new Split(
                             new TextOf(this.path),
                             "\n"
                         )
@@ -196,7 +200,12 @@ public interface Wallet {
 
         @Override
         public void pay(final long amt, final long bnf) throws IOException {
-            try (final Writer out = new FileWriter(this.path.toFile(), true)) {
+            try (
+                Writer out = new OutputStreamWriter(
+                    Files.newOutputStream(this.path, StandardOpenOption.APPEND),
+                    StandardCharsets.UTF_8
+                )
+            ) {
                 out.write('\n');
                 out.write(new CpTransaction(amt, bnf).toString());
             }
@@ -225,25 +234,27 @@ public interface Wallet {
                 );
             }
             final Iterable<Transaction> ledger = this.ledger();
-            final Iterable<Transaction> candidates = new Filtered<>(
-                incoming -> new Filtered<>(
-                    origin -> new UncheckedScalar<>(
-                        new Or(
-                            () -> incoming.equals(origin),
-                            () -> incoming.id() == origin.id()
-                                && incoming.bnf().equals(origin.bnf()),
-                            () -> incoming.id() == origin.id()
-                                && incoming.amount() < 0L,
-                            () -> incoming.prefix().equals(origin.prefix())
-                        )
-                    ).value(),
-                    ledger
-                ).isEmpty(),
-                other.ledger()
-            );
             return new Wallet.Fake(
                 this.id(),
-                new Joined<Transaction>(ledger, candidates)
+                new Joined<Transaction>(
+                    ledger,
+                    new Filtered<>(
+                        incoming -> !new Filtered<>(
+                            origin -> new Unchecked<>(
+                                new Or(
+                                    () -> incoming.equals(origin),
+                                    () -> incoming.id() == origin.id()
+                                        && incoming.bnf().equals(origin.bnf()),
+                                    () -> incoming.id() == origin.id()
+                                        && incoming.amount() < 0L,
+                                    () -> incoming.prefix().equals(origin.prefix())
+                                )
+                            ).value(),
+                            ledger
+                        ).iterator().hasNext(),
+                        other.ledger()
+                    )
+                )
             );
         }
 
@@ -252,14 +263,14 @@ public interface Wallet {
             return new Mapped<>(
                 txt -> new RtTransaction(txt.asString()),
                 new Skipped<>(
+                    // @checkstyle MagicNumberCheck (1 line)
+                    5,
                     new ListOf<>(
-                        new SplitText(
+                        new Split(
                             new TextOf(this.path),
                             "\\n"
                         )
-                    ),
-                    // @checkstyle MagicNumberCheck (1 line)
-                    5
+                    )
                 )
             );
         }

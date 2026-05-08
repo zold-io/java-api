@@ -12,9 +12,9 @@ import org.cactoos.iterable.Mapped;
 /**
  * A remote node's score, equal to its number of suffixes.
  *
- * The natural order of {@link Score} is from highest to lowest.
+ * <p>The natural order of {@link Score} is from highest to lowest.
  *
- * Note: {@link Score} has a natural ordering that is inconsistent with equals.
+ * <p>Note: {@link Score} has a natural ordering that is inconsistent with equals.
  *
  * @since 0.1
  */
@@ -30,14 +30,13 @@ public interface Score extends Comparable<Score> {
 
     /**
      * Summary of multiple {@link Score}.
-     *
      * @since 1.0
      */
     final class Summed extends ScoreEnvelope {
+
         /**
          * Ctor.
-         *
-         * @param scores Multiple scores to summary.
+         * @param scores Multiple scores to summary
          */
         Summed(final Iterable<Score> scores) {
             super(new RtScore(

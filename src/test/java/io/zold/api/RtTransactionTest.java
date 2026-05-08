@@ -16,17 +16,16 @@ import org.junit.jupiter.api.Assertions;
 
 /**
  * Test case for {@link RtTransaction}.
- *
  * @since 0.1
  * @checkstyle LineLengthCheck (500 lines)
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle MagicNumber (500 lines)
  */
-@SuppressWarnings({"PMD.AvoidCatchingGenericException", "PMD.TooManyMethods"})
+@SuppressWarnings("PMD.TooManyMethods")
 public final class RtTransactionTest {
 
     @Test
-    public void shouldObeyEqualsHashcodeContract() {
+    public void obeysEqualsHashcodeContract() {
         EqualsVerifier.forClass(RtTransaction.class)
             .withNonnullFields("transaction")
             .verify();
@@ -38,7 +37,7 @@ public final class RtTransactionTest {
             new RtTransaction(
                 "abcd;2017-07-19T21:25:07Z;0000000000a72366;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr4..."
             ).id(),
-            new IsEqual<>(43981)
+            new IsEqual<>(43_981)
         );
     }
 
@@ -129,7 +128,7 @@ public final class RtTransactionTest {
             new RtTransaction(
                 "003b;2017-07-19T21:25:07Z;0000000000a72366;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr4..."
             ).amount(),
-            new IsEqual<>(10953574L)
+            new IsEqual<>(10_953_574L)
         );
     }
 
@@ -139,7 +138,7 @@ public final class RtTransactionTest {
             new RtTransaction(
                 "003b;2017-07-19T21:25:07Z;ffffffffffa72366;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr4..."
             ).amount(),
-            new IsEqual<>(-5823642L)
+            new IsEqual<>(-5_823_642L)
         );
     }
 
@@ -206,25 +205,34 @@ public final class RtTransactionTest {
         );
     }
 
-    @Test(expected = IOException.class)
-    public void prefixFormatViolated() throws IOException {
-        new RtTransaction(
-            "003b;2017-07-19T21:25:07Z;ffffffffffa72367;|invalidprefix|;98bb82c81735c4ee; For food;QCuLuVr4..."
-        ).prefix();
+    @Test
+    public void prefixFormatViolated() {
+        Assertions.assertThrows(
+            IOException.class,
+            () -> new RtTransaction(
+                "003b;2017-07-19T21:25:07Z;ffffffffffa72367;|invalidprefix|;98bb82c81735c4ee; For food;QCuLuVr4..."
+            ).prefix()
+        );
     }
 
-    @Test(expected = IOException.class)
-    public void prefixSizeViolatedLess() throws IOException {
-        new RtTransaction(
-            "003b;2017-07-19T21:25:07Z;ffffffffffa72367;FF4D;98bb82c81735c4ee; For food;QCuLuVr4..."
-        ).prefix();
+    @Test
+    public void prefixSizeViolatedLess() {
+        Assertions.assertThrows(
+            IOException.class,
+            () -> new RtTransaction(
+                "003b;2017-07-19T21:25:07Z;ffffffffffa72367;FF4D;98bb82c81735c4ee; For food;QCuLuVr4..."
+            ).prefix()
+        );
     }
 
-    @Test(expected = IOException.class)
-    public void prefixSizeViolatedMore() throws IOException {
-        new RtTransaction(
-            "003b;2017-07-19T21:25:07Z;ffffffffffa72367;FF4DFF4DFF4DFF4DFF4DFF4DFF4DFF4DFF4DFF4D;98bb82c81735c4ee; For food;QCuLuVr4..."
-        ).prefix();
+    @Test
+    public void prefixSizeViolatedMore() {
+        Assertions.assertThrows(
+            IOException.class,
+            () -> new RtTransaction(
+                "003b;2017-07-19T21:25:07Z;ffffffffffa72367;FF4DFF4DFF4DFF4DFF4DFF4DFF4DFF4DFF4DFF4D;98bb82c81735c4ee; For food;QCuLuVr4..."
+            ).prefix()
+        );
     }
 
     @Test
@@ -240,11 +248,14 @@ public final class RtTransactionTest {
         );
     }
 
-    @Test(expected = IOException.class)
-    public void invalidTransactionString() throws IOException {
-        new RtTransaction(
-            "this is a invalid transaction String"
-        ).prefix();
+    @Test
+    public void invalidTransactionString() {
+        Assertions.assertThrows(
+            IOException.class,
+            () -> new RtTransaction(
+                "this is a invalid transaction String"
+            ).prefix()
+        );
     }
 
     @Test

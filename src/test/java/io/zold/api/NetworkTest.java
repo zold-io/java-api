@@ -14,7 +14,6 @@ import org.mockito.Mockito;
 
 /**
  * Test case for {@link Network}.
- *
  * @since 0.1
  * @todo #5:30min Implement Remote interface. Remote Interface must be
  *  implemented because Network depends on Remote behavior. Network.pull
@@ -24,30 +23,29 @@ import org.mockito.Mockito;
  * @checkstyle MagicNumberCheck (500 lines)
  * @checkstyle ClassDataAbstractionCouplingCheck (2 lines)
  */
-public final class NetworkTest {
+@SuppressWarnings("PMD.UnnecessaryLocalRule")
+final class NetworkTest {
 
     @Test
-    public void pushWalletToAllRemotes()  {
-        final Remote highremote = Mockito.mock(Remote.class);
-        final Remote lowremote = Mockito.mock(Remote.class);
+    void pushesWalletToTheFirstRemote() {
+        final Remote first = Mockito.mock(Remote.class);
+        final Remote second = Mockito.mock(Remote.class);
         final Wallet wallet = Mockito.mock(Wallet.class);
-        new RtNetwork(
-            new IterableOf<Remote>(
-                highremote, lowremote
-            )
-        ).push(wallet);
-        Mockito.verify(
-            highremote,
-            Mockito.times(1)
-        ).push(Mockito.any(Wallet.class));
-        Mockito.verify(
-            lowremote,
-            Mockito.times(1)
-        ).push(Mockito.any(Wallet.class));
+        new RtNetwork(new IterableOf<Remote>(first, second)).push(wallet);
+        Mockito.verify(first, Mockito.times(1)).push(Mockito.any(Wallet.class));
     }
 
     @Test
-    public void pullsWalletWithTheRightId() throws IOException {
+    void pushesWalletToTheSecondRemote() {
+        final Remote first = Mockito.mock(Remote.class);
+        final Remote second = Mockito.mock(Remote.class);
+        final Wallet wallet = Mockito.mock(Wallet.class);
+        new RtNetwork(new IterableOf<Remote>(first, second)).push(wallet);
+        Mockito.verify(second, Mockito.times(1)).push(Mockito.any(Wallet.class));
+    }
+
+    @Test
+    void pullsWalletWithTheRightId() throws IOException {
         final long id = 1L;
         MatcherAssert.assertThat(
             new RtNetwork(

@@ -13,11 +13,11 @@ import org.junit.Test;
 
 /**
  * Test case for {@link TaxBeneficiaries}.
- *
  * @since 1.0
  * @checkstyle JavadocMethodCheck (500 lines)
  * @checkstyle MagicNumberCheck (500 lines)
  */
+@SuppressWarnings("PMD.UnnecessaryLocalRule")
 public final class TaxBeneficiariesTest {
 
     @Test
