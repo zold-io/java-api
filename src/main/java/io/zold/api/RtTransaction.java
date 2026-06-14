@@ -29,6 +29,7 @@ import org.cactoos.time.ZonedDateTimeOf;
  * @since 0.1
  * @checkstyle ClassDataAbstractionCoupling (3 lines)
  */
+@SuppressWarnings("PMD.TooManyMethods")
 final class RtTransaction implements Transaction {
 
     /**
@@ -105,13 +106,7 @@ final class RtTransaction implements Transaction {
 
     @Override
     public int id() throws IOException {
-        final String ident = new UncheckedText(
-            new IoChecked<>(
-                new ItemAt<>(
-                    0, new Split(this.transaction.value(), ";")
-                )
-            ).value()
-        ).asString();
+        final String ident = this.field(0);
         if (!RtTransaction.IDENT.matcher(ident).matches()) {
             throw new IOException(
                 new UncheckedText(
@@ -130,26 +125,14 @@ final class RtTransaction implements Transaction {
     @Override
     public ZonedDateTime time() throws IOException {
         return new ZonedDateTimeOf(
-            new UncheckedText(
-                new IoChecked<>(
-                    new ItemAt<>(
-                        1, new Split(this.transaction.value(), ";")
-                    )
-                ).value()
-            ).asString(),
+            this.field(1),
             DateTimeFormatter.ISO_OFFSET_DATE_TIME
         ).value();
     }
 
     @Override
     public long amount() throws IOException {
-        final String amnt = new UncheckedText(
-            new IoChecked<>(
-                new ItemAt<>(
-                    2, new Split(this.transaction.value(), ";")
-                )
-            ).value()
-        ).asString();
+        final String amnt = this.field(2);
         if (!RtTransaction.HEX.matcher(amnt).matches()) {
             throw new IOException(
                 new UncheckedText(
@@ -167,14 +150,8 @@ final class RtTransaction implements Transaction {
 
     @Override
     public String prefix() throws IOException {
-        final String prefix = new UncheckedText(
-            new IoChecked<>(
-                new ItemAt<>(
-                    //@checkstyle MagicNumberCheck (1 line)
-                    3, new Split(this.transaction.value(), ";")
-                )
-            ).value()
-        ).asString();
+        //@checkstyle MagicNumberCheck (1 line)
+        final String prefix = this.field(3);
         //@checkstyle MagicNumberCheck (1 line)
         if (prefix.length() < 8 || prefix.length() > 32) {
             throw new IOException("Invalid prefix size");
@@ -187,14 +164,8 @@ final class RtTransaction implements Transaction {
 
     @Override
     public String bnf() throws IOException {
-        final String bnf = new UncheckedText(
-            new IoChecked<>(
-                new ItemAt<>(
-                    //@checkstyle MagicNumberCheck (1 line)
-                    4, new Split(this.transaction.value(), ";")
-                )
-            ).value()
-        ).asString();
+        //@checkstyle MagicNumberCheck (1 line)
+        final String bnf = this.field(4);
         if (!RtTransaction.HEX.matcher(bnf).matches()) {
             throw new IOException(
                 new UncheckedText(
@@ -211,14 +182,8 @@ final class RtTransaction implements Transaction {
 
     @Override
     public String details() throws IOException {
-        final String dtls = new UncheckedText(
-            new IoChecked<>(
-                new ItemAt<>(
-                    //@checkstyle MagicNumberCheck (1 line)
-                    5, new Split(this.transaction.value(), ";")
-                )
-            ).value()
-        ).asString();
+        //@checkstyle MagicNumberCheck (1 line)
+        final String dtls = this.field(5);
         if (!RtTransaction.DTLS.matcher(dtls).matches()) {
             throw new IOException(
                 new UncheckedText(
@@ -235,14 +200,8 @@ final class RtTransaction implements Transaction {
 
     @Override
     public String signature() throws IOException {
-        final String sign = new UncheckedText(
-            new IoChecked<>(
-                new ItemAt<>(
-                    //@checkstyle MagicNumberCheck (1 line)
-                    6, new Split(this.transaction.value(), ";")
-                )
-            ).value()
-        ).asString();
+        //@checkstyle MagicNumberCheck (1 line)
+        final String sign = this.field(6);
         // @checkstyle MagicNumber (1 line)
         if (sign.length() != 684
             || !RtTransaction.SIGN.matcher(sign).matches()) {
@@ -278,5 +237,22 @@ final class RtTransaction implements Transaction {
     @Override
     public int hashCode() {
         return this.transaction.hashCode();
+    }
+
+    /**
+     * The field at the given position in the semicolon-separated
+     * transaction string.
+     * @param index Zero-based position of the field
+     * @return The raw field value
+     * @throws IOException If an IO error occurs
+     */
+    private String field(final int index) throws IOException {
+        return new UncheckedText(
+            new IoChecked<>(
+                new ItemAt<>(
+                    index, new Split(this.transaction.value(), ";")
+                )
+            ).value()
+        ).asString();
     }
 }
