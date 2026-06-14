@@ -227,8 +227,8 @@ public interface Wallet {
                     new UncheckedText(
                         new FormattedText(
                             "Wallet ID mismatch, ours is %d, theirs is %d",
-                            other.id(),
-                            this.id()
+                            this.id(),
+                            other.id()
                         )
                     ).asString()
                 );

@@ -112,7 +112,7 @@ public final class WalletTest {
                 () -> wallet.merge(new Wallet.Fake(123L))
             ).getMessage(),
             Matchers.startsWith(
-                "Wallet ID mismatch, ours is 123, theirs is 5124095577148911"
+                "Wallet ID mismatch, ours is 5124095577148911, theirs is 123"
             )
         );
     }
