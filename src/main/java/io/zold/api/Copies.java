@@ -62,15 +62,63 @@ public final class Copies extends IterableEnvelope<Copy> {
      * @param second Second wallet
      * @return Boolean Boolean
      * @throws IOException If fails
-     * @todo #56:30min Compare the entire content of two wallets. In addition
-     *  to id, compare RSA key and all transactions one by one. Entire content
-     *  of each transaction should be compared.
      */
     private static boolean equalWallets(final Wallet first,
         final Wallet second) throws IOException {
-        return first.id() == second.id() && new ListOf<>(
-            first.ledger()
-        ).size() == new ListOf<>(second.ledger()).size();
+        final List<Transaction> head = new ListOf<>(first.ledger());
+        final List<Transaction> tail = new ListOf<>(second.ledger());
+        boolean equal = first.id() == second.id()
+            && first.key().equals(second.key())
+            && head.size() == tail.size();
+        int idx = 0;
+        while (equal && idx < head.size()) {
+            equal = Copies.equalTransactions(head.get(idx), tail.get(idx));
+            idx += 1;
+        }
+        return equal;
+    }
+
+    /**
+     * Checks if two transactions carry the same content across every field
+     * exposed by {@link Transaction}.
+     * @param first First transaction
+     * @param second Second transaction
+     * @return True when every field matches
+     * @throws IOException If fails
+     */
+    private static boolean equalTransactions(final Transaction first,
+        final Transaction second) throws IOException {
+        return Copies.equalNumbers(first, second)
+            && Copies.equalText(first, second);
+    }
+
+    /**
+     * Checks the numeric fields of two transactions.
+     * @param first First transaction
+     * @param second Second transaction
+     * @return True when id, time, and amount match
+     * @throws IOException If fails
+     */
+    private static boolean equalNumbers(final Transaction first,
+        final Transaction second) throws IOException {
+        return first.id() == second.id()
+            && first.amount() == second.amount()
+            && first.time().equals(second.time());
+    }
+
+    /**
+     * Checks the textual fields of two transactions.
+     * @param first First transaction
+     * @param second Second transaction
+     * @return True when prefix, bnf, details, and signature match
+     * @throws IOException If fails
+     */
+    private static boolean equalText(final Transaction first,
+        final Transaction second) throws IOException {
+        return first.prefix().equals(second.prefix())
+            && first.bnf().equals(second.bnf())
+            && first.details().equals(second.details())
+            && first.signature().equals(second.signature());
     }
 
     /**
