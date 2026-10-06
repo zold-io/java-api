@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.SecureRandom;
 import java.util.Iterator;
 import java.util.Random;
 import org.cactoos.Scalar;
@@ -56,7 +57,7 @@ public final class WalletsIn implements Wallets {
         this(
             () -> pth,
             "z",
-            new Random()
+            new SecureRandom()
         );
     }
 
