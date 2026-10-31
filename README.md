@@ -12,7 +12,7 @@
 [![Maven Central](https://img.shields.io/maven-central/v/io.zold/java-api.svg)](https://maven-badges.herokuapp.com/maven-central/io.zold/java-api)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/zold-io/java-api/blob/master/LICENSE.txt)
 [![Test Coverage](https://img.shields.io/codecov/c/github/zold-io/java-api.svg)](https://codecov.io/github/zold-io/java-api?branch=master)
-[![SonarQube](https://img.shields.io/badge/sonar-ok-green.svg)](https://sonarcloud.io/dashboard?id=io.zold%3java-api)
+[![SonarQube](https://img.shields.io/badge/sonar-ok-green.svg)](https://sonarcloud.io/dashboard?id=io.zold%3Ajava-api)
 [![Hits-of-Code](https://hitsofcode.com/github/zold-io/java-api)](https://hitsofcode.com/view/github/zold-io/java-api)
 
 Java API for Zold. Ruby API is in [zold-io/zold](https://github.com/zold-io/zold).
