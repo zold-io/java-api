@@ -116,7 +116,7 @@ public final class Copies extends IterableEnvelope<Copy> {
         @Override
         public boolean equals(final Object obj) {
             return obj instanceof Copy
-                && this.compareTo((Copy) obj) == 0;
+                && this.wlt.equals(((Copy) obj).wlt);
         }
 
         @Override

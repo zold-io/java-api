@@ -41,6 +41,23 @@ final class CopiesTest {
         );
     }
 
+    @Test
+    void distinguishesCopiesWithDifferentWallets() {
+        final Remote remote = new Remote.Fake(
+            new RtScore(new IterableOf<>(new TextOf("a")))
+        );
+        MatcherAssert.assertThat(
+            "wallet identity defines copy equality",
+            new Copies.Copy(new Wallet.Fake(1L), remote).equals(
+                new Copies.Copy(
+                    new Wallet.Fake(2L),
+                    remote
+                )
+            ),
+            new IsEqual<>(false)
+        );
+    }
+
     private static Iterable<Copies.Copy> copies() {
         return new Copies(
             1L,
