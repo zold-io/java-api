@@ -4,12 +4,9 @@
  */
 package io.zold.api;
 
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import org.cactoos.text.Joined;
-import org.cactoos.time.ZonedDateTimeOf;
+import org.cactoos.text.FormattedText;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -21,38 +18,21 @@ import org.junit.jupiter.api.Test;
  * @checkstyle MagicNumberCheck (500 lines)
  * @checkstyle MethodBodyCommentsCheck (500 lines)
  * @checkstyle AbbreviationAsWordInNameCheck (500 lines)
+ * @checkstyle LineLengthCheck (500 lines)
  */
 @SuppressWarnings("PMD.UnnecessaryLocalRule")
 final class TaxesTest {
 
     @Test
     void pay() throws Exception {
-        final String prefix = "transaction";
-        final String beneficiary = "4096";
-        final ZonedDateTime first =
-            new ZonedDateTimeOf(
-                "2017-07-19T21:24:51Z",
-                DateTimeFormatter.ISO_OFFSET_DATE_TIME
-            ).value();
         final List<Transaction> ledger = new ArrayList<>(5);
-        // @checkstyle AvoidInstantiatingObjectsInLoops (26 lines)
+        // @checkstyle AvoidInstantiatingObjectsInLoops (9 lines)
         for (int index = 0; index < 5; ++index) {
             ledger.add(
                 new Transaction.Fake(
-                    index,
-                    first.plusDays(index),
-                    1024 * index,
-                    prefix,
-                    beneficiary,
-                    new Joined(
-                        "",
-                        prefix,
-                        Integer.toString(index)
-                    ).asString(),
-                    new Joined(
-                        "",
-                        "signature",
-                        Integer.toString(index)
+                    new FormattedText(
+                        "%04x;2017-07-%02dT21:24:51Z;%016x;dHJhbnNhY3Rpb24=;0000000000001000;transaction%d;c2lnbmF0dXJl",
+                        index, 19 + index, 1024 * index, index
                     ).asString()
                 )
             );

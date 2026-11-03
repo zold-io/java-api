@@ -11,7 +11,6 @@ import java.time.ZonedDateTime;
 /**
  * A payment transaction.
  * @since 0.1
- * @checkstyle ParameterNumberCheck (500 lines)
  */
 @GenerateEnvelope
 public interface Transaction {
@@ -76,106 +75,18 @@ public interface Transaction {
     String toString();
 
     /**
-     * Fake implementation of Transaction.
+     * Fake implementation of Transaction, read from one ledger line.
      * @since 1.0
      */
-    @SuppressWarnings("PMD.DataClass")
-    final class Fake implements Transaction {
-
-        /**
-         * Transaction id.
-         */
-        private final int id;
-
-        /**
-         * Datetime of the transaction.
-         */
-        private final ZonedDateTime time;
-
-        /**
-         * Transaction amount.
-         */
-        private final long amount;
-
-        /**
-         * Transaction prefix.
-         */
-        private final String prefix;
-
-        /**
-         * Transaction beneficiary.
-         */
-        private final String bnf;
-
-        /**
-         * Transaction details.
-         */
-        private final String details;
-
-        /**
-         * Transaction signature.
-         */
-        private final String signature;
+    final class Fake extends TransactionEnvelope {
 
         /**
          * Constructor.
-         * @param id Transaction id
-         * @param time Transaction time
-         * @param amount Transaction amount
-         * @param prefix Transaction prefix
-         * @param bnf Transaction beneficiary
-         * @param details Transaction details
-         * @param signature Transaction signature
-         * @todo #61:30min Too many parameters on Fake constructor.
-         *  Transaction.Fake have too many parameters; think and implement a
-         *  way of reducing this number. After this implementation correct
-         *  all other Fake usages to receive the new parameter values.
+         * @param line Transaction line with seven fields separated by semicolons
+         * @checkstyle ConstructorsCodeFreeCheck (3 lines)
          */
-        public Fake(final int id, final ZonedDateTime time, final long
-            amount, final String prefix, final String bnf, final String details,
-            final String signature) {
-            this.id = id;
-            this.time = time;
-            this.amount = amount;
-            this.prefix = prefix;
-            this.bnf = bnf;
-            this.details = details;
-            this.signature = signature;
-        }
-
-        @Override
-        public int id() throws IOException {
-            return this.id;
-        }
-
-        @Override
-        public ZonedDateTime time() throws IOException {
-            return this.time;
-        }
-
-        @Override
-        public long amount() throws IOException {
-            return this.amount;
-        }
-
-        @Override
-        public String prefix() throws IOException {
-            return this.prefix;
-        }
-
-        @Override
-        public String bnf() throws IOException {
-            return this.bnf;
-        }
-
-        @Override
-        public String details() throws IOException {
-            return this.details;
-        }
-
-        @Override
-        public String signature() throws IOException {
-            return this.signature;
+        public Fake(final String line) {
+            super(new RtTransaction(line));
         }
     }
 }
