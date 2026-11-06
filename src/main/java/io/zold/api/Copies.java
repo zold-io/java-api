@@ -121,7 +121,7 @@ public final class Copies extends IterableEnvelope<Copy> {
 
         @Override
         public int hashCode() {
-            return this.wlt.hashCode();
+            return new ListOf<>(this.score().suffixes()).size();
         }
 
         /**

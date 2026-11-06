@@ -41,6 +41,31 @@ final class CopiesTest {
         );
     }
 
+    @Test
+    void copiesWithEqualScoresAreEqual() {
+        MatcherAssert.assertThat(
+            CopiesTest.copy(1L),
+            new IsEqual<>(CopiesTest.copy(2L))
+        );
+    }
+
+    @Test
+    void equalCopiesHaveEqualHashCodes() {
+        MatcherAssert.assertThat(
+            CopiesTest.copy(1L).hashCode(),
+            new IsEqual<>(CopiesTest.copy(2L).hashCode())
+        );
+    }
+
+    private static Copies.Copy copy(final long id) {
+        return new Copies.Copy(
+            new Wallet.Fake(id),
+            new Remote.Fake(
+                new RtScore(new IterableOf<>(new TextOf("a")))
+            )
+        );
+    }
+
     private static Iterable<Copies.Copy> copies() {
         return new Copies(
             1L,
