@@ -4,9 +4,9 @@
  */
 package io.zold.api;
 
-import java.time.format.DateTimeFormatter;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Computed Transaction.
@@ -22,7 +22,7 @@ public final class CpTransaction extends TransactionEnvelope {
      * Ctor.
      * @param amt Amount to pay in zents
      * @param bnf Wallet ID of beneficiary
-     * @checkstyle ConstructorsCodeFreeCheck (3 lines)
+     * @checkstyle ConstructorsCodeFreeCheck (13 lines)
      */
     CpTransaction(final long amt, final long bnf) {
         super(
