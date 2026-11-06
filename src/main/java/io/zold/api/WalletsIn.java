@@ -143,11 +143,12 @@ public final class WalletsIn implements Wallets {
                 ).asString()
             );
         }
+        // @checkstyle ProhibitLineSeparatorInStringsCheck (10 lines)
         Files.write(
             wpth,
             new UncheckedText(
                 new FormattedText(
-                    "%s%n1%n%s%n%s%n",
+                    "%s\n1\n%s\n%s\n",
                     network,
                     Long.toHexString(id),
                     pubkey
