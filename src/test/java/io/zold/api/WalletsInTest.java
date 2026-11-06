@@ -5,6 +5,8 @@
 package io.zold.api;
 
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Random;
@@ -61,14 +63,21 @@ public final class WalletsInTest {
     }
 
     @Test
+    @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
     public void createsRightWallet() throws IOException {
         final Path path = this.folder.newFolder().toPath();
-        Assertions.assertThrows(
-            UnsupportedOperationException.class,
-            () -> new WalletsIn(path).create(
-                1L, "AAAAB3NzaC1yc2EAAAADAQABAAABAQC", "zold"
-            )
+        final Wallet wallet = new WalletsIn(path).create(
+            1L, "AAAAB3NzaC1yc2EAAAADAQABAAABAQC", "zold"
         );
+        Assertions.assertEquals(1L, wallet.id());
+        Assertions.assertEquals(
+            "AAAAB3NzaC1yc2EAAAADAQABAAABAQC", wallet.key()
+        );
+        try (DirectoryStream<Path> files = Files.newDirectoryStream(path)) {
+            Assertions.assertEquals(
+                "zold", Files.readAllLines(files.iterator().next()).get(0)
+            );
+        }
     }
 
     @Test
