@@ -207,7 +207,7 @@ public interface Wallet {
                     StandardCharsets.UTF_8
                 )
             ) {
-                // @checkstyle ProhibitLineSeparatorInStringsCheck (1 line)
+                // @checkstyle ProhibitLineSeparatorInStringsCheck (5 lines)
                 if (
                     !Files.readString(
                         this.path, StandardCharsets.UTF_8
