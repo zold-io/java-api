@@ -80,7 +80,8 @@ public final class WalletTest {
     }
 
     @Test
-    public void mergesWallets() throws IOException {
+    public void doesNotMergePositiveTransactionWithoutPayingWallet()
+        throws IOException {
         final long id = 5_124_095_577_148_911L;
         final Wallet wallet = new Wallet.File(this.wallet(id));
         final Wallet merged = wallet.merge(
@@ -92,7 +93,7 @@ public final class WalletTest {
         );
         MatcherAssert.assertThat(
             new ListOf<>(merged.ledger()).size(),
-            new IsEqual<>(new ListOf<>(wallet.ledger()).size() + 1)
+            new IsEqual<>(new ListOf<>(wallet.ledger()).size())
         );
     }
 
@@ -177,6 +178,31 @@ public final class WalletTest {
         MatcherAssert.assertThat(
             new ListOf<>(merged.ledger()).size(),
             new IsEqual<>(new ListOf<>(wallet.ledger()).size())
+        );
+    }
+
+    @Test
+    public void doesNotMergeInvalidTransactions() throws IOException {
+        final long id = 5_124_095_577_148_911L;
+        final Wallet wallet = new Wallet.File(this.wallet(id));
+        final int size = new ListOf<>(wallet.ledger()).size();
+        final Wallet merged = wallet.merge(
+            new Wallet.Fake(
+                id,
+                new RtTransaction(
+                    "0040;2017-07-18T21:25:07Z;ffffffffffffffff;xxxxuuuu;98bb82c81735c4ee;For food;bad"
+                ),
+                new RtTransaction(
+                    "0041;2017-07-18T21:25:07Z;8000000000000000;xxxxuuuu;98bb82c81735c4ee;For food;bad"
+                ),
+                new RtTransaction(
+                    "0042;2017-07-18T21:25:07Z;0000000000000001;xxxxuuuu;98bb82c81735c4ee;For food;bad"
+                )
+            )
+        );
+        MatcherAssert.assertThat(
+            new ListOf<>(merged.ledger()).size(),
+            new IsEqual<>(size)
         );
     }
 
