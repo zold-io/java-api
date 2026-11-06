@@ -4,6 +4,10 @@
  */
 package io.zold.api;
 
+import java.time.format.DateTimeFormatter;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+
 /**
  * Computed Transaction.
  * @since 1.0
@@ -21,6 +25,19 @@ public final class CpTransaction extends TransactionEnvelope {
      * @checkstyle ConstructorsCodeFreeCheck (3 lines)
      */
     CpTransaction(final long amt, final long bnf) {
-        super(new RtTransaction(Long.toString(amt + bnf)));
+        super(
+            new RtTransaction(
+                String.format(
+                    "%04x;%s;%016x;cGF5;%016x;Payment;%0684d",
+                    0,
+                    DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(
+                        ZonedDateTime.now(ZoneOffset.UTC)
+                    ),
+                    amt,
+                    bnf,
+                    0
+                )
+            )
+        );
     }
 }

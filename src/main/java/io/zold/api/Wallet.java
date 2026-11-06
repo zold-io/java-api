@@ -207,7 +207,13 @@ public interface Wallet {
                     StandardCharsets.UTF_8
                 )
             ) {
-                out.write('\n');
+                if (
+                    !Files.readString(
+                        this.path, StandardCharsets.UTF_8
+                    ).endsWith("\n")
+                ) {
+                    out.write('\n');
+                }
                 out.write(new CpTransaction(amt, bnf).toString());
             }
         }
