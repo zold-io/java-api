@@ -17,6 +17,7 @@ import org.cactoos.iterable.Joined;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.iterable.Skipped;
 import org.cactoos.list.ListOf;
+import org.cactoos.number.SumOf;
 import org.cactoos.scalar.Checked;
 import org.cactoos.scalar.Or;
 import org.cactoos.scalar.Unchecked;
@@ -212,15 +213,6 @@ public interface Wallet {
             }
         }
 
-        // @todo #16:30min Following transactions should be ignored according
-        //  to the whitepaper:
-        //  a) If the transaction is negative and its signature is not valid,
-        //  it is ignored;
-        //  b) If the transaction makes the balance of the wallet negative,
-        //  it is ignored;
-        //  c) If the transaction is positive and it’s absent in the paying
-        //  wallet (which exists at the node), it’s ignored; If the paying
-        //  wallet doesn’t exist at the node, the transaction is ignored;
         @Override
         public Wallet merge(final Wallet other) throws IOException {
             if (other.id() != this.id()) {
@@ -240,19 +232,9 @@ public interface Wallet {
                 new Joined<Transaction>(
                     ledger,
                     new Filtered<>(
-                        incoming -> !new Filtered<>(
-                            origin -> new Unchecked<>(
-                                new Or(
-                                    () -> incoming.equals(origin),
-                                    () -> incoming.id() == origin.id()
-                                        && incoming.bnf().equals(origin.bnf()),
-                                    () -> incoming.id() == origin.id()
-                                        && incoming.amount() < 0L,
-                                    () -> incoming.prefix().equals(origin.prefix())
-                                )
-                            ).value(),
-                            ledger
-                        ).iterator().hasNext(),
+                        incoming -> accepts(
+                            incoming, ledger, balance(ledger)
+                        ),
                         other.ledger()
                     )
                 )
@@ -289,6 +271,58 @@ public interface Wallet {
                 ).get(3).asString(),
                 e -> new IOException(e)
             ).value();
+        }
+
+        /**
+         * Whether an incoming transaction is acceptable.
+         * @param incoming Incoming transaction
+         * @param ledger Current ledger
+         * @param balance Current balance
+         * @return Whether it is acceptable
+         * @throws IOException If a transaction cannot be read
+         */
+        private static boolean accepts(
+            final Transaction incoming,
+            final Iterable<Transaction> ledger,
+            final long balance
+        ) throws IOException {
+            final long amount = incoming.amount();
+            boolean valid = amount <= 0L;
+            if (valid && amount < 0L) {
+                try {
+                    incoming.signature();
+                } catch (final IOException err) {
+                    valid = false;
+                }
+                valid = valid && balance >= -amount;
+            }
+            return valid && !new Filtered<>(
+                origin -> new Unchecked<>(
+                    new Or(
+                        () -> incoming.equals(origin),
+                        () -> incoming.id() == origin.id()
+                            && incoming.bnf().equals(origin.bnf()),
+                        () -> incoming.id() == origin.id()
+                            && incoming.amount() < 0L,
+                        () -> incoming.prefix().equals(origin.prefix())
+                    )
+                ).value(),
+                ledger
+            ).iterator().hasNext();
+        }
+
+        /**
+         * Calculate the current balance.
+         * @param ledger Current ledger
+         * @return Current balance
+         */
+        private static long balance(final Iterable<Transaction> ledger) {
+            return new SumOf(
+                new Mapped<>(
+                    transaction -> new Unchecked<>(transaction::amount).value(),
+                    ledger
+                )
+            ).longValue();
         }
     }
 }
