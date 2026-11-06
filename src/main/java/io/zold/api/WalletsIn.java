@@ -5,6 +5,7 @@
 package io.zold.api;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -121,15 +122,39 @@ public final class WalletsIn implements Wallets {
     }
 
     @Override
-    // @todo #65:30min Create the new wallet in the path with all wallets.
-    //  It should contain the correct content according to the
-    //  white paper (network, protocol version, id and public RSA key). After
-    //  this remove exception expect for tests on WalletsInTest.
     public Wallet create(final long id, final String pubkey, final String
         network) throws IOException {
-        throw new UnsupportedOperationException(
-            "WalletsIn.create(String, String, String) not supported"
+        final Path wpth = this.path.value().resolve(
+            new UncheckedText(
+                new Joined(
+                    ".",
+                    Long.toHexString(id),
+                    this.ext
+                )
+            ).asString()
         );
+        if (wpth.toFile().exists()) {
+            throw new IOException(
+                new UncheckedText(
+                    new FormattedText(
+                        "Wallet in path %s already exists",
+                        wpth.toUri().getPath()
+                    )
+                ).asString()
+            );
+        }
+        Files.write(
+            wpth,
+            new UncheckedText(
+                new FormattedText(
+                    "%s%n1%n%s%n%s%n",
+                    network,
+                    Long.toHexString(id),
+                    pubkey
+                )
+            ).asString().getBytes(StandardCharsets.UTF_8)
+        );
+        return new Wallet.File(wpth);
     }
 
     @Override
