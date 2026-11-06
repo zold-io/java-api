@@ -195,11 +195,13 @@ public final class WalletTest {
     }
 
     @Test
-    public void keyIsNotYetImplemented() throws IOException {
-        final Path path = this.folder.newFile().toPath();
-        Assertions.assertThrows(
-            UnsupportedOperationException.class,
-            () -> new Wallet.File(path).key()
+    public void readsPublicKey() throws IOException {
+        MatcherAssert.assertThat(
+            new Wallet.File(this.wallet(5_124_095_577_148_911L)).key(),
+            Matchers.is(
+                // @checkstyle LineLengthCheck (1 line)
+                "MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgGZCr/9hBChqsChd4sRAIpKNRinjhSW+J+S7PU5malVMiRHVoKjeooLDpWpij0A6vkzOvjrMldAZT0Fzgp0cJ15TOVwiQanQ5WuQDgRkLoxrdh/qyBApoDvk4OUEozOQPNwfpZOFfaUALPsPnv9995TlY9WcdSKW5dj041p1tJmlAgMBAAE="
+            )
         );
     }
 

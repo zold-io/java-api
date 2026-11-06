@@ -70,8 +70,9 @@ public interface Wallet {
     /**
      * This wallet's RSA key.
      * @return This wallet's RSA key
+     * @throws IOException If an IO error occurs
      */
-    String key();
+    String key() throws IOException;
 
     /**
      * A Fake {@link Wallet}.
@@ -275,14 +276,19 @@ public interface Wallet {
             );
         }
 
-        // @todo #54:30min Implement key method. This should return the
-        //  public RSA key of the wallet owner in Base64. Also add a unit test
-        //  to replace WalletTest.keyIsNotYetImplemented().
         @Override
-        public String key() {
-            throw new UnsupportedOperationException(
-                "key() not yet supported"
-            );
+        public String key() throws IOException {
+            // @checkstyle ProhibitLineSeparatorInStringsCheck (10 lines)
+            return new Checked<>(
+                () -> new ListOf<>(
+                    new Split(
+                        new TextOf(this.path),
+                        "\n"
+                    )
+                // @checkstyle MagicNumberCheck (1 line)
+                ).get(3).asString(),
+                e -> new IOException(e)
+            ).value();
         }
     }
 }
