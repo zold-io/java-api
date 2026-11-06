@@ -5,6 +5,9 @@
 package io.zold.api;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import org.cactoos.iterable.IterableOf;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
@@ -57,5 +60,30 @@ final class NetworkTest {
             ).pull(id).id(),
             new IsEqual<>(id)
         );
+    }
+
+    @Test
+    void loadsRemotesFromJsonFile() throws IOException {
+        final Path file = Files.createTempFile("remotes", ".json");
+        Files.write(
+            file,
+            "[{\"score\": 2}]".getBytes(StandardCharsets.UTF_8)
+        );
+        try {
+            int count = 0;
+            for (final Remote ignored : new RtNetwork(
+                file,
+                new IterableOf<>(new Remote.Fake(1)),
+                json -> new Remote.Fake(json.getInt("score"))
+            )) {
+                count += 1;
+            }
+            MatcherAssert.assertThat(
+                count,
+                new IsEqual<>(2)
+            );
+        } finally {
+            Files.delete(file);
+        }
     }
 }
