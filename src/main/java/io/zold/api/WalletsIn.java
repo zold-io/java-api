@@ -25,8 +25,8 @@ import org.cactoos.text.UncheckedText;
 
 /**
  * Wallets in path.
+ *
  * @since 0.1
- * @checkstyle ClassDataAbstractionCoupling (2 lines)
  */
 public final class WalletsIn implements Wallets {
 
@@ -52,6 +52,7 @@ public final class WalletsIn implements Wallets {
 
     /**
      * Ctor.
+     *
      * @param pth Path with wallets
      */
     public WalletsIn(final Path pth) {
@@ -64,6 +65,7 @@ public final class WalletsIn implements Wallets {
 
     /**
      * Ctor.
+     *
      * @param pth Path with wallets
      * @param random Randomizer
      */
@@ -77,6 +79,7 @@ public final class WalletsIn implements Wallets {
 
     /**
      * Ctor.
+     *
      * @param pth Path with wallets
      * @param ext Wallets file extension
      * @param random Randomizer

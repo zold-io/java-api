@@ -12,21 +12,16 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Taxes}.
+ *
  * @since 1.0
- * @checkstyle JavadocMethodCheck (500 lines)
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
- * @checkstyle MagicNumberCheck (500 lines)
  * @checkstyle MethodBodyCommentsCheck (500 lines)
  * @checkstyle AbbreviationAsWordInNameCheck (500 lines)
- * @checkstyle LineLengthCheck (500 lines)
  */
-@SuppressWarnings("PMD.UnnecessaryLocalRule")
 final class TaxesTest {
 
     @Test
     void pay() throws Exception {
         final List<Transaction> ledger = new ArrayList<>(5);
-        // @checkstyle AvoidInstantiatingObjectsInLoops (9 lines)
         for (int index = 0; index < 5; ++index) {
             ledger.add(
                 new Transaction.Fake(

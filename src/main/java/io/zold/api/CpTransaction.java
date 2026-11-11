@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 
 /**
  * Computed Transaction.
+ *
  * @since 1.0
  * @todo #54:30min Implement the computation of the transaction string
  *  based on the white paper. The unit tests should also be updated to
@@ -20,9 +21,9 @@ public final class CpTransaction extends TransactionEnvelope {
 
     /**
      * Ctor.
+     *
      * @param amt Amount to pay in zents
      * @param bnf Wallet ID of beneficiary
-     * @checkstyle ConstructorsCodeFreeCheck (13 lines)
      */
     CpTransaction(final long amt, final long bnf) {
         super(
