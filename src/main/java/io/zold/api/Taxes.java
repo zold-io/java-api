@@ -10,6 +10,7 @@ import org.cactoos.text.UncheckedText;
 
 /**
  * Taxes payment algorithm.
+ *
  * @since 1.0
  * @todo #61:30min Implement tax payment to remote nodes.
  *  Payment should happen only if the wallet is in debt of more than
@@ -29,6 +30,7 @@ public final class Taxes implements Proc<Wallet> {
 
     /**
      * Ctor.
+     *
      * @param nodes Remote nodes
      */
     public Taxes(final Iterable<Remote> nodes) {

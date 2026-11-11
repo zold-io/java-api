@@ -26,17 +26,15 @@ import org.cactoos.time.ZonedDateTimeOf;
 
 /**
  * RtTransaction.
+ *
  * @since 0.1
- * @checkstyle ClassDataAbstractionCoupling (3 lines)
  */
-@SuppressWarnings("PMD.TooManyMethods")
 final class RtTransaction implements Transaction {
 
     /**
      * Pattern for Prefix String.
      */
     private static final Pattern PREFIX = Pattern.compile(
-        //@checkstyle LineLengthCheck (1 line)
         "^([A-Za-z0-9+\\/]{4})*([A-Za-z0-9+\\/]{4}|[A-Za-z0-9+\\/]{3}=|[A-Za-z0-9+\\/]{2}==)$"
     );
 
@@ -68,6 +66,7 @@ final class RtTransaction implements Transaction {
 
     /**
      * Ctor.
+     *
      * @param trnsct String representation of transaction
      * @checkstyle LambdaBodyLengthCheck (28 lines)
      */
@@ -88,11 +87,9 @@ final class RtTransaction implements Transaction {
                         new ListOf<>(
                             new Split(trnsct, ";")
                         );
-                    // @checkstyle MagicNumberCheck (1 line)
                     if (new LengthOf(pieces).value().intValue() != 7) {
                         throw new IOException(
                             new FormattedText(
-                                // @checkstyle LineLength (1 line)
                                 "Invalid transaction string: expected 7 fields, but found %d",
                                 pieces.size()
                             ).asString()
@@ -111,14 +108,12 @@ final class RtTransaction implements Transaction {
             throw new IOException(
                 new UncheckedText(
                     new FormattedText(
-                        // @checkstyle LineLength (1 line)
                         "Invalid ID '%s' expecting 16-bit unsigned hex string with 4 symbols",
                         ident
                     )
                 ).asString()
             );
         }
-        // @checkstyle MagicNumber (1 line)
         return Integer.parseUnsignedInt(ident, 16);
     }
 
@@ -137,22 +132,18 @@ final class RtTransaction implements Transaction {
             throw new IOException(
                 new UncheckedText(
                     new FormattedText(
-                        // @checkstyle LineLength (1 line)
                         "Invalid amount '%s' expecting 64-bit signed hex string with 16 symbols",
                         amnt
                     )
                 ).asString()
             );
         }
-        // @checkstyle MagicNumber (1 line)
         return new BigInteger(amnt, 16).longValue();
     }
 
     @Override
     public String prefix() throws IOException {
-        //@checkstyle MagicNumberCheck (1 line)
         final String prefix = this.field(3);
-        //@checkstyle MagicNumberCheck (1 line)
         if (prefix.length() < 8 || prefix.length() > 32) {
             throw new IOException("Invalid prefix size");
         }
@@ -164,13 +155,11 @@ final class RtTransaction implements Transaction {
 
     @Override
     public String bnf() throws IOException {
-        //@checkstyle MagicNumberCheck (1 line)
         final String bnf = this.field(4);
         if (!RtTransaction.HEX.matcher(bnf).matches()) {
             throw new IOException(
                 new UncheckedText(
                     new FormattedText(
-                        // @checkstyle LineLength (1 line)
                         "Invalid bnf string '%s', expecting hex string with 16 symbols",
                         bnf
                     )
@@ -182,13 +171,11 @@ final class RtTransaction implements Transaction {
 
     @Override
     public String details() throws IOException {
-        //@checkstyle MagicNumberCheck (1 line)
         final String dtls = this.field(5);
         if (!RtTransaction.DTLS.matcher(dtls).matches()) {
             throw new IOException(
                 new UncheckedText(
                     new FormattedText(
-                        // @checkstyle LineLength (1 line)
                         "Invalid details string '%s', does not match pattern '%s'",
                         dtls, RtTransaction.DTLS
                     )
@@ -200,15 +187,12 @@ final class RtTransaction implements Transaction {
 
     @Override
     public String signature() throws IOException {
-        //@checkstyle MagicNumberCheck (1 line)
         final String sign = this.field(6);
-        // @checkstyle MagicNumber (1 line)
         if (sign.length() != 684
             || !RtTransaction.SIGN.matcher(sign).matches()) {
             throw new IOException(
                 new UncheckedText(
                     new FormattedText(
-                        // @checkstyle LineLength (1 line)
                         "Invalid signature '%s', expecting base64 string with 684 characters",
                         sign
                     )
@@ -239,13 +223,6 @@ final class RtTransaction implements Transaction {
         return this.transaction.hashCode();
     }
 
-    /**
-     * The field at the given position in the semicolon-separated
-     * transaction string.
-     * @param index Zero-based position of the field
-     * @return The raw field value
-     * @throws IOException If an IO error occurs
-     */
     private String field(final int index) throws IOException {
         return new UncheckedText(
             new IoChecked<>(

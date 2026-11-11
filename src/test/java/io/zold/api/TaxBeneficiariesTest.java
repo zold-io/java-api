@@ -9,20 +9,19 @@ import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.collection.IsIterableContainingInOrder;
 import org.hamcrest.core.IsEqual;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link TaxBeneficiaries}.
+ *
  * @since 1.0
- * @checkstyle JavadocMethodCheck (500 lines)
- * @checkstyle MagicNumberCheck (500 lines)
  */
 @SuppressWarnings("PMD.UnnecessaryLocalRule")
-public final class TaxBeneficiariesTest {
+final class TaxBeneficiariesTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void sorts() {
+    void sorts() {
         final Remote highremote = new Remote.Fake(20);
         final Remote lowremote = new Remote.Fake(18);
         MatcherAssert.assertThat(
@@ -41,7 +40,7 @@ public final class TaxBeneficiariesTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void filters() {
+    void filters() {
         final Remote highremote = new Remote.Fake(20);
         final Remote vrylowremote = new Remote.Fake(14);
         MatcherAssert.assertThat(

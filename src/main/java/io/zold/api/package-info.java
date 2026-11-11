@@ -5,6 +5,7 @@
 
 /**
  * Java API.
+ *
  * @since 0.1
  */
 package io.zold.api;

@@ -14,35 +14,28 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsIterableWithSize;
 import org.hamcrest.core.IsEqual;
-import org.junit.Rule;
-import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test case for {@link WalletsIn}.
+ *
  * @since 0.1
- * @checkstyle JavadocMethodCheck (500 lines)
- * @checkstyle JavadocVariableCheck (500 lines)
  */
-@SuppressWarnings("PMD.UnnecessaryLocalRule")
-public final class WalletsInTest {
-
-    @Rule
-    public final TemporaryFolder folder = new TemporaryFolder();
+final class WalletsInTest {
 
     @Test
-    public void iteratesWallets() {
+    void iteratesWallets() {
         MatcherAssert.assertThat(
             new WalletsIn(Paths.get("src/test/resources/walletsIn")),
-            // @checkstyle MagicNumber (1 line)
             new IsIterableWithSize<>(new IsEqual<>(5))
         );
     }
 
     @Test
-    public void createsWalletInWallets() throws IOException {
-        final Wallets wallets = new WalletsIn(this.folder.newFolder().toPath());
+    void createsWalletInWallets(@TempDir final Path folder) throws IOException {
+        final Wallets wallets = new WalletsIn(Files.createTempDirectory(folder, "wlt"));
         wallets.create();
         MatcherAssert.assertThat(
             "Can't create wallet in wallets",
@@ -52,8 +45,8 @@ public final class WalletsInTest {
     }
 
     @Test
-    public void createsWalletInFolder() throws IOException {
-        final Path path = this.folder.newFolder().toPath();
+    void createsWalletInFolder(@TempDir final Path folder) throws IOException {
+        final Path path = Files.createTempDirectory(folder, "wlt");
         new WalletsIn(path).create();
         MatcherAssert.assertThat(
             "Can't create wallet in folder",
@@ -64,8 +57,8 @@ public final class WalletsInTest {
 
     @Test
     @SuppressWarnings("PMD.UnitTestContainsTooManyAsserts")
-    public void createsRightWallet() throws IOException {
-        final Path path = this.folder.newFolder().toPath();
+    void createsRightWallet(@TempDir final Path folder) throws IOException {
+        final Path path = Files.createTempDirectory(folder, "wlt");
         final Wallet wallet = new WalletsIn(path).create(
             1L, "AAAAB3NzaC1yc2EAAAADAQABAAABAQC", "zold"
         );
@@ -81,8 +74,8 @@ public final class WalletsInTest {
     }
 
     @Test
-    public void doesNotOverwriteExistingWallet() throws Exception {
-        final Path path = this.folder.newFolder().toPath();
+    void doesNotOverwriteExistingWallet(@TempDir final Path folder) throws Exception {
+        final Path path = Files.createTempDirectory(folder, "wlt");
         final Random random = new WalletsInTest.FkRandom(16_725L);
         new WalletsIn(path, random).create();
         MatcherAssert.assertThat(
@@ -96,6 +89,7 @@ public final class WalletsInTest {
 
     /**
      * Fake randomizer that returns the same value each time.
+     *
      * @since 1.0
      */
     private static final class FkRandom extends Random {
@@ -112,6 +106,7 @@ public final class WalletsInTest {
 
         /**
          * Ctor.
+         *
          * @param val Value that represents a random number
          */
         FkRandom(final long val) {

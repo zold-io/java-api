@@ -11,28 +11,26 @@ import org.cactoos.time.ZonedDateTimeOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.core.IsEqual;
-import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link RtTransaction}.
+ *
  * @since 0.1
  * @checkstyle LineLengthCheck (500 lines)
- * @checkstyle JavadocMethodCheck (500 lines)
- * @checkstyle MagicNumber (500 lines)
  */
-@SuppressWarnings("PMD.TooManyMethods")
-public final class RtTransactionTest {
+final class RtTransactionTest {
 
     @Test
-    public void obeysEqualsHashcodeContract() {
+    void obeysEqualsHashcodeContract() {
         EqualsVerifier.forClass(RtTransaction.class)
             .withNonnullFields("transaction")
             .verify();
     }
 
     @Test
-    public void returnsId() throws IOException {
+    void returnsId() throws IOException {
         MatcherAssert.assertThat(
             new RtTransaction(
                 "abcd;2017-07-19T21:25:07Z;0000000000a72366;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr4..."
@@ -42,7 +40,7 @@ public final class RtTransactionTest {
     }
 
     @Test
-    public void idFormatViolated() {
+    void idFormatViolated() {
         MatcherAssert.assertThat(
             Assertions.assertThrows(
                 IOException.class,
@@ -55,7 +53,7 @@ public final class RtTransactionTest {
     }
 
     @Test
-    public void idStringTooLong() {
+    void idStringTooLong() {
         MatcherAssert.assertThat(
             Assertions.assertThrows(
                 IOException.class,
@@ -68,7 +66,7 @@ public final class RtTransactionTest {
     }
 
     @Test
-    public void idStringTooShort() {
+    void idStringTooShort() {
         MatcherAssert.assertThat(
             Assertions.assertThrows(
                 IOException.class,
@@ -81,7 +79,7 @@ public final class RtTransactionTest {
     }
 
     @Test
-    public void idNotPresent() {
+    void idNotPresent() {
         MatcherAssert.assertThat(
             Assertions.assertThrows(
                 IOException.class,
@@ -92,7 +90,7 @@ public final class RtTransactionTest {
     }
 
     @Test
-    public void parsesAndReturnsIsoFormattedTime() throws IOException {
+    void parsesAndReturnsIsoFormattedTime() throws IOException {
         MatcherAssert.assertThat(
             new RtTransaction(
                 "003b;2018-07-19T21:25:07Z;ffffffffffa72367;xksQuJa9;98bb82c81735c4ee; For food;QCuLuVr4..."
@@ -102,7 +100,7 @@ public final class RtTransactionTest {
     }
 
     @Test
-    public void invalidTimeFormat() throws IOException {
+    void invalidTimeFormat() throws IOException {
         Assertions.assertThrows(
             DateTimeParseException.class,
             () -> new RtTransaction(
@@ -112,7 +110,7 @@ public final class RtTransactionTest {
     }
 
     @Test
-    public void timeNotPresent() throws IOException {
+    void timeNotPresent() throws IOException {
         MatcherAssert.assertThat(
             Assertions.assertThrows(
                 IOException.class,
@@ -123,7 +121,7 @@ public final class RtTransactionTest {
     }
 
     @Test
-    public void returnsPositiveAmount() throws IOException {
+    void returnsPositiveAmount() throws IOException {
         MatcherAssert.assertThat(
             new RtTransaction(
                 "003b;2017-07-19T21:25:07Z;0000000000a72366;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr4..."
@@ -133,7 +131,7 @@ public final class RtTransactionTest {
     }
 
     @Test
-    public void returnsNegativeAmount() throws IOException {
+    void returnsNegativeAmount() throws IOException {
         MatcherAssert.assertThat(
             new RtTransaction(
                 "003b;2017-07-19T21:25:07Z;ffffffffffa72366;xksQuJa9;98bb82c81735c4ee;For food;QCuLuVr4..."
@@ -143,7 +141,7 @@ public final class RtTransactionTest {
     }
 
     @Test
-    public void amountFormatViolated() throws IOException {
+    void amountFormatViolated() throws IOException {
         MatcherAssert.assertThat(
             Assertions.assertThrows(
                 IOException.class,
@@ -156,7 +154,7 @@ public final class RtTransactionTest {
     }
 
     @Test
-    public void amountStringTooLong() throws IOException {
+    void amountStringTooLong() throws IOException {
         MatcherAssert.assertThat(
             Assertions.assertThrows(
                 IOException.class,
@@ -169,7 +167,7 @@ public final class RtTransactionTest {
     }
 
     @Test
-    public void amountStringTooShort() throws IOException {
+    void amountStringTooShort() throws IOException {
         MatcherAssert.assertThat(
             Assertions.assertThrows(
                 IOException.class,
@@ -182,7 +180,7 @@ public final class RtTransactionTest {
     }
 
     @Test
-    public void amountNotPresent() throws IOException {
+    void amountNotPresent() throws IOException {
         MatcherAssert.assertThat(
             Assertions.assertThrows(
                 IOException.class,
@@ -195,7 +193,7 @@ public final class RtTransactionTest {
     }
 
     @Test
-    public void returnsPrefix() throws IOException {
+    void returnsPrefix() throws IOException {
         MatcherAssert.assertThat(
             "Returned wrong prefix",
             new RtTransaction(
@@ -206,7 +204,7 @@ public final class RtTransactionTest {
     }
 
     @Test
-    public void prefixFormatViolated() {
+    void prefixFormatViolated() {
         Assertions.assertThrows(
             IOException.class,
             () -> new RtTransaction(
@@ -216,7 +214,7 @@ public final class RtTransactionTest {
     }
 
     @Test
-    public void prefixSizeViolatedLess() {
+    void prefixSizeViolatedLess() {
         Assertions.assertThrows(
             IOException.class,
             () -> new RtTransaction(
@@ -226,7 +224,7 @@ public final class RtTransactionTest {
     }
 
     @Test
-    public void prefixSizeViolatedMore() {
+    void prefixSizeViolatedMore() {
         Assertions.assertThrows(
             IOException.class,
             () -> new RtTransaction(
@@ -236,7 +234,7 @@ public final class RtTransactionTest {
     }
 
     @Test
-    public void prefixNotPresent() throws IOException {
+    void prefixNotPresent() throws IOException {
         MatcherAssert.assertThat(
             Assertions.assertThrows(
                 IOException.class,
@@ -249,7 +247,7 @@ public final class RtTransactionTest {
     }
 
     @Test
-    public void invalidTransactionString() {
+    void invalidTransactionString() {
         Assertions.assertThrows(
             IOException.class,
             () -> new RtTransaction(
@@ -259,7 +257,7 @@ public final class RtTransactionTest {
     }
 
     @Test
-    public void returnsBnf() throws IOException {
+    void returnsBnf() throws IOException {
         MatcherAssert.assertThat(
             new RtTransaction(
                 "003b;2017-07-19T21:25:07Z;0000000000a72366;xksQuJa9;000000C81735c4ee;For food;QCuLuVr4..."
@@ -269,7 +267,7 @@ public final class RtTransactionTest {
     }
 
     @Test
-    public void bnfSizeTooLong() throws IOException {
+    void bnfSizeTooLong() throws IOException {
         MatcherAssert.assertThat(
             Assertions.assertThrows(
                 IOException.class,
@@ -282,7 +280,7 @@ public final class RtTransactionTest {
     }
 
     @Test
-    public void bnfSizeTooShort() throws IOException {
+    void bnfSizeTooShort() throws IOException {
         MatcherAssert.assertThat(
             Assertions.assertThrows(
                 IOException.class,
@@ -295,7 +293,7 @@ public final class RtTransactionTest {
     }
 
     @Test
-    public void invalidBnfCharacter() throws IOException {
+    void invalidBnfCharacter() throws IOException {
         MatcherAssert.assertThat(
             Assertions.assertThrows(
                 IOException.class,
@@ -308,7 +306,7 @@ public final class RtTransactionTest {
     }
 
     @Test
-    public void bnfNotPresent() throws IOException {
+    void bnfNotPresent() throws IOException {
         MatcherAssert.assertThat(
             Assertions.assertThrows(
                 IOException.class,
@@ -323,7 +321,7 @@ public final class RtTransactionTest {
     }
 
     @Test
-    public void returnsDetails() throws IOException {
+    void returnsDetails() throws IOException {
         MatcherAssert.assertThat(
             "Returned wrong details",
             new RtTransaction(
@@ -334,7 +332,7 @@ public final class RtTransactionTest {
     }
 
     @Test
-    public void detailsFormatViolated() throws IOException {
+    void detailsFormatViolated() throws IOException {
         MatcherAssert.assertThat(
             Assertions.assertThrows(
                 IOException.class,
@@ -347,7 +345,7 @@ public final class RtTransactionTest {
     }
 
     @Test
-    public void detailsSizeTooShort() throws IOException {
+    void detailsSizeTooShort() throws IOException {
         MatcherAssert.assertThat(
             Assertions.assertThrows(
                 IOException.class,
@@ -360,7 +358,7 @@ public final class RtTransactionTest {
     }
 
     @Test
-    public void detailsSizeTooLong() throws IOException {
+    void detailsSizeTooLong() throws IOException {
         MatcherAssert.assertThat(
             Assertions.assertThrows(
                 IOException.class,
@@ -375,7 +373,7 @@ public final class RtTransactionTest {
     }
 
     @Test
-    public void detailsAbsentTransactionString() throws IOException {
+    void detailsAbsentTransactionString() throws IOException {
         MatcherAssert.assertThat(
             Assertions.assertThrows(
                 IOException.class,
@@ -388,7 +386,7 @@ public final class RtTransactionTest {
     }
 
     @Test
-    public void returnsSignature() throws IOException {
+    void returnsSignature() throws IOException {
         MatcherAssert.assertThat(
             new RtTransaction(
                 "003b;2018-07-19T21:25:07Z;ffffffffffa72367;xksQuJa9;98bb82c81735c4ee;For food;WKF3Emi4R2OCbPqUuFSykGD4JtAeWc8WThSYUnmLH2w1RiNSa8KNBGUw56mh0jYjmA1AXRyP/Iktqatmczp+isvh2iBN9hpZgavJ1fFjOgoFmNFe8PT8vg4ZC/vOVgMc807icX7O5i36fi0MEvEv242+2z/Gju3vcb42cZMupDoOEF/CDcEy1Ng7iAFdyLoMja74cMo6H7U0z97e2c2Sa1Eidmkdn+mXNbFsx5RizLtLUfhMtghf697Qu9i1N9lY/Qwk8SvgSviPPWs1cjjK/Fsg1ezfHSWbbHmK8/4qkvgkHqAwVwfD7bWm+1McxzNkU4X5pqE/vW5Tm/K9o7wq4N8u355U+xpgTShPEDN9u6QfdE2O4b/Q6rTzVHMX4j66cLrB8am6K9OQ7LYGShRcqR5L078RyjqHm/wDSzfZWbq8NsjmVm7Dr8NVxJ+0jS2U/r+Fo2+uyjDBn5n/UcqxUGgt0qHaGPoi7kezFHcqeVXp8RLetfXa/TBTj39Gc7aBNBFxkfaM7I/TSpI+xjtjr1cfquut/NiVLMSEVipOIEZ+Sjgf9jLjmpNfRDavz3kGi20TkL4szEvgz8bD1dT6Kf7FKPu7YBMYFoyY12RK7NZcdVr+4yNLFbRtaZYwdhrRLYwKaHli4oUN2CjAOHivVw3Ig8x/JySGxsiy3aJD8L3="
@@ -398,7 +396,7 @@ public final class RtTransactionTest {
     }
 
     @Test
-    public void invalidSignatureCharacters() throws IOException {
+    void invalidSignatureCharacters() throws IOException {
         MatcherAssert.assertThat(
             Assertions.assertThrows(
                 IOException.class,
@@ -411,7 +409,7 @@ public final class RtTransactionTest {
     }
 
     @Test
-    public void invalidSignatureLength() throws IOException {
+    void invalidSignatureLength() throws IOException {
         MatcherAssert.assertThat(
             Assertions.assertThrows(
                 IOException.class,
@@ -426,7 +424,7 @@ public final class RtTransactionTest {
     }
 
     @Test
-    public void signatureNotPresent() throws IOException {
+    void signatureNotPresent() throws IOException {
         MatcherAssert.assertThat(
             Assertions.assertThrows(
                 IOException.class,
