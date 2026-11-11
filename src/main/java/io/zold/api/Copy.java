@@ -91,4 +91,3 @@ final class Copy implements Comparable<Copy> {
         return new Score.Summed(new Mapped<>(Remote::score, this.remotes));
     }
 }
-
