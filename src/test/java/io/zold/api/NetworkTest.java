@@ -9,6 +9,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.iterable.IterableOf;
+import org.cactoos.scalar.LengthOf;
+import org.cactoos.scalar.Unchecked;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
@@ -17,14 +19,12 @@ import org.mockito.Mockito;
 
 /**
  * Test case for {@link Network}.
+ *
  * @since 0.1
  * @todo #5:30min Implement Remote interface. Remote Interface must be
  *  implemented because Network depends on Remote behavior. Network.pull
  *  needs to search all remotes for some wallet id and merge all found
  *  wallets; Network.push must push a wallet to a remote based in remote.
- * @checkstyle JavadocMethodCheck (500 lines)
- * @checkstyle MagicNumberCheck (500 lines)
- * @checkstyle ClassDataAbstractionCouplingCheck (2 lines)
  */
 @SuppressWarnings("PMD.UnnecessaryLocalRule")
 final class NetworkTest {
@@ -70,14 +70,15 @@ final class NetworkTest {
             "[{\"score\": 2}]".getBytes(StandardCharsets.UTF_8)
         );
         try {
-            int count = 0;
-            for (final Remote ignored : new RtNetwork(
-                file,
-                new IterableOf<>(new Remote.Fake(1)),
-                json -> new Remote.Fake(json.getInt("score"))
-            )) {
-                count += 1;
-            }
+            final int count = new Unchecked<>(
+                new LengthOf(
+                    new RtNetwork(
+                        file,
+                        new IterableOf<>(new Remote.Fake(1)),
+                        json -> new Remote.Fake(json.getInt("score"))
+                    )
+                )
+            ).value().intValue();
             MatcherAssert.assertThat(
                 count,
                 new IsEqual<>(2)

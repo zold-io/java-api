@@ -11,20 +11,18 @@ import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.collection.IsIterableContainingInOrder;
 import org.hamcrest.core.IsEqual;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Score}.
+ *
  * @since 1.0
- * @checkstyle JavadocMethodCheck (500 lines)
- * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-@SuppressWarnings("PMD.UnnecessaryLocalRule")
-public final class ScoreTest {
+final class ScoreTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void fewerSuffixesComeAfter() {
+    void fewerSuffixesComeAfter() {
         final Score lowest = new RtScore(
             new IterableOf<>(new TextOf("a"))
         );
@@ -41,7 +39,7 @@ public final class ScoreTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void sumWithFewerSuffixesComesAfter() {
+    void sumWithFewerSuffixesComesAfter() {
         final Score lowest = new RtScore(
             new IterableOf<>(new TextOf("a"))
         );

@@ -10,6 +10,7 @@ import org.cactoos.scalar.Unchecked;
 
 /**
  * Default implementation for {@link Score}.
+ *
  * @since 1.0
  */
 public final class RtScore implements Score {
@@ -21,6 +22,7 @@ public final class RtScore implements Score {
 
     /**
      * Ctor.
+     *
      * @param sfxs The suffixes
      */
     RtScore(final Iterable<Text> sfxs) {

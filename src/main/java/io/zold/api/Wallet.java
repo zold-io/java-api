@@ -28,6 +28,7 @@ import org.cactoos.text.UncheckedText;
 
 /**
  * Wallet.
+ *
  * @since 0.1
  * @todo #16:30min Merge method should update transactions
  *  in wallet's file and return concrete implementation not a fake one.
@@ -38,15 +39,15 @@ public interface Wallet {
 
     /**
      * This wallet's ID: an unsigned 64-bit integer.
+     *
      * @return This wallet's id
      * @throws IOException If an IO error occurs
-     * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
-     * @checkstyle MethodName (2 lines)
      */
     long id() throws IOException;
 
     /**
      * Make a payment.
+     *
      * @param amt Amount to pay in zents
      * @param bnf Wallet ID of beneficiary
      * @throws IOException If an IO error occurs
@@ -56,6 +57,7 @@ public interface Wallet {
     /**
      * Merge both {@code this} and {@code other}. Fails if they are not the
      * same wallet, as identified by their {@link #id() id}.
+     *
      * @param other Other wallet
      * @return The merged wallet
      * @throws IOException If an IO error occurs
@@ -64,12 +66,14 @@ public interface Wallet {
 
     /**
      * This wallet's ledger.
+     *
      * @return This wallet's ledger
      */
     Iterable<Transaction> ledger();
 
     /**
      * This wallet's RSA key.
+     *
      * @return This wallet's RSA key
      * @throws IOException If an IO error occurs
      */
@@ -77,6 +81,7 @@ public interface Wallet {
 
     /**
      * A Fake {@link Wallet}.
+     *
      * @since 1.0
      * @todo #65:30min Complete Wallet implementations with id, public RSA
      *  key and network id. Wallets.create(Long, String, String) must
@@ -100,6 +105,7 @@ public interface Wallet {
 
         /**
          * Constructor.
+         *
          * @param id The wallet id
          */
         public Fake(final long id) {
@@ -108,6 +114,7 @@ public interface Wallet {
 
         /**
          * Ctor.
+         *
          * @param id The wallet id
          * @param transactions Transactions
          */
@@ -117,10 +124,10 @@ public interface Wallet {
 
         /**
          * Constructor.
+         *
          * @param id The wallet id
          * @param pubkey The public RSA key of the wallet owner
          * @param network The network the wallet belongs to
-         * @checkstyle UnusedFormalParameter (2 lines)
          */
         public Fake(final long id, final String pubkey, final String network) {
             this(id);
@@ -128,6 +135,7 @@ public interface Wallet {
 
         /**
          * Ctor.
+         *
          * @param id The wallet id
          * @param transactions Transactions
          */
@@ -164,8 +172,8 @@ public interface Wallet {
 
     /**
      * Default File implementation.
+     *
      * @since 1.0
-     * @checkstyle ClassDataAbstractionCouplingCheck (2 lines)
      */
     final class File implements Wallet {
 
@@ -176,6 +184,7 @@ public interface Wallet {
 
         /**
          * Ctor.
+         *
          * @param path Path of wallet
          */
         File(final Path path) {
@@ -193,7 +202,6 @@ public interface Wallet {
                             "\n"
                         )
                     ).get(2).asString(),
-                    // @checkstyle MagicNumber (1 line)
                     16
                 ),
                 e -> new IOException(e)
@@ -253,7 +261,6 @@ public interface Wallet {
             return new Mapped<>(
                 txt -> new RtTransaction(txt.asString()),
                 new Skipped<>(
-                    // @checkstyle MagicNumberCheck (1 line)
                     5,
                     new ListOf<>(
                         new Split(
@@ -274,20 +281,11 @@ public interface Wallet {
                         new TextOf(this.path),
                         "\n"
                     )
-                // @checkstyle MagicNumberCheck (1 line)
                 ).get(3).asString(),
                 e -> new IOException(e)
             ).value();
         }
 
-        /**
-         * Whether an incoming transaction is acceptable.
-         * @param incoming Incoming transaction
-         * @param ledger Current ledger
-         * @param balance Current balance
-         * @return Whether it is acceptable
-         * @throws IOException If a transaction cannot be read
-         */
         private static boolean accepts(
             final Transaction incoming,
             final Iterable<Transaction> ledger,
@@ -318,11 +316,6 @@ public interface Wallet {
             ).iterator().hasNext();
         }
 
-        /**
-         * Calculate the current balance.
-         * @param ledger Current ledger
-         * @return Current balance
-         */
         private static long balance(final Iterable<Transaction> ledger) {
             return new SumOf(
                 new Mapped<>(

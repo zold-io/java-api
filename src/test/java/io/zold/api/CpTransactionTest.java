@@ -13,10 +13,8 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link CpTransaction}.
+ *
  * @since 1.0
- * @checkstyle LineLengthCheck (500 lines)
- * @checkstyle JavadocMethodCheck (500 lines)
- * @checkstyle MagicNumberCheck (500 lines)
  */
 @SuppressWarnings("PMD.UnnecessaryLocalRule")
 final class CpTransactionTest {
