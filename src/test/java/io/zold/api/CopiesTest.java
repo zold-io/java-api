@@ -13,13 +13,13 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Copies}.
+ *
  * @since 1.0
  * @todo #56:30min Add more test scenarios to Copies.
  *  Scenarios:
  *  remotes return empty list
  *  remotes return single element
  *  remotes return wallets with different content
- * @checkstyle JavadocMethodCheck (500 lines)
  */
 final class CopiesTest {
 
@@ -57,8 +57,8 @@ final class CopiesTest {
         );
     }
 
-    private static Copies.Copy copy(final long id) {
-        return new Copies.Copy(
+    private static Copy copy(final long id) {
+        return new Copy(
             new Wallet.Fake(id),
             new Remote.Fake(
                 new RtScore(new IterableOf<>(new TextOf("a")))
@@ -66,7 +66,7 @@ final class CopiesTest {
         );
     }
 
-    private static Iterable<Copies.Copy> copies() {
+    private static Iterable<Copy> copies() {
         return new Copies(
             1L,
             new IterableOf<>(

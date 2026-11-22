@@ -10,24 +10,28 @@ import org.cactoos.text.Randomized;
 
 /**
  * Remote node.
+ *
  * @since 0.1
  */
 public interface Remote {
 
     /**
      * This remote node's score.
+     *
      * @return The score
      */
     Score score();
 
     /**
      * Pushes a {@link Wallet} to this remote.
+     *
      * @param wallet Wallet to be pushed to this remote
      */
     void push(Wallet wallet);
 
     /**
      * Pull a wallet from this remote.
+     *
      * @param id The wallet's {@link Wallet#id() id}
      * @return The wallet
      */
@@ -35,6 +39,7 @@ public interface Remote {
 
     /**
      * A Fake {@link Remote}.
+     *
      * @since 1.0
      */
     final class Fake implements Remote {
@@ -46,6 +51,7 @@ public interface Remote {
 
         /**
          * Ctor.
+         *
          * @param val The remote's score value
          */
         public Fake(final int val) {
@@ -56,6 +62,7 @@ public interface Remote {
 
         /**
          * Ctor.
+         *
          * @param score The remote's score
          */
         public Fake(final Score score) {

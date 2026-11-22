@@ -10,6 +10,7 @@ import java.time.ZonedDateTime;
 
 /**
  * A payment transaction.
+ *
  * @since 0.1
  */
 @GenerateEnvelope
@@ -17,14 +18,15 @@ public interface Transaction {
 
     /**
      * Id of this transaction.
+     *
      * @return Id ID
      * @throws IOException When something goes wrong
-     * @checkstyle MethodNameCheck (3 lines)
      */
     int id() throws IOException;
 
     /**
      * Timestamp of this transaction.
+     *
      * @return Time
      * @throws IOException When something goes wrong
      */
@@ -32,6 +34,7 @@ public interface Transaction {
 
     /**
      * Amount involved in this transaction.
+     *
      * @return Amount
      * @throws IOException When something goes wrong
      */
@@ -39,6 +42,7 @@ public interface Transaction {
 
     /**
      * Prefix.
+     *
      * @return Prefix
      * @throws IOException When something goes wrong
      */
@@ -46,6 +50,7 @@ public interface Transaction {
 
     /**
      * Beneficiary.
+     *
      * @return Beneficiary
      * @throws IOException When something goes wrong
      */
@@ -53,6 +58,7 @@ public interface Transaction {
 
     /**
      * Details.
+     *
      * @return Details
      * @throws IOException When something goes wrong
      */
@@ -60,6 +66,7 @@ public interface Transaction {
 
     /**
      * RSA Signature.
+     *
      * @return RSA Signature
      * @throws IOException When something goes wrong
      */
@@ -76,14 +83,15 @@ public interface Transaction {
 
     /**
      * Fake implementation of Transaction, read from one ledger line.
+     *
      * @since 1.0
      */
     final class Fake extends TransactionEnvelope {
 
         /**
          * Constructor.
+         *
          * @param line Transaction line with seven fields separated by semicolons
-         * @checkstyle ConstructorsCodeFreeCheck (3 lines)
          */
         public Fake(final String line) {
             super(new RtTransaction(line));

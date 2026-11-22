@@ -13,35 +13,28 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsIterableWithSize;
 import org.hamcrest.core.IsEqual;
-import org.junit.Rule;
-import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.llorllale.cactoos.matchers.IsApplicable;
 
 /**
  * Test case for {@link Wallet}.
+ *
  * @since 0.1
- * @checkstyle JavadocMethodCheck (500 lines)
- * @checkstyle JavadocVariableCheck (500 lines)
- * @checkstyle MagicNumberCheck (500 lines)
- * @checkstyle ClassDataAbstractionCouplingCheck (3 lines)
  */
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.UnnecessaryLocalRule"})
-public final class WalletTest {
-
-    @Rule
-    public final TemporaryFolder folder = new TemporaryFolder();
+@SuppressWarnings("PMD.UnnecessaryLocalRule")
+final class WalletTest {
 
     @Test
-    public void readsWalletId() throws IOException {
+    void readsWalletId() throws IOException {
         final long id = 5_124_095_577_148_911L;
         final Wallet wallet = new Wallet.File(this.wallet(id));
         MatcherAssert.assertThat(wallet.id(), Matchers.is(id));
     }
 
     @Test
-    public void throwRuntimeExceptionIfReadingIdFails() throws IOException {
+    void throwRuntimeExceptionIfReadingIdFails() throws IOException {
         Assertions.assertThrows(
             RuntimeException.class,
             () -> new Wallet.File(this.wallet("")).id()
@@ -49,7 +42,7 @@ public final class WalletTest {
     }
 
     @Test
-    public void throwNumberFormatExceptionIfIdIsInvalid() throws IOException {
+    void throwNumberFormatExceptionIfIdIsInvalid() throws IOException {
         MatcherAssert.assertThat(
             Assertions.assertThrows(
                 NumberFormatException.class,
@@ -60,8 +53,8 @@ public final class WalletTest {
     }
 
     @Test
-    public void pay() throws IOException {
-        final Path path = this.folder.newFile().toPath();
+    void pay(@TempDir final Path folder) throws IOException {
+        final Path path = Files.createTempFile(folder, "wlt", ".tmp");
         path.toFile().delete();
         Files.copy(this.wallet(5_124_095_577_148_911L), path);
         final Wallet wallet = new Wallet.File(path);
@@ -80,7 +73,7 @@ public final class WalletTest {
     }
 
     @Test
-    public void doesNotMergePositiveTransactionWithoutPayingWallet()
+    void doesNotMergePositiveTransactionWithoutPayingWallet()
         throws IOException {
         final long id = 5_124_095_577_148_911L;
         final Wallet wallet = new Wallet.File(this.wallet(id));
@@ -98,7 +91,7 @@ public final class WalletTest {
     }
 
     @Test
-    public void doesNotMergeWalletsWithDifferentId() throws IOException {
+    void doesNotMergeWalletsWithDifferentId() throws IOException {
         final long id = 5_124_095_577_148_911L;
         final Wallet wallet = new Wallet.File(this.wallet(id));
         MatcherAssert.assertThat(
@@ -113,7 +106,7 @@ public final class WalletTest {
     }
 
     @Test
-    public void doesNotMergeExistingTransactions() throws IOException {
+    void doesNotMergeExistingTransactions() throws IOException {
         final long id = 5_124_095_577_148_911L;
         final Wallet wallet = new Wallet.File(this.wallet(id));
         final Wallet merged = wallet.merge(
@@ -130,7 +123,7 @@ public final class WalletTest {
     }
 
     @Test
-    public void doesNotMergeTransactionsWithSameIdAndBnf() throws IOException {
+    void doesNotMergeTransactionsWithSameIdAndBnf() throws IOException {
         final long id = 5_124_095_577_148_911L;
         final Wallet wallet = new Wallet.File(this.wallet(id));
         final Wallet merged = wallet.merge(
@@ -147,7 +140,7 @@ public final class WalletTest {
     }
 
     @Test
-    public void doesNotMergeTransactionsWithSameIdAndNegativeAmount()
+    void doesNotMergeTransactionsWithSameIdAndNegativeAmount()
         throws IOException {
         final long id = 5_124_095_577_148_911L;
         final Wallet wallet = new Wallet.File(this.wallet(id));
@@ -165,7 +158,7 @@ public final class WalletTest {
     }
 
     @Test
-    public void doesNotMergeTransactionsWithSamePrefix() throws IOException {
+    void doesNotMergeTransactionsWithSamePrefix() throws IOException {
         final long id = 5_124_095_577_148_911L;
         final Wallet wallet = new Wallet.File(this.wallet(id));
         final Wallet merged = wallet.merge(
@@ -182,7 +175,7 @@ public final class WalletTest {
     }
 
     @Test
-    public void doesNotMergeInvalidTransactions() throws IOException {
+    void doesNotMergeInvalidTransactions() throws IOException {
         final long id = 5_124_095_577_148_911L;
         final Wallet wallet = new Wallet.File(this.wallet(id));
         final int size = new ListOf<>(wallet.ledger()).size();
@@ -207,7 +200,7 @@ public final class WalletTest {
     }
 
     @Test
-    public void walletShouldBeAbleToReturnLedger() throws Exception {
+    void walletShouldBeAbleToReturnLedger() throws Exception {
         MatcherAssert.assertThat(
             new Wallet.File(this.wallet(5_124_095_577_148_911L)).ledger(),
             Matchers.iterableWithSize(2)
@@ -215,11 +208,10 @@ public final class WalletTest {
     }
 
     @Test
-    public void readsPublicKey() throws IOException {
+    void readsPublicKey() throws IOException {
         MatcherAssert.assertThat(
             new Wallet.File(this.wallet(5_124_095_577_148_911L)).key(),
             Matchers.is(
-                // @checkstyle LineLengthCheck (1 line)
                 "MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgGZCr/9hBChqsChd4sRAIpKNRinjhSW+J+S7PU5malVMiRHVoKjeooLDpWpij0A6vkzOvjrMldAZT0Fzgp0cJ15TOVwiQanQ5WuQDgRkLoxrdh/qyBApoDvk4OUEozOQPNwfpZOFfaUALPsPnv9995TlY9WcdSKW5dj041p1tJmlAgMBAAE="
             )
         );
